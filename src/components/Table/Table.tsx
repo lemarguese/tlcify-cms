@@ -1,21 +1,17 @@
-import type { FC, JSX } from "react";
+import { FC } from 'react';
+import { Table as AntTable } from "antd";
+import './Table.scss';
 
 interface TableProps {
-  heads: string[];
-
+  heads: { title: string; dataIndex: string; key: string }[];
+  //todo any remove
+  data: any[];
 }
 
-const Table: FC<TableProps> = ({ heads }): JSX.Element => {
-  return <div>
+const Table: FC<TableProps> = ({ heads, data }) => {
+  return <div className='table'>
     <h3>Order List</h3>
-    <table>
-      <thead>
-      { heads.map(head => <th key={`table-head-${head}`}>{head}</th>) }
-      </thead>
-      <tbody>
-
-      </tbody>
-    </table>
+    <AntTable columns={heads} dataSource={data} className='table_antClass' />
   </div>
 };
 

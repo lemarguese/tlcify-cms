@@ -1,27 +1,41 @@
 import './Sidebar.scss';
-import SidebarSection from "./SidebarSection/SidebarSection.tsx";
-import { FC, JSX } from "react";
+import type { FC } from "react";
+import { Layout, Menu } from 'antd';
+import { UserOutlined, MoneyCollectOutlined } from '@ant-design/icons'
+
+const { Sider } = Layout;
 
 interface SidebarProps {
-
 }
 
-const Sidebar: FC<SidebarProps> = (): JSX.Element => {
+const sidebarOptions = [
+  { title: 'Customers' }
+]
+
+const Sidebar: FC<SidebarProps> = () => {
+  // const [isCollapsed, setIsCollapsed] = useState(false);
+
   return (
     <aside className='sidebar'>
-      <div className='sidebar_container'>
-        <div></div>
-        <div className='sidebar_sections'>
-          <SidebarSection />
-          <SidebarSection />
-          <SidebarSection />
-          <SidebarSection />
-          <SidebarSection />
-          <SidebarSection />
-          <SidebarSection />
-        </div>
-        <div></div>
-      </div>
+      <Sider trigger={null}  className='sidebar_container'>
+        <Menu
+          // theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['1']}
+          items={[
+            {
+              key: 'sidebar-customer',
+              icon: <UserOutlined/>,
+              label: 'Customer',
+            },
+            {
+              key: 'sidebar-payment',
+              icon: <MoneyCollectOutlined/>,
+              label: 'Payment',
+            },
+          ]}
+        />
+      </Sider>
     </aside>
   )
 }
