@@ -18,7 +18,9 @@ const Sidebar: FC<SidebarProps> = () => {
   return (
     <aside className='sidebar'>
       <Sider trigger={null}  className='sidebar_container'>
+        <div className='sidebar_logo'></div>
         <Menu
+          style={{ border: 'none' }}
           // theme="dark"
           mode="inline"
           defaultSelectedKeys={['1']}

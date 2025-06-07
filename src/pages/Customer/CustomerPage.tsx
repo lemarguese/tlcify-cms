@@ -1,12 +1,21 @@
-import Sidebar from "../../components/Sidebar/Sidebar.tsx";
 import Table from "../../components/Table/Table.tsx";
 import Page from "../../layout/Page/Page.tsx";
 
 import './CustomerPage.scss';
 
 const heads = [
-  { title: "First Name", dataIndex: "firstName", key: "firstName", sorter: (a, b) => a.firstName.localeCompare(b.firstName) },
-  { title: "Last Name", dataIndex: "lastName", key: "lastName", sorter: (a, b) => a.lastName.localeCompare(b.lastName) },
+  {
+    title: "First Name",
+    dataIndex: "firstName",
+    key: "firstName",
+    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
+  },
+  {
+    title: "Last Name",
+    dataIndex: "lastName",
+    key: "lastName",
+    sorter: (a, b) => a.lastName.localeCompare(b.lastName)
+  },
   // { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
   // { title: "Email", dataIndex: "email", key: "email" },
   // { title: "Date of Birth", dataIndex: "dob", key: "dob", sorter: (a, b) => new Date(a.dob) - new Date(b.dob) },
@@ -78,10 +87,8 @@ const data = [
 ];
 
 
-
 const CustomerPage = () => {
   return <Page>
-    <Sidebar/>
     <div className='customer_page'>
       <Table heads={heads} data={data}/>
     </div>

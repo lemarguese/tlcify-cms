@@ -1,0 +1,43 @@
+.header {
+  position: fixed;
+  top: 0;
+
+  width: calc(100% - 200px);
+
+  &_container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 24px;
+  }
+
+  &_sidebar_icon {
+    color: #FFF;
+  }
+
+  &_center {
+    &_search {
+      max-width: 360px;
+    }
+  }
+
+  &_end {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    &_notification {
+      color: #FFF;
+    }
+
+    &_avatar {
+      width: 32px;
+      height: 32px;
+
+      background-color: green;
+
+      border-radius: 50px;
+    }
+  }
+}

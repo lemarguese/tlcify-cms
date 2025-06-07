@@ -1,0 +1,29 @@
+.sidebar {
+  border-right: 1px solid #F6F6F6;
+
+  &_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #fff;
+    height: 100%;
+
+    padding: 16px;
+  }
+
+  &_logo {
+    width: 150px;
+    height: 32px;
+
+    margin-bottom: 24px;
+
+    background-color: red;
+  }
+
+  &_sections {
+    border: none;
+
+    align-self: start;
+  }
+}
