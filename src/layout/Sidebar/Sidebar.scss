@@ -14,11 +14,11 @@
 
   &_logo {
     width: 150px;
-    height: 32px;
+    height: 75px;
+
+    object-fit: cover;
 
     margin-bottom: 24px;
-
-    background-color: red;
   }
 
   &_sections {

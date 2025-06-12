@@ -1,13 +1,11 @@
-import { useState } from 'react'
-
 import './App.css';
 import './styles/normalize.scss';
-import CustomerPage from "./pages/Customer/CustomerPage.tsx";
+import Router from "./layout/Router/Router.tsx";
 
 function App() {
   return (
     <div className='main'>
-      <CustomerPage />
+      <Router />
     </div>
   )
 }

@@ -1,17 +1,22 @@
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { Table as AntTable } from "antd";
 import './Table.scss';
 
 interface TableProps {
+  title: string;
+  actions: ReactNode;
   heads: { title: string; dataIndex: string; key: string }[];
   //todo any remove
   data: any[];
 }
 
-const Table: FC<TableProps> = ({ heads, data }) => {
+const Table: FC<TableProps> = ({ heads, data, actions, title }) => {
   return <div className='table'>
-    <h3>Order List</h3>
-    <AntTable columns={heads} dataSource={data} className='table_antClass' />
+    <div className='table_header'>
+      <h3>{title}</h3>
+      {actions}
+    </div>
+    <AntTable columns={heads} dataSource={data} className='table_antClass'/>
   </div>
 };
 

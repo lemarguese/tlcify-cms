@@ -1,3 +1,6 @@
 .main {
     background-color: #F8F9FD;
+
+    max-width: 1440px;
+    margin: auto;
 }

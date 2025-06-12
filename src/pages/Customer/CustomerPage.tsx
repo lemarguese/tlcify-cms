@@ -1,97 +1,113 @@
 import Table from "../../components/Table/Table.tsx";
 import Page from "../../layout/Page/Page.tsx";
 
+import { BaseSyntheticEvent, useCallback, useEffect, useState } from "react";
+import { instance } from "../../api/axios.ts";
+import { Button, Modal } from "antd";
+import Input from "../../components/Input/Input.tsx";
+import DatePicker from "../../components/Date/Date.tsx";
+import SalesSection from "./components/SalesSection/SalesSection.tsx";
+import type { ICustomerCreate } from "../../types/customer/main.ts";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import './CustomerPage.scss';
-
-const heads = [
-  {
-    title: "First Name",
-    dataIndex: "firstName",
-    key: "firstName",
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
-  },
-  {
-    title: "Last Name",
-    dataIndex: "lastName",
-    key: "lastName",
-    sorter: (a, b) => a.lastName.localeCompare(b.lastName)
-  },
-  // { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
-  // { title: "Email", dataIndex: "email", key: "email" },
-  // { title: "Date of Birth", dataIndex: "dob", key: "dob", sorter: (a, b) => new Date(a.dob) - new Date(b.dob) },
-  { title: "Address", dataIndex: "address", key: "address" },
-  { title: "TCL Number", dataIndex: "tclNumber", key: "tclNumber" },
-  { title: "TLC Exp.", dataIndex: "tlcExp", key: "tlcExp", sorter: (a, b) => new Date(a.tlcExp) - new Date(b.tlcExp) },
-  { title: "DL Number", dataIndex: "dlNumber", key: "dlNumber" },
-  { title: "DL Exp.", dataIndex: "dlExp", key: "dlExp", sorter: (a, b) => new Date(a.dlExp) - new Date(b.dlExp) },
-  // { title: "Last 5 SSN", dataIndex: "last5SSN", key: "last5SSN" },
-  { title: "DDC Exp.", dataIndex: "ddcExp", key: "ddcExp", sorter: (a, b) => new Date(a.ddcExp) - new Date(b.ddcExp) }
-];
-
-const data = [
-  {
-    key: "1",
-    firstName: "John",
-    lastName: "Doe",
-    address: "123 Main St, New York, NY",
-    tclNumber: "TCL12345",
-    tlcExp: "2026-05-15",
-    dlNumber: "DL987654321",
-    dlExp: "2027-03-01",
-    ddcExp: "2025-11-20"
-  },
-  {
-    key: "2",
-    firstName: "Maria",
-    lastName: "Gonzalez",
-    address: "456 Elm Ave, Bronx, NY",
-    tclNumber: "TCL67890",
-    tlcExp: "2025-09-30",
-    dlNumber: "DL123456789",
-    dlExp: "2026-01-10",
-    ddcExp: "2026-02-18"
-  },
-  {
-    key: "3",
-    firstName: "David",
-    lastName: "Kim",
-    address: "789 Broadway, Brooklyn, NY",
-    tclNumber: "",
-    tlcExp: "",
-    dlNumber: "DL555443322",
-    dlExp: "2028-08-25",
-    ddcExp: ""
-  },
-  {
-    key: "4",
-    firstName: "Amina",
-    lastName: "Hassan",
-    address: "321 Ocean Pkwy, Queens, NY",
-    tclNumber: "TCL54321",
-    tlcExp: "2024-12-05",
-    dlNumber: "DL999112233",
-    dlExp: "2025-06-30",
-    ddcExp: "2025-07-15"
-  },
-  {
-    key: "5",
-    firstName: "Liam",
-    lastName: "Patel",
-    address: "654 Park Ln, Staten Island, NY",
-    tclNumber: "",
-    tlcExp: "",
-    dlNumber: "",
-    dlExp: "",
-    ddcExp: ""
-  }
-];
-
+import { customerTableHeaders, newCustomerFormInitialState } from "./utils/customer.tsx";
 
 const CustomerPage = () => {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [customers, setCustomers] = useState<ICustomerCreate[]>([]);
+
+  const [newCustomerForm, setNewCustomerForm] = useState<ICustomerCreate>(newCustomerFormInitialState)
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  const fetchCustomers = useCallback(async () => {
+    const all = await instance.get('/customer');
+    setCustomers(all.data);
+  }, [])
+
+  const addButton = <Button onClick={() => setIsCreateModalOpen(true)}>Create customer</Button>
+
+  const changeCustomerFormData = useCallback((key: keyof Omit<ICustomerCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>) => {
+    return (val: BaseSyntheticEvent) => {
+      setNewCustomerForm(prev => ({
+        ...prev,
+        [key]: val.target.value
+      }))
+    }
+  }, []);
+
+  const changeCustomerFormTime = useCallback((key: keyof Pick<ICustomerCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>) => {
+    return (val: Dayjs) => {
+      const date = val ? val.format('MM/DD/YYYY') : undefined
+      setNewCustomerForm(prev => ({
+        ...prev,
+        [key]: date
+      }))
+    }
+  }, []);
+
+  const submitForm = useCallback(async () => {
+    await instance.post('/customer', newCustomerForm);
+    setNewCustomerForm(newCustomerFormInitialState);
+    setIsCreateModalOpen(false);
+    await fetchCustomers();
+  }, [newCustomerForm])
+
   return <Page>
     <div className='customer_page'>
-      <Table heads={heads} data={data}/>
+      {/*<SalesSection />*/}
+      <Table heads={customerTableHeaders} data={customers} title='Customers List' actions={addButton}/>
     </div>
+    <Modal open={isCreateModalOpen} onOk={submitForm} onCancel={() => setIsCreateModalOpen(false)}>
+      <div className='customer_page_create_container'>
+        <div className='customer_page_create'>
+          <Input placeholder={'First name'} value={newCustomerForm.firstName}
+                 onChange={changeCustomerFormData('firstName')} label={'First Name'}/>
+          <Input placeholder={'Last name'} value={newCustomerForm.lastName}
+                 onChange={changeCustomerFormData('lastName')} label={'Last Name'}/>
+        </div>
+        <div>
+          <Input placeholder={'Phone number'} value={newCustomerForm.phoneNumber}
+                 onChange={changeCustomerFormData('phoneNumber')} addonBefore={'+1'}
+                 label={'Phone number'}/>
+          <Input placeholder={'Address'} value={newCustomerForm.address} onChange={changeCustomerFormData('address')}
+                 label={'Address'}/>
+          <Input placeholder={'Email'} value={newCustomerForm.email} onChange={changeCustomerFormData('email')}
+                 label={'Email'}/>
+        </div>
+        <div>
+          <DatePicker label='Date of birth'
+                      value={newCustomerForm.dateOfBirth ? dayjs(newCustomerForm.dateOfBirth) : undefined}
+                      onChange={changeCustomerFormTime('dateOfBirth')}/>
+        </div>
+        <div className='customer_page_tlc'>
+          <Input placeholder={'TLC Number'} value={newCustomerForm.tlcNumber} label={'TLC Number'}
+                 onChange={changeCustomerFormData('tlcNumber')}/>
+          <DatePicker label={'TLC Expiration'}
+                      value={newCustomerForm.tlcExp ? dayjs(newCustomerForm.tlcExp) : undefined}
+                      onChange={changeCustomerFormTime('tlcExp')}/>
+        </div>
+        <div className='customer_page_tlc'>
+          <Input placeholder={'DL Number'} label={'DL Number'} value={newCustomerForm.driverLicenseNumber}
+                 onChange={changeCustomerFormData('driverLicenseNumber')}/>
+          <DatePicker label={'DL Expiration'}
+                      value={newCustomerForm.driverLicenseExp ? dayjs(newCustomerForm.driverLicenseExp) : undefined}
+                      onChange={changeCustomerFormTime('driverLicenseExp')}/>
+        </div>
+        <div>
+          <Input placeholder={'Last 5 Digits of SSN'} value={newCustomerForm.lastSSN} label={'Last 5 Digits of SSN'}
+                 onChange={changeCustomerFormData('lastSSN')}/>
+        </div>
+        <div>
+          <DatePicker label={'Defensive Driver Course expiration'}
+                      value={newCustomerForm.defensiveDriverCourseExp ? dayjs(newCustomerForm.defensiveDriverCourseExp) : undefined}
+                      onChange={changeCustomerFormTime('defensiveDriverCourseExp')}/>
+        </div>
+      </div>
+    </Modal>
   </Page>
 }
 

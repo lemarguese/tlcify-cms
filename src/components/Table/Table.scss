@@ -10,7 +10,12 @@
 
   }
 
-  &_row {
+  &_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 24px;
   }
 
   &_antClass {

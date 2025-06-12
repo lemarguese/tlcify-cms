@@ -1,0 +1,78 @@
+.customer_sales_section {
+  display: flex;
+  flex-direction: column;
+  gap: 42px;
+
+  background-color: #FFF;
+
+  padding: 24px 32px;
+
+  border-radius: 16px;
+
+  &_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &_content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      &_title {
+        font-size: 20px;
+      }
+
+      &_description {
+        font-size: 16px;
+        font-weight: normal;
+      }
+    }
+  }
+
+  &_statistics {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  &_chip {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    background-color: rebeccapurple;
+
+    padding: 20px;
+
+    width: 180px;
+    height: 180px;
+
+    border-radius: 16px;
+
+    &_icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    &_content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      color: #FFF;
+
+      &_title {
+        font-size: 16px;
+      }
+
+      &_numbers {
+        font-size: 24px;
+      }
+
+      &_difference {
+        font-size: 12px;
+      }
+    }
+  }
+}

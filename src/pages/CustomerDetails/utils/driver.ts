@@ -1,0 +1,15 @@
+export const newDriverFormInitialState = {
+  customerId: '',
+  firstName: '',
+  lastName: '',
+  phoneNumber: '',
+  email: '',
+  dateOfBirth: new Date(Date.now()).toLocaleDateString(),
+  address: '',
+  tlcNumber: '',
+  tlcExp: new Date(Date.now()).toLocaleDateString(),
+  driverLicenseNumber: '',
+  driverLicenseExp: new Date(Date.now()).toLocaleDateString(),
+  lastSSN: '',
+  defensiveDriverCourseExp: new Date(Date.now()).toLocaleDateString(),
+}

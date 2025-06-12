@@ -3,6 +3,7 @@
   top: 0;
 
   width: calc(100% - 200px);
+  max-width: 1240px;
 
   &_container {
     display: flex;
@@ -10,10 +11,13 @@
     justify-content: space-between;
 
     padding: 16px 24px;
+    background-color: #FFF;
+
+    box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.15);
   }
 
   &_sidebar_icon {
-    color: #FFF;
+    color: #000;
   }
 
   &_center {
@@ -28,7 +32,7 @@
     gap: 24px;
 
     &_notification {
-      color: #FFF;
+      color: #000;
     }
 
     &_avatar {

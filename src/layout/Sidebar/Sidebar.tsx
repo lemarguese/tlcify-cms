@@ -1,16 +1,14 @@
 import './Sidebar.scss';
 import type { FC } from "react";
 import { Layout, Menu } from 'antd';
-import { UserOutlined, MoneyCollectOutlined } from '@ant-design/icons'
+import { UserOutlined, MoneyCollectOutlined } from '@ant-design/icons';
+
+import LogoImage from '../../assets/images/logo.jpg';
 
 const { Sider } = Layout;
 
 interface SidebarProps {
 }
-
-const sidebarOptions = [
-  { title: 'Customers' }
-]
 
 const Sidebar: FC<SidebarProps> = () => {
   // const [isCollapsed, setIsCollapsed] = useState(false);
@@ -18,7 +16,7 @@ const Sidebar: FC<SidebarProps> = () => {
   return (
     <aside className='sidebar'>
       <Sider trigger={null}  className='sidebar_container'>
-        <div className='sidebar_logo'></div>
+        <img alt='sidebar-project-logo' src={LogoImage} className='sidebar_logo'></img>
         <Menu
           style={{ border: 'none' }}
           // theme="dark"
