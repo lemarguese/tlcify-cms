@@ -1,4 +1,4 @@
-export interface ICustomerCreate {
+export interface ICustomer {
   firstName: string,
   lastName: string,
   phoneNumber: string,
@@ -13,3 +13,4 @@ export interface ICustomerCreate {
   defensiveDriverCourseExp: string,
 }
 
+export interface ICustomerCreate extends ICustomer {}

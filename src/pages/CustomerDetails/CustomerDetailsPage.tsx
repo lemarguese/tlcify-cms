@@ -1,27 +1,25 @@
 import './CustomerDetailsPage.scss';
 import Page from '../../layout/Page/Page.tsx';
-import AvatarImage from '../../assets/images/avatar.jpg';
 import Table from "../../components/Table/Table.tsx";
-import { customerTableHeaders } from "../Customer/utils/customer.tsx";
+import { customerTableHeaders, newCustomerFormInitialState } from "../Customer/utils/customer.tsx";
 import { Button, Modal } from "antd";
 import { BaseSyntheticEvent, useCallback, useEffect, useState } from "react";
 import Input from "../../components/Input/Input.tsx";
 import DatePicker from "../../components/Date/Date.tsx";
 import dayjs, { Dayjs } from "dayjs";
-import { useSearchParams } from "react-router";
-import { instance } from "../../api/axios.ts";
-import type { IDriverCreate } from "../../types/driver/main.ts";
+import { useParams } from "react-router";
+import { instance } from "@/api/axios.ts";
+import type { IDriverCreate } from "@/types/driver/main.ts";
 import { newDriverFormInitialState } from "./utils/driver.ts";
 
-const CustomerDetailContactSection = () => {
-  return <div className='customer_details_page_contacts_section'>
-    <div className='customer_details_page_contacts_section_icon'></div>
-    <div className='customer_details_page_contacts_section_content'>
-      <h6>Email</h6>
-      <p>abcd123@gmail.com</p>
-    </div>
-  </div>
-}
+
+import CustomerDetailContactSection from "./components/CustomerDetailContactSection/CustomerDetailContactSection.tsx";
+
+import EmailIcon from '../../assets/icons/email_icon.svg';
+import RegisteredIcon from '../../assets/icons/registered_icon.svg';
+import type { ICustomerCreate } from "@/types/customer/main.ts";
+import CustomerDetailProfile from "./components/CustomerDetailsProfile/CustomerDetailsProfile.tsx";
+import GoogleAutocompleteInput from "../../components/GoogleAutocompleteInput/GoogleAutocompleteInput.tsx";
 
 const CustomerDetailStatisticsItem = () => {
   return <div className='customer_details_page_statistics_item'>
@@ -45,54 +43,32 @@ const CustomerDetailStatisticsItem = () => {
   </div>
 }
 
-const CustomerDetailProfile = () => {
-  return <div className='customer_details_page_profile'>
-    <div className='customer_details_page_profile_header'>
-      <img alt='customer-profile-avatar' src={AvatarImage} className='customer_details_page_profile_header_image'/>
-      <div className='customer_details_page_profile_header_info'>
-        <p>Andreas Iniesta</p>
-        <p>+8801774286074</p>
-      </div>
-    </div>
-    <div className='customer_details_page_profile_footer'>
-      <div className='customer_details_page_profile_footer_section'>
-        <div className='customer_details_page_profile_footer_section_icon'></div>
-        <div className='customer_details_page_profile_footer_section_content'>
-          <p>Birthday</p>
-          <p>Aug 20, 1997</p>
-        </div>
-      </div>
-      <div className='customer_details_page_profile_footer_section'>
-        <div className='customer_details_page_profile_footer_section_icon'></div>
-        <div className='customer_details_page_profile_footer_section_content'>
-          <p>Gender</p>
-          <p>Male</p>
-        </div>
-      </div>
-    </div>
-  </div>
-}
-
 const CustomerDetailsPage = () => {
 
-  const [params, _] = useSearchParams();
-  const customerId = params.get('id');
+  const { id: customerId } = useParams();
 
   const [newDriverForm, setNewDriverForm] = useState<IDriverCreate>(newDriverFormInitialState);
 
   const [drivers, setDrivers] = useState([]);
+  const [customerById, setCustomerById] = useState<ICustomerCreate>(newCustomerFormInitialState);
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const addNewDriverButton = <Button onClick={() => setIsCreateModalOpen(true)}>Create Driver</Button>
 
   useEffect(() => {
+    fetchCustomerById();
     fetchDrivers();
   }, []);
 
   const fetchDrivers = useCallback(async () => {
-    const all = await instance.get('/driver/byCustomer', { params: { id: '68487f869826decb29d97865' } });
+    const all = await instance.get('/driver/byCustomer', { params: { id: customerId } });
     setDrivers(all.data);
+  }, [customerId]);
+
+  const fetchCustomerById = useCallback(async () => {
+    const customer = await instance.get(`/customer/${customerId}`);
+    setCustomerById(customer.data);
   }, [customerId])
 
   const changeDriverFormData = useCallback((key: keyof Omit<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>) => {
@@ -115,29 +91,39 @@ const CustomerDetailsPage = () => {
   }, []);
 
   const submitForm = useCallback(async () => {
-    await instance.post('/driver', { ...newDriverForm, customerId: '68487f869826decb29d97865' });
+    await instance.post('/driver', { ...newDriverForm, customerId });
     setNewDriverForm(newDriverFormInitialState);
     setIsCreateModalOpen(false);
     await fetchDrivers();
-  }, [newDriverForm])
+  }, [newDriverForm]);
 
-  return <Page>
+  const contactSections = [
+    { title: 'Email', content: customerById.email, backgroundColor: '#FFF5E0', iconUrl: EmailIcon },
+    { title: 'Email', content: customerById.email, backgroundColor: '#FFF5E0', iconUrl: EmailIcon },
+    { title: 'Register Since', content: customerById.tlcExp, backgroundColor: '#E7D1F8', iconUrl: RegisteredIcon },
+    { title: 'Register Since', content: customerById.tlcExp, backgroundColor: '#E7D1F8', iconUrl: RegisteredIcon },
+  ];
+
+  return <Page showSearch={false}>
     <div className='customer_details_page'>
       <div className='customer_details_page_container'>
         <div className='customer_details_page_contacts'>
-          <CustomerDetailContactSection/>
-          <CustomerDetailContactSection/>
-          <CustomerDetailContactSection/>
-          <CustomerDetailContactSection/>
+          {contactSections.map(contactSection => (<CustomerDetailContactSection
+            key={`customer-detail-contact-section-${contactSection.title}`} {...contactSection} />))}
         </div>
         <div className='customer_details_page_statistics'>
-          <CustomerDetailStatisticsItem/>
-          <CustomerDetailStatisticsItem/>
-          <CustomerDetailStatisticsItem/>
+          <CustomerDetailStatisticsItem key={`1`}/>
+          <CustomerDetailStatisticsItem key={`2`}/>
+          <CustomerDetailStatisticsItem key={`3`}/>
         </div>
-        <CustomerDetailProfile/>
+        <CustomerDetailProfile
+          firstName={customerById.firstName}
+          dateOfBirth={customerById.dateOfBirth}
+          lastName={customerById.lastName}
+          phoneNumber={customerById.phoneNumber}
+        />
       </div>
-      <Table title='Drivers' actions={addNewDriverButton} heads={customerTableHeaders} data={drivers}/>
+      <Table title='Drivers' actions={addNewDriverButton} columns={customerTableHeaders} dataSource={drivers}/>
     </div>
     <Modal open={isCreateModalOpen} onOk={submitForm} onCancel={() => setIsCreateModalOpen(false)}>
       <div className='customer_page_create_container'>
@@ -149,10 +135,11 @@ const CustomerDetailsPage = () => {
         </div>
         <div>
           <Input placeholder={'Phone number'} value={newDriverForm.phoneNumber}
-                 onChange={changeDriverFormData('phoneNumber')} addonBefore={'+1'}
+                 onChange={changeDriverFormData('phoneNumber')} mask={'number'}
                  label={'Phone number'}/>
-          <Input placeholder={'Address'} value={newDriverForm.address} onChange={changeDriverFormData('address')}
-                 label={'Address'}/>
+          <GoogleAutocompleteInput placeholder={'Address'} value={newDriverForm.address}
+                                   onChange={changeDriverFormData('address')}
+                                   label={'Address'}/>
           <Input placeholder={'Email'} value={newDriverForm.email} onChange={changeDriverFormData('email')}
                  label={'Email'}/>
         </div>

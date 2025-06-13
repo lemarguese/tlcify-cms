@@ -6,13 +6,14 @@ import Header from "../Header/Header.tsx";
 
 interface PageProps {
   children: ReactNode;
+  showSearch?: boolean;
 }
 
-const Page: FC<PageProps> = ({ children }) => {
+const Page: FC<PageProps> = ({ children, showSearch = true }) => {
   return <Layout className='page'>
     <Sidebar/>
     <div className='page_container'>
-      <Header/>
+      <Header showSearch={showSearch}/>
       {children}
     </div>
   </Layout>

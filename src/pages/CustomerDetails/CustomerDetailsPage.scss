@@ -12,48 +12,6 @@
     gap: 24px;
   }
 
-  &_contacts {
-    padding: 20px;
-
-    border: 1px solid #F2F2F2;
-    border-radius: 14px;
-
-    box-shadow: 0 6px 9px -5px rgba(186, 186, 186, .15);
-    background-color: #FFF;
-
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr;
-    gap: 9.46px 18.56px;
-
-    grid-area: 1/1/2/4;
-
-    &_section {
-      padding: 10.31px;
-
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      border-radius: 8px;
-      background-color: navy;
-
-      &_icon {
-        width: 39px;
-        height: 39px;
-
-        border-radius: 4px;
-        background-color: red;
-      }
-
-      &_content {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-    }
-  }
-
   &_statistics {
     border-radius: 14px;
     border: 1px solid #F2F2F2;
@@ -109,78 +67,5 @@
         }
       }
     }
-  }
-
-  &_profile {
-    max-width: 300px;
-
-    grid-area: 1/4/3/5;
-
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-
-    background-color: #FFF;
-
-    padding: 20px;
-
-    border: 1px solid #F2F2F2;
-    border-radius: 14px;
-
-    box-shadow: 0 6px 9px -5px rgba(186, 186, 186, .15);
-
-    &_header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-
-      &_image {
-        width: 111px;
-        height: 111px;
-
-        border-radius: 50%;
-      }
-
-      &_info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-      }
-    }
-
-    &_footer {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-
-      &_section {
-        padding: 10px;
-
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        border: 1px solid #F3F3F3;
-        border-radius: 8px;
-
-        &_icon {
-          border-radius: 4px;
-
-          width: 38px;
-          height: 38px;
-
-          background-color: yellowgreen;
-        }
-
-        &_content {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-      }
-    }
-
   }
 }

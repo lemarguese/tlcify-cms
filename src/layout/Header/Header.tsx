@@ -2,14 +2,19 @@ import { Select, Layout, Input } from 'antd';
 import './Header.scss';
 
 import { MenuUnfoldOutlined, NotificationOutlined } from '@ant-design/icons';
+import type { FC } from "react";
 
 const { Header: AntHeader } = Layout;
 
-const Header = () => {
+interface HeaderProps {
+  showSearch: boolean;
+}
+
+const Header: FC<HeaderProps> = ({ showSearch }) => {
   return <div className='header'>
     <AntHeader className='header_container'>
       <MenuUnfoldOutlined className='header_sidebar_icon'/>
-      <Input.Search rootClassName='header_center_search' placeholder={'Search'} />
+      {showSearch && <Input.Search rootClassName='header_center_search' placeholder={'Search'}/>}
       <div className='header_end'>
         <Select
           showSearch

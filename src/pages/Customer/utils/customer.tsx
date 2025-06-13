@@ -1,6 +1,7 @@
 import { Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
 
-export const customerTableHeaders = [
+export const customerTableHeaders: ColumnsType = [
   {
     title: "First Name",
     dataIndex: "firstName",

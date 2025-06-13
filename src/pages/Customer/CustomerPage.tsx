@@ -2,18 +2,21 @@ import Table from "../../components/Table/Table.tsx";
 import Page from "../../layout/Page/Page.tsx";
 
 import { BaseSyntheticEvent, useCallback, useEffect, useState } from "react";
-import { instance } from "../../api/axios.ts";
+import { instance } from "@/api/axios.ts";
 import { Button, Modal } from "antd";
 import Input from "../../components/Input/Input.tsx";
 import DatePicker from "../../components/Date/Date.tsx";
-import SalesSection from "./components/SalesSection/SalesSection.tsx";
-import type { ICustomerCreate } from "../../types/customer/main.ts";
+import type { ICustomerCreate } from "@/types/customer/main.ts";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import './CustomerPage.scss';
 import { customerTableHeaders, newCustomerFormInitialState } from "./utils/customer.tsx";
+import { useNavigate } from "react-router";
+import GoogleAutocompleteInput from "../../components/GoogleAutocompleteInput/GoogleAutocompleteInput.tsx";
 
 const CustomerPage = () => {
+  const navigate = useNavigate();
+
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [customers, setCustomers] = useState<ICustomerCreate[]>([]);
 
@@ -54,12 +57,18 @@ const CustomerPage = () => {
     setNewCustomerForm(newCustomerFormInitialState);
     setIsCreateModalOpen(false);
     await fetchCustomers();
-  }, [newCustomerForm])
+  }, [newCustomerForm]);
 
   return <Page>
     <div className='customer_page'>
       {/*<SalesSection />*/}
-      <Table heads={customerTableHeaders} data={customers} title='Customers List' actions={addButton}/>
+      <Table columns={customerTableHeaders} onRow={(item) => {
+        return {
+          onClick: () => {
+            navigate(`${item.id}`)
+          }
+        }
+      }} dataSource={customers} title='Customers List' actions={addButton}/>
     </div>
     <Modal open={isCreateModalOpen} onOk={submitForm} onCancel={() => setIsCreateModalOpen(false)}>
       <div className='customer_page_create_container'>
@@ -73,7 +82,8 @@ const CustomerPage = () => {
           <Input placeholder={'Phone number'} value={newCustomerForm.phoneNumber}
                  onChange={changeCustomerFormData('phoneNumber')} addonBefore={'+1'}
                  label={'Phone number'}/>
-          <Input placeholder={'Address'} value={newCustomerForm.address} onChange={changeCustomerFormData('address')}
+          <GoogleAutocompleteInput placeholder={'Address'} value={newCustomerForm.address}
+                 onChange={changeCustomerFormData('address')}
                  label={'Address'}/>
           <Input placeholder={'Email'} value={newCustomerForm.email} onChange={changeCustomerFormData('email')}
                  label={'Email'}/>
