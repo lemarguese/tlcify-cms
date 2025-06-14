@@ -7,21 +7,6 @@
 
   flex: 1;
 
-  &_create {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    padding-top: 16px;
-
-    &_container {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-  }
-
   &_tlc {
     display: flex;
     align-items: center;
@@ -29,5 +14,11 @@
     gap: 12px;
 
     padding-top: 16px;
+  }
+
+  &_actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 }

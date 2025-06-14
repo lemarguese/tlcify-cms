@@ -1,0 +1,14 @@
+.customer_create_modal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding-top: 16px;
+
+  &_container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}

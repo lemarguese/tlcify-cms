@@ -1,26 +1,36 @@
+import './CustomerPage.scss';
+
 import Table from "../../components/Table/Table.tsx";
 import Page from "../../layout/Page/Page.tsx";
 
-import { BaseSyntheticEvent, useCallback, useEffect, useState } from "react";
+import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { instance } from "@/api/axios.ts";
-import { Button, Modal } from "antd";
-import Input from "../../components/Input/Input.tsx";
-import DatePicker from "../../components/Date/Date.tsx";
-import type { ICustomerCreate } from "@/types/customer/main.ts";
+import { Button } from "antd";
+import type { ICustomer, ICustomerCreate } from "@/types/customer/main.ts";
 import type { Dayjs } from "dayjs";
-import dayjs from "dayjs";
-import './CustomerPage.scss';
-import { customerTableHeaders, newCustomerFormInitialState } from "./utils/customer.tsx";
+import { customerTableHeaders } from "./utils/customer.tsx";
 import { useNavigate } from "react-router";
-import GoogleAutocompleteInput from "../../components/GoogleAutocompleteInput/GoogleAutocompleteInput.tsx";
+import CustomerCreateModal from "@/pages/Customer/components/CustomerCreateModal/CustomerCreateModal.tsx";
+import CustomerUpdateModal from "@/pages/Customer/components/CustomerUpdateModal/CustomerUpdateModal.tsx";
+import type { TableRowSelection } from "antd/es/table/interface";
 
 const CustomerPage = () => {
   const navigate = useNavigate();
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [customers, setCustomers] = useState<ICustomerCreate[]>([]);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-  const [newCustomerForm, setNewCustomerForm] = useState<ICustomerCreate>(newCustomerFormInitialState)
+  const [customers, setCustomers] = useState<ICustomer[]>([]);
+  const [selectedCustomer, setSelectedCustomer] = useState<ICustomer>();
+
+  const [customersSelection] = useState<TableRowSelection>({
+    onSelect: (item, isSelected, multipleRows) => {
+      const isMultipleSelected = multipleRows.length > 1;
+      const [selectedCustomer] = multipleRows as ICustomer[];
+
+      setSelectedCustomer(!isMultipleSelected ? selectedCustomer : undefined);
+    },
+  })
 
   useEffect(() => {
     fetchCustomers();
@@ -31,93 +41,45 @@ const CustomerPage = () => {
     setCustomers(all.data);
   }, [])
 
-  const addButton = <Button onClick={() => setIsCreateModalOpen(true)}>Create customer</Button>
+  const addButton = <div className='customer_page_actions'>
+    {selectedCustomer && <Button onClick={() => setIsUpdateModalOpen(true)}>Update the customer</Button>}
+    <Button onClick={() => setIsCreateModalOpen(true)}>Create customer</Button>
+  </div>
 
-  const changeCustomerFormData = useCallback((key: keyof Omit<ICustomerCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>) => {
+  const changeCustomerFormData = useCallback((key: keyof Omit<ICustomer, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: (val: Dispatch<SetStateAction<ICustomerCreate>>) => void) => {
     return (val: BaseSyntheticEvent) => {
-      setNewCustomerForm(prev => ({
+      callback(prev => ({
         ...prev,
         [key]: val.target.value
       }))
     }
   }, []);
 
-  const changeCustomerFormTime = useCallback((key: keyof Pick<ICustomerCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>) => {
+  const changeCustomerFormTime = useCallback((key: keyof Pick<ICustomer, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: (val: Dispatch<SetStateAction<ICustomerCreate>>) => void) => {
     return (val: Dayjs) => {
       const date = val ? val.format('MM/DD/YYYY') : undefined
-      setNewCustomerForm(prev => ({
+      callback(prev => ({
         ...prev,
         [key]: date
       }))
     }
   }, []);
 
-  const submitForm = useCallback(async () => {
-    await instance.post('/customer', newCustomerForm);
-    setNewCustomerForm(newCustomerFormInitialState);
-    setIsCreateModalOpen(false);
-    await fetchCustomers();
-  }, [newCustomerForm]);
-
   return <Page>
     <div className='customer_page'>
       {/*<SalesSection />*/}
-      <Table columns={customerTableHeaders} onRow={(item) => {
+      <Table columns={customerTableHeaders} rowSelection={customersSelection} onRow={(item) => {
         return {
           onClick: () => {
-            navigate(`${item.id}`)
-          }
+            navigate(`${item._id}`)
+          },
         }
-      }} dataSource={customers} title='Customers List' actions={addButton}/>
+      }} dataSource={customers} rowKey='_id' title='Customers List' actions={addButton}/>
     </div>
-    <Modal open={isCreateModalOpen} onOk={submitForm} onCancel={() => setIsCreateModalOpen(false)}>
-      <div className='customer_page_create_container'>
-        <div className='customer_page_create'>
-          <Input placeholder={'First name'} value={newCustomerForm.firstName}
-                 onChange={changeCustomerFormData('firstName')} label={'First Name'}/>
-          <Input placeholder={'Last name'} value={newCustomerForm.lastName}
-                 onChange={changeCustomerFormData('lastName')} label={'Last Name'}/>
-        </div>
-        <div>
-          <Input placeholder={'Phone number'} value={newCustomerForm.phoneNumber}
-                 onChange={changeCustomerFormData('phoneNumber')} addonBefore={'+1'}
-                 label={'Phone number'}/>
-          <GoogleAutocompleteInput placeholder={'Address'} value={newCustomerForm.address}
-                 onChange={changeCustomerFormData('address')}
-                 label={'Address'}/>
-          <Input placeholder={'Email'} value={newCustomerForm.email} onChange={changeCustomerFormData('email')}
-                 label={'Email'}/>
-        </div>
-        <div>
-          <DatePicker label='Date of birth'
-                      value={newCustomerForm.dateOfBirth ? dayjs(newCustomerForm.dateOfBirth) : undefined}
-                      onChange={changeCustomerFormTime('dateOfBirth')}/>
-        </div>
-        <div className='customer_page_tlc'>
-          <Input placeholder={'TLC Number'} value={newCustomerForm.tlcNumber} label={'TLC Number'}
-                 onChange={changeCustomerFormData('tlcNumber')}/>
-          <DatePicker label={'TLC Expiration'}
-                      value={newCustomerForm.tlcExp ? dayjs(newCustomerForm.tlcExp) : undefined}
-                      onChange={changeCustomerFormTime('tlcExp')}/>
-        </div>
-        <div className='customer_page_tlc'>
-          <Input placeholder={'DL Number'} label={'DL Number'} value={newCustomerForm.driverLicenseNumber}
-                 onChange={changeCustomerFormData('driverLicenseNumber')}/>
-          <DatePicker label={'DL Expiration'}
-                      value={newCustomerForm.driverLicenseExp ? dayjs(newCustomerForm.driverLicenseExp) : undefined}
-                      onChange={changeCustomerFormTime('driverLicenseExp')}/>
-        </div>
-        <div>
-          <Input placeholder={'Last 5 Digits of SSN'} value={newCustomerForm.lastSSN} label={'Last 5 Digits of SSN'}
-                 onChange={changeCustomerFormData('lastSSN')}/>
-        </div>
-        <div>
-          <DatePicker label={'Defensive Driver Course expiration'}
-                      value={newCustomerForm.defensiveDriverCourseExp ? dayjs(newCustomerForm.defensiveDriverCourseExp) : undefined}
-                      onChange={changeCustomerFormTime('defensiveDriverCourseExp')}/>
-        </div>
-      </div>
-    </Modal>
+    <CustomerCreateModal open={isCreateModalOpen} cancel={() => setIsCreateModalOpen(false)}
+                         dateChange={changeCustomerFormTime} formChange={changeCustomerFormData}/>
+    <CustomerUpdateModal open={isUpdateModalOpen} selectedCustomer={selectedCustomer} cancel={() => setIsUpdateModalOpen(false)}
+                         dateChange={changeCustomerFormTime} formChange={changeCustomerFormData}/>
   </Page>
 }
 

@@ -1,4 +1,5 @@
 export interface ICustomer {
+  _id: string;
   firstName: string,
   lastName: string,
   phoneNumber: string,
@@ -13,4 +14,5 @@ export interface ICustomer {
   defensiveDriverCourseExp: string,
 }
 
-export interface ICustomerCreate extends ICustomer {}
+export interface ICustomerCreate extends Omit<ICustomer, '_id'> {}
+export interface ICustomerUpdate extends Omit<ICustomer, '_id'> {}
