@@ -14,11 +14,14 @@
 
   &_logo {
     width: 150px;
-    height: 75px;
-
-    object-fit: cover;
 
     margin-bottom: 24px;
+
+    &_text {
+      font-size: 36px;
+      text-align: center;
+      color: #151D48;
+    }
   }
 
   &_sections {

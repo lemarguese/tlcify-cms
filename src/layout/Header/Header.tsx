@@ -1,7 +1,7 @@
 import { Select, Layout, Input } from 'antd';
 import './Header.scss';
 
-import { MenuUnfoldOutlined, NotificationOutlined } from '@ant-design/icons';
+import { MenuUnfoldOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import type { FC } from "react";
 
 const { Header: AntHeader } = Layout;
@@ -36,7 +36,9 @@ const Header: FC<HeaderProps> = ({ showSearch }) => {
           ]}
         />
         <NotificationOutlined className='header_end_notification'/>
-        <div className='header_end_avatar'/>
+        <div className='header_end_avatar'>
+          <UserOutlined />
+        </div>
       </div>
     </AntHeader>
   </div>

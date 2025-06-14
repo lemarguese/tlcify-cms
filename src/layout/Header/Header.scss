@@ -36,12 +36,16 @@
     }
 
     &_avatar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
       width: 32px;
       height: 32px;
 
-      background-color: green;
-
       border-radius: 50px;
+
+      border: 1px solid #151D48;
     }
   }
 }

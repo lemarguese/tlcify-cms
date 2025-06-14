@@ -3,8 +3,6 @@ import type { FC } from "react";
 import { Layout, Menu } from 'antd';
 import { UserOutlined, MoneyCollectOutlined } from '@ant-design/icons';
 
-import LogoImage from '../../assets/images/logo.jpg';
-
 const { Sider } = Layout;
 
 interface SidebarProps {
@@ -16,7 +14,9 @@ const Sidebar: FC<SidebarProps> = () => {
   return (
     <aside className='sidebar'>
       <Sider trigger={null}  className='sidebar_container'>
-        <img alt='sidebar-project-logo' src={LogoImage} className='sidebar_logo'></img>
+        <div className='sidebar_logo'>
+          <h2 className='sidebar_logo_text'>TLCify</h2>
+        </div>
         <Menu
           style={{ border: 'none' }}
           // theme="dark"
