@@ -2,6 +2,7 @@ import './Sidebar.scss';
 import type { FC } from "react";
 import { Layout, Menu } from 'antd';
 import { UserOutlined, MoneyCollectOutlined } from '@ant-design/icons';
+import { useNavigate } from "react-router";
 
 const { Sider } = Layout;
 
@@ -10,6 +11,7 @@ interface SidebarProps {
 
 const Sidebar: FC<SidebarProps> = () => {
   // const [isCollapsed, setIsCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <aside className='sidebar'>
@@ -18,10 +20,18 @@ const Sidebar: FC<SidebarProps> = () => {
           <h2 className='sidebar_logo_text'>TLCify</h2>
         </div>
         <Menu
+          onSelect={(item) => {
+            const sidebarOptions = {
+              'sidebar-customer': '/customers',
+              'sidebar-payment': '/payments'
+            }
+
+            navigate(sidebarOptions[item.key]);
+          }}
           style={{ border: 'none' }}
           // theme="dark"
           mode="inline"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={['sidebar-customer']}
           items={[
             {
               key: 'sidebar-customer',
