@@ -1,6 +1,13 @@
 .input {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 
   flex: 1;
+
+  &_label {
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+    color: rgba(0, 0, 0, .7);
+  }
 }
