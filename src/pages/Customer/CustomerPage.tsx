@@ -23,6 +23,8 @@ const CustomerPage = () => {
   const [customers, setCustomers] = useState<ICustomer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<ICustomer>();
 
+  const [searchQuery, setSearchQuery] = useState<string>();
+
   const [customersSelection] = useState<TableRowSelection>({
     onSelect: (item, isSelected, multipleRows) => {
       const isMultipleSelected = multipleRows.length > 1;
@@ -33,11 +35,11 @@ const CustomerPage = () => {
   })
 
   useEffect(() => {
-    fetchCustomers();
-  }, []);
+    fetchCustomers(searchQuery);
+  }, [searchQuery]);
 
-  const fetchCustomers = useCallback(async () => {
-    const all = await instance.get('/customer');
+  const fetchCustomers = useCallback(async (query?: string) => {
+    const all = await instance.get('/customer', { params: { search: query } });
     setCustomers(all.data);
   }, [])
 
@@ -65,7 +67,11 @@ const CustomerPage = () => {
     }
   }, []);
 
-  return <Page>
+  const handleSearchQuery = useCallback((value: string) => {
+    setSearchQuery(value ? value : undefined);
+  }, []);
+
+  return <Page showSearch setSearchQuery={handleSearchQuery} searchQuery={searchQuery}>
     <div className='customer_page'>
       {/*<SalesSection />*/}
       <Table columns={customerTableHeaders} rowSelection={customersSelection} onRow={(item) => {
@@ -78,7 +84,8 @@ const CustomerPage = () => {
     </div>
     <CustomerCreateModal open={isCreateModalOpen} cancel={() => setIsCreateModalOpen(false)}
                          dateChange={changeCustomerFormTime} formChange={changeCustomerFormData}/>
-    <CustomerUpdateModal open={isUpdateModalOpen} selectedCustomer={selectedCustomer} cancel={() => setIsUpdateModalOpen(false)}
+    <CustomerUpdateModal open={isUpdateModalOpen} selectedCustomer={selectedCustomer}
+                         cancel={() => setIsUpdateModalOpen(false)}
                          dateChange={changeCustomerFormTime} formChange={changeCustomerFormData}/>
   </Page>
 }

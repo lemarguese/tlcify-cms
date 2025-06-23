@@ -20,5 +20,7 @@ instance.interceptors.response.use((config) => {
 
   return config;
 }, (config) => {
+  // todo magic numbers
+  if (config.status === 401 && !location.pathname.includes('login')) location.assign('/login')
   console.log(config)
 });
