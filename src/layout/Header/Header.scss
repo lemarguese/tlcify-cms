@@ -17,8 +17,14 @@
     box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.15);
   }
 
-  &_sidebar_icon {
-    color: #000;
+  &_back {
+    padding: 0;
+    border: none;
+
+    &_icon {
+      color: #000;
+      font-size: 24px;
+    }
   }
 
   &_center {
@@ -37,6 +43,8 @@
     }
 
     &_avatar {
+      cursor: pointer;
+
       display: flex;
       justify-content: center;
       align-items: center;
@@ -47,6 +55,15 @@
       border-radius: 50px;
 
       border: 1px solid #151D48;
+      transition: color .25s linear;
+
+      &:hover {
+        border-color: #384cbb;
+        transition: border-color .25s linear;
+      }
+
+      &_icon {
+      }
     }
   }
 }

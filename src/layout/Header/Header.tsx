@@ -1,8 +1,11 @@
-import { Select, Layout, Input } from 'antd';
+import { Select, Layout, Input, Tooltip } from 'antd';
 import './Header.scss';
 
-import { MenuUnfoldOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
+import { LeftOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import type { FC } from "react";
+import Button from "@/components/Button/Button.tsx";
+import { useCallback, useMemo } from "react";
+import { useNavigate } from "react-router";
 
 const { Header: AntHeader } = Layout;
 
@@ -10,14 +13,30 @@ interface HeaderProps {
   setSearchQuery?: (val: string) => void;
   searchQuery?: string;
   showSearch: boolean;
+  back?: () => void;
 }
 
-const Header: FC<HeaderProps> = ({ showSearch, setSearchQuery, searchQuery }) => {
+const Header: FC<HeaderProps> = ({ showSearch, setSearchQuery, back, searchQuery }) => {
+  const navigate = useNavigate();
+
+  // todo more independent
+  const logOut = useCallback(() => {
+    localStorage.removeItem('tlcify_access_token');
+    navigate('/login');
+  }, []);
+
+  const profileTools = useMemo(() => <div>
+    <Button onClick={logOut}>Log out</Button>
+  </div>, [logOut])
+
   return <div className='header'>
     <AntHeader className='header_container'>
-      <MenuUnfoldOutlined className='header_sidebar_icon'/>
-      {showSearch && <Input.Search value={searchQuery} allowClear onSearch={setSearchQuery} rootClassName='header_center_search'
-                                   placeholder={'Search'} enterButton/>}
+      {back && <Button onClick={back} className='header_back'>
+          <LeftOutlined className='header_back_icon'/>
+      </Button>}
+      {showSearch &&
+          <Input.Search value={searchQuery} allowClear onSearch={setSearchQuery} rootClassName='header_center_search'
+                        placeholder={'Search'} enterButton/>}
       <div className='header_end'>
         <Select
           showSearch
@@ -39,9 +58,11 @@ const Header: FC<HeaderProps> = ({ showSearch, setSearchQuery, searchQuery }) =>
           ]}
         />
         <NotificationOutlined className='header_end_notification'/>
-        <div className='header_end_avatar'>
-          <UserOutlined/>
-        </div>
+        <Tooltip title={profileTools} color={'#FFF'}>
+          <div className='header_end_avatar'>
+            <UserOutlined className='header_end_avatar_icon' />
+          </div>
+        </Tooltip>
       </div>
     </AntHeader>
   </div>

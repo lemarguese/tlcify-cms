@@ -10,6 +10,7 @@ interface PageProps {
 
   setSearchQuery?: (val: string) => void;
   searchQuery?: string;
+  back?: () => void;
 }
 
 const Page: FC<PageProps> = ({ children, ...searchProps }) => {

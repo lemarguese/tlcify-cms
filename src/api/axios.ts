@@ -21,6 +21,6 @@ instance.interceptors.response.use((config) => {
   return config;
 }, (config) => {
   // todo magic numbers
-  if (config.status === 401 && !location.pathname.includes('login')) location.assign('/login')
+  if (config.status === 401) localStorage.removeItem('tlcify_access_token')
   console.log(config)
 });

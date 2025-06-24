@@ -7,7 +7,7 @@ import { BaseSyntheticEvent, useCallback, useEffect, useState } from "react";
 import Input from "../../components/Input/Input.tsx";
 import DatePicker from "../../components/Date/Date.tsx";
 import dayjs, { Dayjs } from "dayjs";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { instance } from "@/api/axios.ts";
 import type { IDriverCreate } from "@/types/driver/main.ts";
 import { newDriverFormInitialState } from "./utils/driver.ts";
@@ -46,6 +46,8 @@ const CustomerDetailStatisticsItem = () => {
 const CustomerDetailsPage = () => {
 
   const { id: customerId } = useParams();
+
+  const navigate = useNavigate();
 
   const [newDriverForm, setNewDriverForm] = useState<IDriverCreate>(newDriverFormInitialState);
 
@@ -104,7 +106,7 @@ const CustomerDetailsPage = () => {
     { title: 'Register Since', content: customerById.tlcExp, backgroundColor: '#E7D1F8', iconUrl: RegisteredIcon },
   ];
 
-  return <Page showSearch={false}>
+  return <Page back={() => navigate(-1)} showSearch={false}>
     <div className='customer_details_page'>
       <div className='customer_details_page_container'>
         <div className='customer_details_page_contacts'>
