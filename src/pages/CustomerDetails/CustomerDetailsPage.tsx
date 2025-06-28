@@ -3,7 +3,8 @@ import Page from '../../layout/Page/Page.tsx';
 import Table from "../../components/Table/Table.tsx";
 import { customerTableHeaders, newCustomerFormInitialState } from "../Customer/utils/customer.tsx";
 import { Button, Modal } from "antd";
-import { BaseSyntheticEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import type { BaseSyntheticEvent } from 'react';
 import Input from "../../components/Input/Input.tsx";
 import DatePicker from "../../components/Date/Date.tsx";
 import dayjs, { Dayjs } from "dayjs";
@@ -125,7 +126,7 @@ const CustomerDetailsPage = () => {
           phoneNumber={customerById.phoneNumber}
         />
       </div>
-      <Table title='Drivers' actions={addNewDriverButton} columns={customerTableHeaders} dataSource={drivers}/>
+      <Table label='Drivers' actions={addNewDriverButton} columns={customerTableHeaders} dataSource={drivers}/>
     </div>
     <Modal open={isCreateModalOpen} onOk={submitForm} onCancel={() => setIsCreateModalOpen(false)}>
       <div className='customer_page_create_container'>
@@ -137,7 +138,7 @@ const CustomerDetailsPage = () => {
         </div>
         <div>
           <Input placeholder={'Phone number'} value={newDriverForm.phoneNumber}
-                 onChange={changeDriverFormData('phoneNumber')} mask={'number'}
+                 onChange={changeDriverFormData('phoneNumber')}
                  label={'Phone number'}/>
           <GoogleAutocompleteInput placeholder={'Address'} value={newDriverForm.address}
                                    onChange={changeDriverFormData('address')}

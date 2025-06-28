@@ -1,16 +1,17 @@
 import { Input as AntInput } from "antd";
-import type { InputProps } from "antd";
+import type { InputProps, InputRef } from "antd";
 import { usePlacesWidget } from "react-google-autocomplete";
-import { FC, useRef } from "react";
+import { useRef } from "react";
+import type { FC } from 'react'
 
 interface GoogleAutocompleteInputProps extends InputProps {
   label: string;
 }
 
 const GoogleAutocompleteInput: FC<GoogleAutocompleteInputProps> = ({ label, ...props }) => {
-  const antInputRef = useRef(null);
+  const antInputRef = useRef<InputRef>(null);
 
-  const { ref: antRef } = usePlacesWidget({
+  const { ref: antRef } = usePlacesWidget<HTMLInputElement | null>({
     // TODO .env
     apiKey: 'AIzaSyAxHACIMsK8Cvdl0zu4Hj9jHCWNdgJCPu4',
     language: 'en',

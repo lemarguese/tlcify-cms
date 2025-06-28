@@ -19,11 +19,11 @@ export const customerTableHeaders: ColumnsType = [
   // { title: "Date of Birth", dataIndex: "dob", key: "dob", sorter: (a, b) => new Date(a.dob) - new Date(b.dob) },
   { title: "Address", dataIndex: "address", key: "address" },
   { title: "TCL Number", dataIndex: "tlcNumber", key: "tlcNumber" },
-  { title: "TLC Exp.", dataIndex: "tlcExp", key: "tlcExp", sorter: (a, b) => new Date(a.tlcExp) - new Date(b.tlcExp) },
+  { title: "TLC Exp.", dataIndex: "tlcExp", key: "tlcExp", sorter: (a, b) => new Date(a.tlcExp).valueOf() - new Date(b.tlcExp).valueOf() },
   { title: "DL Number", dataIndex: "driverLicenseNumber", key: "driverLicenseNumber" },
-  { title: "DL Exp.", dataIndex: "driverLicenseExp", key: "driverLicenseExp", sorter: (a, b) => new Date(a.dlExp) - new Date(b.dlExp) },
+  { title: "DL Exp.", dataIndex: "driverLicenseExp", key: "driverLicenseExp", sorter: (a, b) => new Date(a.dlExp).valueOf() - new Date(b.dlExp).valueOf() },
   // { title: "Last 5 SSN", dataIndex: "last5SSN", key: "last5SSN" },
-  { title: "DDC Exp.", dataIndex: "defensiveDriverCourseExp", key: "defensiveDriverCourseExp", sorter: (a, b) => new Date(a.ddcExp) - new Date(b.ddcExp) },
+  { title: "DDC Exp.", dataIndex: "defensiveDriverCourseExp", key: "defensiveDriverCourseExp", sorter: (a, b) => new Date(a.ddcExp).valueOf() - new Date(b.ddcExp).valueOf() },
   {
     title: "Status", dataIndex: "status", key: "status", render: () => <>
       <Tag color={'green'}>Active</Tag>

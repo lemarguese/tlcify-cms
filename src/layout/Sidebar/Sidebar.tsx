@@ -21,7 +21,7 @@ const Sidebar: FC<SidebarProps> = () => {
         </div>
         <Menu
           onSelect={(item) => {
-            const sidebarOptions = {
+            const sidebarOptions: { [k: string]: string } = {
               'sidebar-customer': '/customers',
               'sidebar-payment': '/payments'
             }

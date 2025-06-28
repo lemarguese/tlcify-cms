@@ -5,18 +5,20 @@ import dayjs, { Dayjs } from "dayjs";
 import { Modal } from "antd";
 import type { BaseSyntheticEvent, FC } from "react";
 import type { ICustomer, ICustomerUpdate } from "@/types/customer/main.ts";
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
 import { instance } from "@/api/axios.ts";
 
 import './CustomerUpdateModal.scss';
+import type { ICustomerCreate } from "@/types/customer/main.ts";
 
 interface CustomerUpdateModalProps {
   cancel: () => void;
   open: boolean;
   selectedCustomer?: ICustomer;
-  dateChange: (val: keyof Pick<ICustomerUpdate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: () => Dispatch<SetStateAction<ICustomerUpdate>>) => (val: Dayjs) => void;
-  formChange: (val: keyof Omit<ICustomerUpdate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: () => Dispatch<SetStateAction<ICustomerUpdate>>) => (val: BaseSyntheticEvent) => void;
+  dateChange: (val: keyof Pick<ICustomerUpdate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => (val: Dayjs) => void;
+  formChange: (val: keyof Omit<ICustomerUpdate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => (val: BaseSyntheticEvent) => void;
 }
 
 const CustomerUpdateModal: FC<CustomerUpdateModalProps> = ({ cancel, open, selectedCustomer, formChange, dateChange }) => {
@@ -30,11 +32,13 @@ const CustomerUpdateModal: FC<CustomerUpdateModalProps> = ({ cancel, open, selec
   }, [selectedCustomer]);
 
   const submitForm = useCallback(async () => {
-    const touchedFormFields: Partial<ICustomer> = {};
+    const touchedFormFields: { [k: string]: unknown } = {};
 
     Object.entries(updateCustomerForm).forEach(([key, value]) => {
-      if (selectedCustomer[key] !== updateCustomerForm[key]) {
-        touchedFormFields[key] = value;
+      if (selectedCustomer) {
+        if (selectedCustomer[key as keyof ICustomer] !== updateCustomerForm[key as keyof ICustomerUpdate]) {
+          touchedFormFields[key] = value;
+        }
       }
     });
 

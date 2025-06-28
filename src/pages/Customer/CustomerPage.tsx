@@ -3,7 +3,8 @@ import './CustomerPage.scss';
 import Table from "../../components/Table/Table.tsx";
 import Page from "../../layout/Page/Page.tsx";
 
-import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 import { instance } from "@/api/axios.ts";
 import { Button } from "antd";
 import type { ICustomer, ICustomerCreate } from "@/types/customer/main.ts";
@@ -26,7 +27,7 @@ const CustomerPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>();
 
   const [customersSelection] = useState<TableRowSelection>({
-    onSelect: (item, isSelected, multipleRows) => {
+    onSelect: (_, _s, multipleRows) => {
       const isMultipleSelected = multipleRows.length > 1;
       const [selectedCustomer] = multipleRows as ICustomer[];
 
@@ -48,7 +49,7 @@ const CustomerPage = () => {
     <Button onClick={() => setIsCreateModalOpen(true)}>Create customer</Button>
   </div>
 
-  const changeCustomerFormData = useCallback((key: keyof Omit<ICustomer, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: (val: Dispatch<SetStateAction<ICustomerCreate>>) => void) => {
+  const changeCustomerFormData = useCallback((key: keyof Omit<ICustomer, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => {
     return (val: BaseSyntheticEvent) => {
       callback(prev => ({
         ...prev,
@@ -57,7 +58,7 @@ const CustomerPage = () => {
     }
   }, []);
 
-  const changeCustomerFormTime = useCallback((key: keyof Pick<ICustomer, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: (val: Dispatch<SetStateAction<ICustomerCreate>>) => void) => {
+  const changeCustomerFormTime = useCallback((key: keyof Pick<ICustomer, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => {
     return (val: Dayjs) => {
       const date = val ? val.format('MM/DD/YYYY') : undefined
       callback(prev => ({
@@ -80,7 +81,7 @@ const CustomerPage = () => {
             navigate(`${item._id}`)
           },
         }
-      }} dataSource={customers} rowKey='_id' title='Customers List' actions={addButton}/>
+      }} dataSource={customers} rowKey='_id' label='Customers List' actions={addButton}/>
     </div>
     <CustomerCreateModal open={isCreateModalOpen} cancel={() => setIsCreateModalOpen(false)}
                          dateChange={changeCustomerFormTime} formChange={changeCustomerFormData}/>

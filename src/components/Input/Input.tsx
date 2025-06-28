@@ -7,7 +7,7 @@ interface CustomInputProps extends InputProps {
   label: string;
 }
 
-const Input: FC<CustomInputProps> = ({ label, mask, ...props }) => {
+const Input: FC<CustomInputProps> = ({ label, ...props }) => {
   return <div className='input'>
     <h6 className='input_label'>{label}</h6>
     <AntInput variant='filled' {...props}/>

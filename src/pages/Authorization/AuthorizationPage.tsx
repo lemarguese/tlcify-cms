@@ -7,11 +7,13 @@ import Button from "@/components/Button/Button.tsx";
 import PasswordInput from "@/components/PasswordInput/PasswordInput.tsx";
 
 import GoogleIcon from '@/assets/icons/google_icon.svg';
-import { BaseSyntheticEvent, useState } from "react";
+import { useState } from "react";
+import type { BaseSyntheticEvent } from 'react';
 import type { ILogin } from "@/types/auth/main.ts";
 import { instance } from "@/api/axios.ts";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import type { AxiosError } from "axios";
 
 const AuthorizationPage = () => {
   const navigate = useNavigate();
@@ -26,8 +28,8 @@ const AuthorizationPage = () => {
       const res = await instance.post('/auth/login', loginData);
       if (res.status === 200) navigate('/customers');
     } catch (error) {
-      console.log(error);
-      const message = error?.response?.data?.message || 'Login failed';
+      const axiosError = error as AxiosError<{ message: string }>;
+      const message = axiosError?.response?.data?.message || 'Login failed';
       toast.error(message);
     }
   }

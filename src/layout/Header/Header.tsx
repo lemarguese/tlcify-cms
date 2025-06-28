@@ -12,11 +12,11 @@ const { Header: AntHeader } = Layout;
 interface HeaderProps {
   setSearchQuery?: (val: string) => void;
   searchQuery?: string;
-  showSearch: boolean;
+  showSearch?: boolean;
   back?: () => void;
 }
 
-const Header: FC<HeaderProps> = ({ showSearch, setSearchQuery, back, searchQuery }) => {
+const Header: FC<HeaderProps> = ({ showSearch = true, setSearchQuery, back, searchQuery }) => {
   const navigate = useNavigate();
 
   // todo more independent

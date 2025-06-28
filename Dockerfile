@@ -6,5 +6,5 @@ RUN yarn install
 COPY . .
 RUN yarn build
 
-EXPOSE 5173
+EXPOSE 3000
 CMD ["yarn", "dev"]

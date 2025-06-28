@@ -4,7 +4,7 @@ import DatePicker from "@/components/Date/Date.tsx";
 import dayjs, { Dayjs } from "dayjs";
 import { Modal } from "antd";
 import type { BaseSyntheticEvent, Dispatch, FC, SetStateAction } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
 import { instance } from "@/api/axios.ts";
 import type { ICustomerCreate } from "@/types/customer/main.ts";
@@ -12,8 +12,8 @@ import type { ICustomerCreate } from "@/types/customer/main.ts";
 interface CustomerCreateModalProps {
   cancel: () => void;
   open: boolean;
-  dateChange: (val: keyof Pick<ICustomerCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: () => Dispatch<SetStateAction<ICustomerCreate>>) => (val: Dayjs) => void;
-  formChange: (val: keyof Omit<ICustomerCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: () => Dispatch<SetStateAction<ICustomerCreate>>) => (val: BaseSyntheticEvent) => void;
+  dateChange: (val: keyof Pick<ICustomerCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => (val: Dayjs) => void;
+  formChange: (val: keyof Omit<ICustomerCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => (val: BaseSyntheticEvent) => void;
 }
 
 const CustomerCreateModal: FC<CustomerCreateModalProps> = ({ cancel, open, formChange, dateChange }) => {
