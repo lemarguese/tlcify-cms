@@ -3,4 +3,7 @@
 index.html
 yarn.lock
 
+.env
+.env.*
+
 /public

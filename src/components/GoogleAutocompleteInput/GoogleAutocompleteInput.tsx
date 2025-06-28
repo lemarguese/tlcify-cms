@@ -12,8 +12,7 @@ const GoogleAutocompleteInput: FC<GoogleAutocompleteInputProps> = ({ label, ...p
   const antInputRef = useRef<InputRef>(null);
 
   const { ref: antRef } = usePlacesWidget<HTMLInputElement | null>({
-    // TODO .env
-    apiKey: 'AIzaSyAxHACIMsK8Cvdl0zu4Hj9jHCWNdgJCPu4',
+    apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
     language: 'en',
     options: {
       types: ['address'],
