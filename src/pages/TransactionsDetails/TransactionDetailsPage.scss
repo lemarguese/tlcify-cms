@@ -1,0 +1,175 @@
+.transactions_details_page {
+  &_container {
+    padding: 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &_header {
+    padding: 0 9.5px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &_description {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      &_title {
+        color: #333843;
+        font-size: 24px;
+      }
+
+      &_paid_date {
+        color: #667085;
+        font-size: 16px;
+      }
+    }
+
+    &_actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  }
+
+  &_content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  &_body {
+    flex: 2;
+
+    background-color: #FFF;
+
+    border-radius: 12px;
+    border: 1px solid #F0F1F3;
+    padding: 32px;
+
+    display: flex;
+    gap: 32px;
+    flex-direction: column;
+
+    &_top {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+
+      &_container {
+        display: flex;
+        gap: 20px;
+      }
+
+      &_image {
+        width: 130px;
+        height: 130px;
+      }
+
+      &_content {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        &_head {
+
+        }
+
+        &_body {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+      }
+
+      &_sum {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &_chip {
+          padding: 8px 12px;
+          background-color: #F4F5F6;
+          border-radius: 8px;
+        }
+      }
+    }
+
+    &_footer {
+      //border: 1px solid #E0E2E7;
+    }
+  }
+
+  &_footer {
+    align-self: flex-start;
+
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &_outdue {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+
+      border-radius: 8px;
+
+      padding: 12px 16px;
+
+      background-color: #FFF5EB;
+      border: 1px solid #FC9736;
+
+      &_text {
+        color: #FC9736;
+      }
+    }
+
+    &_status {
+      border-radius: 12px;
+      border: 1px solid #F0F1F3;
+
+      background-color: #FFF;
+      padding: 24px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+
+      &_send {
+        background-color: #1EB386;
+        color: #FFF;
+      }
+    }
+
+    &_steps {
+      background-color: #FFF;
+      border-radius: 12px;
+      border: 1px solid #F0F1F3;
+
+      &_header {
+        padding: 16px 24px;
+      }
+
+      &_total {
+        background-color: #FAFAFA;
+        padding: 16px 20px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      &_list {
+        padding: 24px;
+      }
+    }
+  }
+}

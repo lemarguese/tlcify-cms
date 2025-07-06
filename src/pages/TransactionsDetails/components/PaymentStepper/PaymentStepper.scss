@@ -1,0 +1,40 @@
+.transaction_details_payment_stepper {
+  display: flex;
+  gap: 12px;
+
+  &_status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &_line {
+      width: fit-content;
+      height: 88px;
+      border-left: 1px dashed #E0E2E7;
+    }
+
+    &_circle {
+      width: 12px;
+      height: 12px;
+
+      border-radius: 50%;
+
+      background-color: #1EB386;
+    }
+  }
+
+  &_content {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &_item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+  }
+}

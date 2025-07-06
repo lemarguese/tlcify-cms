@@ -1,0 +1,29 @@
+.transaction_details_total_table_footer {
+  max-width: 250px;
+  width: 100%;
+
+  align-self: end;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &_container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &_item {
+    padding: 0 12px;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &_divider {
+    margin: 12px 0;
+  }
+}
+
