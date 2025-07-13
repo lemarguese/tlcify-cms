@@ -13,6 +13,7 @@ import TransactionDetailTotalTableFooter
 import { ClockCircleOutlined } from '@ant-design/icons'
 import TransactionsDetailsPaymentStepper
   from "@/pages/TransactionsDetails/components/PaymentStepper/PaymentStepper.tsx";
+import { useNavigate } from "react-router";
 
 interface TransactionsDetailsPageProps {
 
@@ -67,7 +68,9 @@ const mockData = [
 ];
 
 const TransactionsDetailsPage: FC<TransactionsDetailsPageProps> = ({}) => {
-  return <Page showSearch={false}>
+  const navigate = useNavigate();
+
+  return <Page showSearch={false} back={() => navigate(-1)}>
     <div className='transactions_details_page_container'>
       <div className='transactions_details_page_header'>
         <div className='transactions_details_page_header_description'>
