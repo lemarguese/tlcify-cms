@@ -27,7 +27,7 @@ export const transactionsPartialInvoiceHeaders: ColumnsType = [
     title: "No.",
     dataIndex: "index",
     key: "index",
-    render: (item, record, index) => {
+    render: (_, _a, index) => {
       return index + 1;
     }
   },
@@ -40,7 +40,7 @@ export const transactionsPartialInvoiceHeaders: ColumnsType = [
     title: "Quantity",
     dataIndex: "productQuantity",
     key: "productQuantity",
-    render: (item, record) => {
+    render: (item) => {
       return <div>
         {item}
         <p>Unit(s)</p>

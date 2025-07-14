@@ -1,13 +1,13 @@
-import type { FC } from "react";
+// import type { FC } from "react";
 import './TotalTableFooter.scss';
 import { Divider } from "antd";
 
-interface TransactionDetailTotalTableFooterProps {
-  // todo any;
-  item: any;
-}
+// interface TransactionDetailTotalTableFooterProps {
+//   // todo any;
+//   // item: {};
+// }
 
-const TransactionDetailTotalTableFooter: FC<TransactionDetailTotalTableFooterProps> = ({ item }) => {
+const TransactionDetailTotalTableFooter = ({ }) => {
   return <div className='transaction_details_total_table_footer_container'>
     <div className='transaction_details_total_table_footer'>
       <div className='transaction_details_total_table_footer_item'>

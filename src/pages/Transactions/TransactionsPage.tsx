@@ -15,7 +15,7 @@ const TransactionsPage: FC<TransactionsPageProps> = ({}) => {
 
   return <Page showSearch>
     <div className='transactions_page_container'>
-      <Table columns={transactionsTableHeaders} onRow={(item) => {
+      <Table columns={transactionsTableHeaders} actions={<></>} onRow={(item) => {
         return {
           onClick: () => {
             navigate(`${item._id}`)

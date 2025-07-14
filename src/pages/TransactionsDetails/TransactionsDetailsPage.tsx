@@ -112,7 +112,7 @@ const TransactionsDetailsPage: FC<TransactionsDetailsPageProps> = ({}) => {
             </div>
           </div>
           <div className='transactions_details_page_body_footer'>
-            <Table label='' rowKey='transactionId' footer={TransactionDetailTotalTableFooter}
+            <Table rowKey='transactionId' footer={TransactionDetailTotalTableFooter} actions={<></>}
                    columns={transactionsPartialInvoiceHeaders} dataSource={mockData}/>
           </div>
         </div>
