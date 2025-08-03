@@ -11,7 +11,7 @@ interface PasswordInputProps extends PasswordProps {
 const PasswordInput: FC<PasswordInputProps> = ({ label, ...props }) => {
 
   return <div className='password_input'>
-    <p className='password_input_label'>{label}</p>
+    <label className='password_input_label'>{label}</label>
     <Input.Password {...props} />
   </div>
 }

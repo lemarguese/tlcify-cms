@@ -1,5 +1,6 @@
 import { Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import type { ICustomerCreate } from "@/types/customer/main.ts";
 
 export const customerTableHeaders: ColumnsType = [
   {
@@ -31,7 +32,7 @@ export const customerTableHeaders: ColumnsType = [
   }
 ];
 
-export const newCustomerFormInitialState = {
+export const newCustomerFormInitialState: ICustomerCreate = {
   firstName: '',
   lastName: '',
   phoneNumber: '',

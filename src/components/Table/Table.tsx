@@ -12,7 +12,7 @@ interface CustomTableProps extends TableProps {
 const Table: FC<CustomTableProps> = ({ actions, label, ...tableProps }) => {
   return <div className='table'>
     <div className='table_header'>
-      {label && <h3>{label}</h3>}
+      {label && <label className='table_label'>{label}</label>}
       {actions}
     </div>
     <AntTable {...tableProps} className='table_antClass'/>

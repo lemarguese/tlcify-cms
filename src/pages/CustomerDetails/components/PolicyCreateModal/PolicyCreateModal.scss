@@ -1,0 +1,44 @@
+.policy_create_modal {
+
+  &_container {
+    padding: 20px;
+
+    display: flex;
+    gap: 16px;
+  }
+
+  &_information {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &_horizontal {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &_vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  &_installment {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+
+    &_label {
+      font-size: 16px;
+      font-weight: 600;
+
+      text-align: center;
+    }
+  }
+}

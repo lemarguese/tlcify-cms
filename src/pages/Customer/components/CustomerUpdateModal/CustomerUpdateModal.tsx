@@ -3,7 +3,7 @@ import GoogleAutocompleteInput from "@/components/GoogleAutocompleteInput/Google
 import DatePicker from "@/components/Date/Date.tsx";
 import dayjs, { Dayjs } from "dayjs";
 import { Modal } from "antd";
-import type { BaseSyntheticEvent, FC } from "react";
+import type { BaseSyntheticEvent } from "react";
 import type { ICustomer, ICustomerUpdate } from "@/types/customer/main.ts";
 import { useCallback, useEffect, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
@@ -21,7 +21,7 @@ interface CustomerUpdateModalProps {
   formChange: (val: keyof Omit<ICustomerUpdate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => (val: BaseSyntheticEvent) => void;
 }
 
-const CustomerUpdateModal: FC<CustomerUpdateModalProps> = ({ cancel, open, selectedCustomer, formChange, dateChange }) => {
+const CustomerUpdateModal = ({ cancel, open, selectedCustomer, formChange, dateChange }: CustomerUpdateModalProps) => {
   const [updateCustomerForm, setUpdateCustomerForm] = useState<ICustomerUpdate>(newCustomerFormInitialState);
 
   useEffect(() => {
@@ -62,7 +62,8 @@ const CustomerUpdateModal: FC<CustomerUpdateModalProps> = ({ cancel, open, selec
         <GoogleAutocompleteInput placeholder={'Address'} value={updateCustomerForm.address}
                                  onChange={formChange('address', setUpdateCustomerForm)}
                                  label={'Address'}/>
-        <Input placeholder={'Email'} value={updateCustomerForm.email} onChange={formChange('email', setUpdateCustomerForm)}
+        <Input placeholder={'Email'} value={updateCustomerForm.email}
+               onChange={formChange('email', setUpdateCustomerForm)}
                label={'Email'}/>
       </div>
       <div>
@@ -70,14 +71,14 @@ const CustomerUpdateModal: FC<CustomerUpdateModalProps> = ({ cancel, open, selec
                     value={updateCustomerForm.dateOfBirth ? dayjs(updateCustomerForm.dateOfBirth) : undefined}
                     onChange={dateChange('dateOfBirth', setUpdateCustomerForm)}/>
       </div>
-      <div className='customer_page_tlc'>
+      <div className='customer_update_modal_tlc'>
         <Input placeholder={'TLC Number'} value={updateCustomerForm.tlcNumber} label={'TLC Number'}
                onChange={formChange('tlcNumber', setUpdateCustomerForm)}/>
         <DatePicker label={'TLC Expiration'}
                     value={updateCustomerForm.tlcExp ? dayjs(updateCustomerForm.tlcExp) : undefined}
                     onChange={dateChange('tlcExp', setUpdateCustomerForm)}/>
       </div>
-      <div className='customer_page_tlc'>
+      <div className='customer_update_modal_tlc'>
         <Input placeholder={'DL Number'} label={'DL Number'} value={updateCustomerForm.driverLicenseNumber}
                onChange={formChange('driverLicenseNumber', setUpdateCustomerForm)}/>
         <DatePicker label={'DL Expiration'}

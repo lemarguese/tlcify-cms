@@ -10,7 +10,7 @@ interface CustomDatePickerProps extends DatePickerProps {
 
 const CustomDatePicker: FC<CustomDatePickerProps> = ({ label, ...props }) => {
   return <div className='date'>
-    <h6>{label}</h6>
+    <label className='date_label'>{label}</label>
     <DatePicker  {...props} defaultValue={dayjs(new Date(Date.now()))} format={'MM/DD/YYYY'}/>
   </div>;
 }

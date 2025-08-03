@@ -1,9 +1,11 @@
+import './CustomerCreateModal.scss';
+
 import Input from "@/components/Input/Input.tsx";
 import GoogleAutocompleteInput from "@/components/GoogleAutocompleteInput/GoogleAutocompleteInput.tsx";
 import DatePicker from "@/components/Date/Date.tsx";
 import dayjs, { Dayjs } from "dayjs";
 import { Modal } from "antd";
-import type { BaseSyntheticEvent, Dispatch, FC, SetStateAction } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from "react";
 import { useCallback, useState } from "react";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
 import { instance } from "@/api/axios.ts";
@@ -16,7 +18,7 @@ interface CustomerCreateModalProps {
   formChange: (val: keyof Omit<ICustomerCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => (val: BaseSyntheticEvent) => void;
 }
 
-const CustomerCreateModal: FC<CustomerCreateModalProps> = ({ cancel, open, formChange, dateChange }) => {
+const CustomerCreateModal = ({ cancel, open, formChange, dateChange }: CustomerCreateModalProps) => {
   const [newCustomerForm, setNewCustomerForm] = useState<ICustomerCreate>(newCustomerFormInitialState)
 
   const submitForm = useCallback(async () => {
@@ -48,14 +50,14 @@ const CustomerCreateModal: FC<CustomerCreateModalProps> = ({ cancel, open, formC
                     value={newCustomerForm.dateOfBirth ? dayjs(newCustomerForm.dateOfBirth) : undefined}
                     onChange={dateChange('dateOfBirth', setNewCustomerForm)}/>
       </div>
-      <div className='customer_page_tlc'>
+      <div className='customer_create_modal_tlc'>
         <Input placeholder={'TLC Number'} value={newCustomerForm.tlcNumber} label={'TLC Number'}
                onChange={formChange('tlcNumber', setNewCustomerForm)}/>
         <DatePicker label={'TLC Expiration'}
                     value={newCustomerForm.tlcExp ? dayjs(newCustomerForm.tlcExp) : undefined}
                     onChange={dateChange('tlcExp', setNewCustomerForm)}/>
       </div>
-      <div className='customer_page_tlc'>
+      <div className='customer_create_modal_tlc'>
         <Input placeholder={'DL Number'} label={'DL Number'} value={newCustomerForm.driverLicenseNumber}
                onChange={formChange('driverLicenseNumber', setNewCustomerForm)}/>
         <DatePicker label={'DL Expiration'}

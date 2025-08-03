@@ -1,4 +1,4 @@
-export interface IDriverCreate {
+export interface IDriver {
   customerId: string,
   firstName: string,
   lastName: string,
@@ -13,3 +13,5 @@ export interface IDriverCreate {
   lastSSN: string,
   defensiveDriverCourseExp: string,
 }
+
+export interface IDriverCreate extends IDriver {}

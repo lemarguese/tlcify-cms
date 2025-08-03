@@ -1,4 +1,4 @@
-.input {
+.selector {
   flex: 1;
 
   display: flex;
@@ -7,7 +7,5 @@
 
   &_label {
     font-size: 12px;
-    font-family: 'Roboto', sans-serif;
-    color: rgba(0, 0, 0, .7);
   }
 }

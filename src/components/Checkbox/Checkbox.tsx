@@ -11,7 +11,7 @@ interface CustomerCheckboxProps extends CheckboxProps {
 const Checkbox: FC<CustomerCheckboxProps> = ({ label, ...props }) => {
   return <div className='checkbox_container'>
     <AntCheckbox {...props} />
-    <p className='checkbox_label'>{label}</p>
+    <label className='checkbox_label'>{label}</label>
   </div>
 }
 
