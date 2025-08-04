@@ -52,6 +52,7 @@ const CustomerDetailsPage = () => {
     addNewDriverButton,
     fetchDrivers,
     cancelDriverModal,
+    createDriver,
     isDriverCreateModalOpen,
     changeDriverFormData,
     changeDriverFormTime
@@ -63,12 +64,15 @@ const CustomerDetailsPage = () => {
     changePolicyFormData,
     changePolicyFormTime,
     isPolicyModalOpen,
-    cancelPolicyModal
+    cancelPolicyModal,
+    createPolicy,
+    fetchPolicies
   } = getPolicyFunctions(customerId);
 
   useEffect(() => {
     fetchCustomerById();
     fetchDrivers();
+    fetchPolicies();
   }, []);
 
   const fetchCustomerById = useCallback(async () => {
@@ -106,9 +110,9 @@ const CustomerDetailsPage = () => {
       <Table label='Drivers' actions={addNewDriverButton} columns={customerTableHeaders} dataSource={drivers}/>
     </div>
     <DriverCreateModal formChange={changeDriverFormData} dateChange={changeDriverFormTime} cancel={cancelDriverModal}
-                       open={isDriverCreateModalOpen}/>
+                       open={isDriverCreateModalOpen} submit={createDriver}/>
     <PolicyCreateModal open={isPolicyModalOpen} cancel={cancelPolicyModal} dateChange={changePolicyFormTime}
-                       formChange={changePolicyFormData}/>
+                       formChange={changePolicyFormData} submit={createPolicy}/>
   </Page>
 }
 

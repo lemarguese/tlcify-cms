@@ -1,17 +1,29 @@
 import './Sidebar.scss';
-import type { FC } from "react";
 import { Layout, Menu } from 'antd';
 import { UserOutlined, MoneyCollectOutlined } from '@ant-design/icons';
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 const { Sider } = Layout;
 
 interface SidebarProps {
 }
 
-const Sidebar: FC<SidebarProps> = () => {
+const sidebarOptions: { [k: string]: string } = {
+  'sidebar-customer': '/customers',
+  'sidebar-payment': '/payments',
+  'sidebar-insurance': '/insurances'
+}
+
+const navigateOptions = {
+  '/customers': 'sidebar-customer',
+  '/payments': 'sidebar-payment',
+  '/insurances': 'sidebar-insurance'
+}
+
+const Sidebar = ({}: SidebarProps) => {
   // const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <aside className='sidebar'>
@@ -20,18 +32,11 @@ const Sidebar: FC<SidebarProps> = () => {
           <h2 className='sidebar_logo_text'>TLCify</h2>
         </div>
         <Menu
-          onSelect={(item) => {
-            const sidebarOptions: { [k: string]: string } = {
-              'sidebar-customer': '/customers',
-              'sidebar-payment': '/payments'
-            }
-
-            navigate(sidebarOptions[item.key]);
-          }}
+          onSelect={(item) => { navigate(sidebarOptions[item.key]) }}
           style={{ border: 'none' }}
           // theme="dark"
           mode="inline"
-          defaultSelectedKeys={['sidebar-customer']}
+          defaultSelectedKeys={[navigateOptions[location.pathname]]}
           items={[
             {
               key: 'sidebar-customer',
@@ -42,6 +47,11 @@ const Sidebar: FC<SidebarProps> = () => {
               key: 'sidebar-payment',
               icon: <MoneyCollectOutlined/>,
               label: 'Payment',
+            },
+            {
+              key: 'sidebar-insurance',
+              icon: <MoneyCollectOutlined/>,
+              label: 'Insurance',
             },
           ]}
         />

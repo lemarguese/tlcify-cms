@@ -1,0 +1,13 @@
+.insurance_create_modal {
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &_horizontal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}

@@ -3,7 +3,7 @@ import { Button } from "antd";
 import type { RadioChangeEvent } from 'antd'
 import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useState } from "react";
 import { instance } from "@/api/axios.ts";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import type { IPolicy, IPolicyCreate } from "@/types/policy/main.ts";
 
 export const newPolicyFormInitialState: IPolicyCreate = {
@@ -23,7 +23,7 @@ export const newPolicyFormInitialState: IPolicyCreate = {
 export const policyTableHeaders: ColumnsType = [
   {
     title: "Insurance carrier",
-    dataIndex: "insuranceName",
+    dataIndex: ['insurance', 'name'],
     key: "insuranceName",
     sorter: (a, b) => a.insuranceName.localeCompare(b.firstName)
   },
@@ -67,7 +67,6 @@ export const policyTableHeaders: ColumnsType = [
     title: "Amount Due",
     dataIndex: "amountDue",
     key: "amountDue",
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
   },
   {
     title: "Due Date",
@@ -81,33 +80,44 @@ export const getPolicyFunctions = (customerId?: string) => {
   const [policies, setPolicies] = useState<IPolicy[]>([]);
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
 
-  // const fetchDrivers = useCallback(async () => {
-  //   const driversByCustomer = await instance.get('/driver/byCustomer', { params: { id: customerId } });
-  //   setDrivers(driversByCustomer.data);
-  // }, [customerId]);
+  const fetchPolicies = useCallback(async () => {
+    const policiesByCustomer = await instance.get('/policy/byCustomer', { params: { id: customerId } });
+    setPolicies(policiesByCustomer.data);
+  }, [customerId]);
+
+  const createPolicy = useCallback(async (newPolicyForm: IPolicyCreate, resetForm: Dispatch<SetStateAction<IPolicyCreate>>) => {
+    await instance.post('/policy', { ...newPolicyForm, customerId });
+    resetForm(newPolicyFormInitialState);
+    await cancelPolicyModal();
+  }, [customerId])
 
   const changePolicyFormData = useCallback((key: keyof Omit<IPolicyCreate, 'effectiveDate' | 'expirationDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
     return (val: BaseSyntheticEvent | RadioChangeEvent | string) => {
       callback(prev => ({
         ...prev,
-        [key]: typeof val === 'string' ? val : val.target.value
+        [key]: typeof val === 'string' ? val : val.target.value,
+        ...(key === 'policyTerm' ? {
+          expirationDate: prev.effectiveDate ? dayjs(prev.effectiveDate).add(+(val as BaseSyntheticEvent).target.value, 'month').format('MM/DD/YYYY') : null
+        } : {})
       }))
     }
   }, []);
 
-  const changePolicyFormTime = useCallback((key: keyof Pick<IPolicyCreate, 'effectiveDate' | 'expirationDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
+  // TODO If there will be custom, need to rewrote
+  const changePolicyFormTime = useCallback((key: keyof Pick<IPolicyCreate, 'effectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
     return (val: Dayjs) => {
       const date = val ? val.format('MM/DD/YYYY') : null
       callback(prev => ({
         ...prev,
-        [key]: date
+        [key]: date,
+        expirationDate: val.add(+prev.policyTerm, 'month').format('MM/DD/YYYY')
       }))
     }
   }, []);
 
   const cancelPolicyModal = useCallback(async () => {
     setIsPolicyModalOpen(false);
-    // await fetchDrivers();
+    await fetchPolicies();
   }, []);
 
   const addNewPolicyButton = <Button onClick={() => setIsPolicyModalOpen(true)}>Add policy</Button>
@@ -117,6 +127,8 @@ export const getPolicyFunctions = (customerId?: string) => {
     addNewPolicyButton,
     changePolicyFormData, changePolicyFormTime,
     isPolicyModalOpen,
-    cancelPolicyModal
+    fetchPolicies,
+    cancelPolicyModal,
+    createPolicy
   }
 }

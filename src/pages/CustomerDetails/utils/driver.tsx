@@ -31,6 +31,12 @@ export const getDriverFunctions = (customerId?: string) => {
     setDrivers(driversByCustomer.data);
   }, [customerId]);
 
+  const createDriver = useCallback(async (newDriverForm: IDriverCreate, resetForm: Dispatch<SetStateAction<IDriverCreate>>) => {
+    await instance.post('/driver', { ...newDriverForm, customerId });
+    resetForm(newDriverFormInitialState);
+    await cancelDriverModal();
+  }, [customerId]);
+
   const changeDriverFormData = useCallback((key: keyof Omit<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => {
     return (val: BaseSyntheticEvent) => {
       callback(prev => ({
@@ -60,6 +66,6 @@ export const getDriverFunctions = (customerId?: string) => {
     drivers, fetchDrivers,
     addNewDriverButton,
     changeDriverFormData, changeDriverFormTime,
-    cancelDriverModal
+    cancelDriverModal, createDriver
   }
 }
