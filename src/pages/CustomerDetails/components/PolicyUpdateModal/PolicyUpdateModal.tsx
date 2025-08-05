@@ -1,4 +1,4 @@
-import './PolicyCreateModal.scss';
+import './PolicyUpdateModal.scss';
 
 import { Divider } from "antd";
 import type { RadioChangeEvent, TimelineItemProps } from 'antd';
@@ -8,7 +8,7 @@ import Input from "@/components/Input/Input.tsx";
 import Timeline from "@/components/Timeline/Timeline.tsx";
 import Radio from "@/components/Radio/Radio.tsx";
 import { BaseSyntheticEvent, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import type { IPolicyCreate, IPolicyFeeCreate } from "@/types/policy/main.ts";
+import type { IPolicy, IPolicyFeeCreate, IUpdatePolicy } from "@/types/policy/main.ts";
 import dayjs, { Dayjs } from "dayjs";
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { newPolicyFormInitialState } from "@/pages/CustomerDetails/utils/policy.tsx";
@@ -23,25 +23,29 @@ import { ClockCircleOutlined } from "@ant-design/icons";
 interface PolicyCreateModalProps {
   open: boolean;
   cancel: () => void;
-  submit: (value: IPolicyCreate, resetForm: Dispatch<SetStateAction<IPolicyCreate>>) => void;
-  changePolicyFormTime: (val: keyof Pick<IPolicyCreate, 'effectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => (val: Dayjs) => void;
-  changePolicyFormData: (val: keyof Omit<IPolicyCreate, 'expirationDate' | 'effectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string) => void;
-  addPolicyFee: (value: IPolicyFeeCreate, callback: Dispatch<SetStateAction<IPolicyCreate>>) => void;
-  removePolicyFee: (value: number, callback: Dispatch<SetStateAction<IPolicyCreate>>) => void;
+  submit: (value: Partial<IUpdatePolicy>, resetForm: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
+  changePolicyFormTime: (val: keyof Pick<IUpdatePolicy, 'effectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: Dayjs) => void;
+  changePolicyFormData: (val: keyof Omit<IUpdatePolicy, 'expirationDate' | 'effectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string) => void;
+  addPolicyFee: (value: IPolicyFeeCreate, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
+  removePolicyFee: (value: number, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
+
+  policyById: IPolicy;
+  fetchPolicyById: () => void;
 }
 
 dayjs.extend(advancedFormat);
 
-const PolicyCreateModal = ({
+const PolicyUpdateModal = ({
                              open,
                              changePolicyFormData,
                              changePolicyFormTime,
                              cancel,
                              submit,
                              addPolicyFee,
-                             removePolicyFee
+                             removePolicyFee,
+                             fetchPolicyById, policyById
                            }: PolicyCreateModalProps) => {
-  const [newPolicyForm, setNewPolicyForm] = useState<IPolicyCreate>(newPolicyFormInitialState);
+  const [newPolicyForm, setNewPolicyForm] = useState<IUpdatePolicy>(newPolicyFormInitialState);
   const { insurances, fetchInsurances } = getInsuranceFunctions();
 
   const {
@@ -49,19 +53,46 @@ const PolicyCreateModal = ({
     changePolicyFeeFormTime, changePolicyFeeFormData
   } = getPolicyFeeFunctions();
 
-  const openPolicyFeeModalButton = <div className='policy_create_modal_footer'>
-    <Button className='policy_create_modal_footer_fee'
+  const submissionWithTouchedValidation = () => {
+    const touchedFields: Partial<IUpdatePolicy> = {};
+
+    for (const key in newPolicyForm) {
+      const originalValue = key === 'insuranceId'
+        ? policyById.insurance._id
+        : policyById[key];
+
+      if (newPolicyForm[key] !== originalValue) {
+        touchedFields[key] = newPolicyForm[key];
+      }
+    }
+
+    submit(touchedFields, setNewPolicyForm);
+  }
+
+  const openPolicyFeeModalButton = <div className='policy_update_modal_footer'>
+    <Button className='policy_update_modal_footer_fee'
             onClick={openPolicyFeeModal}>Create fee for this
       policy</Button>
-    <Button className='policy_create_modal_footer_cancel' onClick={cancel}>Cancel</Button>
-    <Button className='policy_create_modal_footer_submit'
-            onClick={() => submit(newPolicyForm, setNewPolicyForm)}>Create
+    <Button className='policy_update_modal_footer_cancel' onClick={cancel}>Cancel</Button>
+    <Button className='policy_update_modal_footer_submit'
+            onClick={submissionWithTouchedValidation}>Update
       policy</Button>
   </div>
 
   useEffect(() => {
-    if (open) fetchInsurances();
+    if (open) {
+      fetchInsurances();
+      fetchPolicyById();
+    }
   }, [open]);
+
+  useEffect(() => {
+    const { insurance, ...updatePolicyFormData } = policyById;
+    setNewPolicyForm({
+      ...updatePolicyFormData,
+      insuranceId: insurance._id
+    });
+  }, [policyById]);
 
   const selectionFormedInsurance = useMemo(() => {
     return insurances.map(insurance => {
@@ -138,17 +169,20 @@ const PolicyCreateModal = ({
 
   return <>
     <Modal width={800} footer={openPolicyFeeModalButton} onCancel={cancel} open={open}>
-      <div className='policy_create_modal'>
-        <div className='policy_create_modal_container'>
-          <div className='policy_create_modal_information'>
+      <div className='policy_update_modal'>
+        <div className='policy_update_modal_container'>
+          <div className='policy_update_modal_information'>
             <Selector label='Insurance company' value={newPolicyForm.insuranceId}
-                      onChange={changePolicyFormData('insuranceId', setNewPolicyForm)} options={selectionFormedInsurance}/>
-            <div className='policy_create_modal_information_horizontal'>
-              <Selector label='Type' value={newPolicyForm.type} onChange={changePolicyFormData('type', setNewPolicyForm)}/>
-              <Selector label='Status' value={newPolicyForm.status} onChange={changePolicyFormData('status', setNewPolicyForm)}/>
+                      onChange={changePolicyFormData('insuranceId', setNewPolicyForm)}
+                      options={selectionFormedInsurance}/>
+            <div className='policy_update_modal_information_horizontal'>
+              <Selector label='Type' value={newPolicyForm.type}
+                        onChange={changePolicyFormData('type', setNewPolicyForm)}/>
+              <Selector label='Status' value={newPolicyForm.status}
+                        onChange={changePolicyFormData('status', setNewPolicyForm)}/>
             </div>
             <Divider/>
-            <div className='policy_create_modal_information_vertical'>
+            <div className='policy_update_modal_information_vertical'>
               <Radio label='Policy terms (months)' block optionType='button' value={newPolicyForm.policyTerm}
                      onChange={changePolicyFormData('policyTerm', setNewPolicyForm)} buttonStyle='solid' options={[
                 { label: '3', value: '3' },
@@ -173,34 +207,34 @@ const PolicyCreateModal = ({
               ]}/>
             </div>
             <Divider/>
-            <div className='policy_create_modal_information_horizontal'>
+            <div className='policy_update_modal_information_horizontal'>
               <Date label='Effective date' allowClear={false}
                     value={newPolicyForm.effectiveDate ? dayjs(newPolicyForm.effectiveDate) : null}
                     onChange={changePolicyFormTime('effectiveDate', setNewPolicyForm)}/>
               <Date label='Expiration date' disabled
                     value={newPolicyForm.expirationDate ? dayjs(newPolicyForm.expirationDate) : undefined}/>
             </div>
-            <div className='policy_create_modal_information_vertical'>
+            <div className='policy_update_modal_information_vertical'>
               <Input label='Policy number' placeholder='Ex. C813P05' value={newPolicyForm.policyNumber}
                      onChange={changePolicyFormData('policyNumber', setNewPolicyForm)}/>
               <Input label='Premium' addonBefore='$' value={newPolicyForm.premiumPrice}
                      onChange={changePolicyFormData('premiumPrice', setNewPolicyForm)}/>
             </div>
-            <div className='policy_create_modal_information_horizontal'>
+            <div className='policy_update_modal_information_horizontal'>
               <Input label='Deposit' addonBefore='$' value={newPolicyForm.deposit}
                      onChange={changePolicyFormData('deposit', setNewPolicyForm)}/>
               <Input label='Monthly payment' addonBefore='$' value={newPolicyForm.monthlyPayment}
                      onChange={changePolicyFormData('monthlyPayment', setNewPolicyForm)}/>
             </div>
           </div>
-          <div className='policy_create_modal_installment'>
-            <div className='policy_create_modal_installment_graph'>
-              <label className='policy_create_modal_installment_label'>Installments
+          <div className='policy_update_modal_installment'>
+            <div className='policy_update_modal_installment_graph'>
+              <label className='policy_update_modal_installment_label'>Installments
                 for {newPolicyForm.installmentCount} pays</label>
               {newPolicyForm.installmentCount && newPolicyForm.effectiveDate && newPolicyForm.premiumPrice ?
                 <Timeline items={timelineOptions}/> : undefined}
             </div>
-            <div className='policy_create_modal_installment_footer'>
+            <div className='policy_update_modal_installment_footer'>
               <div>
                 <p>Premiums: </p>
                 <p>Tax and Fees: </p>
@@ -222,4 +256,4 @@ const PolicyCreateModal = ({
   </>
 }
 
-export default PolicyCreateModal;
+export default PolicyUpdateModal;

@@ -44,7 +44,7 @@ const CustomerPage = () => {
     setCustomers(all.data);
   }, [])
 
-  const addButton = <div className='customer_page_actions'>
+  const addButton = <div>
     {selectedCustomer && <Button onClick={() => setIsUpdateModalOpen(true)}>Update the customer</Button>}
     <Button onClick={() => setIsCreateModalOpen(true)}>Create customer</Button>
   </div>

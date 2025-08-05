@@ -1,6 +1,7 @@
 import type { IInsurance } from "@/types/insurance/main.ts";
 
 export interface IPolicy {
+  _id: string;
   insurance: IInsurance;
   policyNumber: string;
   type: string;
@@ -16,6 +17,10 @@ export interface IPolicy {
 }
 
 export interface IPolicyCreate extends Omit<IPolicy, 'insurance'>{
+  insuranceId: string;
+}
+
+export interface IUpdatePolicy extends Omit<IPolicy, 'insurance'>{
   insuranceId: string;
 }
 

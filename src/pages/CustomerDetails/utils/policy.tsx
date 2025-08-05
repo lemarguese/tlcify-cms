@@ -4,10 +4,11 @@ import type { RadioChangeEvent } from 'antd'
 import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useState } from "react";
 import { instance } from "@/api/axios.ts";
 import dayjs, { Dayjs } from "dayjs";
-import type { IPolicy, IPolicyCreate, IPolicyFeeCreate } from "@/types/policy/main.ts";
+import type { IPolicy, IPolicyCreate, IPolicyFeeCreate, IUpdatePolicy } from "@/types/policy/main.ts";
 
-export const newPolicyFormInitialState: IPolicyCreate = {
-  insuranceId: '',
+import type { TableRowSelection } from "antd/es/table/interface";
+
+export const policyInitialStateTemplate: Omit<IPolicy, 'insurance'> = {
   installmentCount: '',
   monthlyPayment: 0,
   expirationDate: '',
@@ -19,6 +20,22 @@ export const newPolicyFormInitialState: IPolicyCreate = {
   policyTerm: '',
   premiumPrice: 0,
   policyNumber: ''
+}
+
+export const newPolicyFormInitialState: IPolicyCreate = {
+  ...policyInitialStateTemplate,
+  insuranceId: ''
+}
+
+export const policyInitialState: IPolicy = {
+  ...policyInitialStateTemplate,
+  insurance: {
+    _id: '',
+    name: '',
+    naicCode: '',
+    commissionFee: 0,
+    brokerCode: ''
+  }
 }
 
 export const policyTableHeaders: ColumnsType = [
@@ -79,7 +96,21 @@ export const policyTableHeaders: ColumnsType = [
 
 export const getPolicyFunctions = (customerId?: string) => {
   const [policies, setPolicies] = useState<IPolicy[]>([]);
-  const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
+  const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
+
+  const [selectedPolicy, setSelectedPolicy] = useState<IPolicy>();
+
+  const [isPolicyCreateModalOpen, setIsPolicyCreateModalOpen] = useState(false);
+  const [isPolicyUpdateModalOpen, setIsPolicyUpdateModalOpen] = useState(false);
+
+  const [policiesSelection] = useState<TableRowSelection>({
+    onSelect: (_, _s, multipleRows) => {
+      const isMultipleSelected = multipleRows.length > 1;
+      const [selectedPolicy] = multipleRows as IPolicy[];
+
+      setSelectedPolicy(!isMultipleSelected ? selectedPolicy : undefined);
+    },
+  })
 
   const fetchPolicies = useCallback(async () => {
     const policiesByCustomer = await instance.get('/policy/byCustomer', { params: { id: customerId } });
@@ -89,7 +120,7 @@ export const getPolicyFunctions = (customerId?: string) => {
   const createPolicy = useCallback(async (newPolicyForm: IPolicyCreate, resetForm: Dispatch<SetStateAction<IPolicyCreate>>) => {
     await instance.post('/policy', { ...newPolicyForm, customerId });
     resetForm(newPolicyFormInitialState);
-    await cancelPolicyModal();
+    await cancelCreatePolicyModal();
   }, [customerId])
 
   const changePolicyFormData = useCallback((key: keyof Omit<IPolicyCreate, 'effectiveDate' | 'expirationDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
@@ -128,23 +159,52 @@ export const getPolicyFunctions = (customerId?: string) => {
       ...prev,
       fees: prev.fees.filter((_, index) => index !== feeIndex)
     }))
-  }, [])
+  }, []);
 
-  const cancelPolicyModal = useCallback(async () => {
-    setIsPolicyModalOpen(false);
+  const cancelCreatePolicyModal = useCallback(async () => {
+    setIsPolicyCreateModalOpen(false);
     await fetchPolicies();
   }, []);
 
-  const addNewPolicyButton = <Button onClick={() => setIsPolicyModalOpen(true)}>Add policy</Button>
+  const policiesActionButton = <div>
+    {selectedPolicy && <Button onClick={() => setIsPolicyUpdateModalOpen(true)}>Update the policy</Button>}
+    <Button onClick={() => setIsPolicyCreateModalOpen(true)}>Add policy</Button>
+  </div>
+
+  // Get One
+
+  const fetchPolicyById = useCallback(async () => {
+    const policyById = await instance.get(`/policy/${selectedPolicy!._id}`);
+    setPolicyById(policyById.data);
+  }, [selectedPolicy]);
+
+  const cancelUpdatePolicyModal = useCallback(async () => {
+    setIsPolicyUpdateModalOpen(false);
+    await fetchPolicies();
+  }, []);
+
+  const updatePolicy = useCallback(async (newPolicyForm: Partial<IUpdatePolicy>, resetForm: Dispatch<SetStateAction<IUpdatePolicy>>) => {
+    await instance.patch(`/policy/${selectedPolicy!._id}`, newPolicyForm);
+    resetForm(newPolicyFormInitialState);
+    await cancelUpdatePolicyModal();
+  }, [selectedPolicy]);
 
   return {
+    // all policies
     policies,
-    addNewPolicyButton,
+    policiesActionButton,
     changePolicyFormData, changePolicyFormTime,
     addPolicyFee, removePolicyFee,
-    isPolicyModalOpen,
+    isPolicyCreateModalOpen,
     fetchPolicies,
-    cancelPolicyModal,
-    createPolicy
+    cancelCreatePolicyModal,
+    createPolicy,
+
+    policiesSelection,
+
+    // get one
+    updatePolicy,
+    fetchPolicyById, policyById,
+    isPolicyUpdateModalOpen, cancelUpdatePolicyModal
   }
 }

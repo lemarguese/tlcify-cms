@@ -1,4 +1,5 @@
 import './CustomerDetailsPage.scss';
+
 import Page from '../../layout/Page/Page.tsx';
 import Table from "../../components/Table/Table.tsx";
 import { customerTableHeaders, newCustomerFormInitialState } from "../Customer/utils/customer.tsx";
@@ -16,6 +17,7 @@ import { getPolicyFunctions, policyTableHeaders } from "@/pages/CustomerDetails/
 import DriverCreateModal from "@/pages/CustomerDetails/components/DriverCreateModal/DriverCreateModal.tsx";
 import PolicyCreateModal from "@/pages/CustomerDetails/components/PolicyCreateModal/PolicyCreateModal.tsx";
 import { getDriverFunctions } from "@/pages/CustomerDetails/utils/driver.tsx";
+import PolicyUpdateModal from "@/pages/CustomerDetails/components/PolicyUpdateModal/PolicyUpdateModal.tsx";
 
 const CustomerDetailStatisticsItem = () => {
   return <div className='customer_details_page_statistics_item'>
@@ -60,14 +62,21 @@ const CustomerDetailsPage = () => {
 
   const {
     policies,
-    addNewPolicyButton,
-    changePolicyFormData,
-    changePolicyFormTime,
-    addPolicyFee, removePolicyFee,
-    isPolicyModalOpen,
-    cancelPolicyModal,
+    policiesActionButton,
+    fetchPolicies,
+
+    //create
+    isPolicyCreateModalOpen,
+    cancelCreatePolicyModal,
     createPolicy,
-    fetchPolicies
+
+    // update
+    updatePolicy,
+    fetchPolicyById, policyById,
+    isPolicyUpdateModalOpen, cancelUpdatePolicyModal,
+
+    // common
+    ...commonPolicyFunctions
   } = getPolicyFunctions(customerId);
 
   useEffect(() => {
@@ -107,14 +116,16 @@ const CustomerDetailsPage = () => {
           phoneNumber={customerById.phoneNumber}
         />
       </div>
-      <Table label='Policy' actions={addNewPolicyButton} columns={policyTableHeaders} dataSource={policies}/>
-      <Table label='Drivers' actions={addNewDriverButton} columns={customerTableHeaders} dataSource={drivers}/>
+      <Table label='Policy' rowSelection={commonPolicyFunctions.policiesSelection} rowKey='_id' actions={policiesActionButton} columns={policyTableHeaders} dataSource={policies}/>
+      <Table label='Drivers' rowKey='_id' actions={addNewDriverButton} columns={customerTableHeaders} dataSource={drivers}/>
     </div>
     <DriverCreateModal formChange={changeDriverFormData} dateChange={changeDriverFormTime} cancel={cancelDriverModal}
                        open={isDriverCreateModalOpen} submit={createDriver}/>
-    <PolicyCreateModal open={isPolicyModalOpen} cancel={cancelPolicyModal} dateChange={changePolicyFormTime}
-                       formChange={changePolicyFormData} submit={createPolicy} addPolicyFee={addPolicyFee}
-                       removePolicyFee={removePolicyFee}/>
+    <PolicyCreateModal open={isPolicyCreateModalOpen} cancel={cancelCreatePolicyModal}
+                       submit={createPolicy} {...commonPolicyFunctions} />
+    <PolicyUpdateModal open={isPolicyUpdateModalOpen} cancel={cancelUpdatePolicyModal} submit={updatePolicy}
+                       policyById={policyById}
+                       fetchPolicyById={fetchPolicyById} {...commonPolicyFunctions}/>
   </Page>
 }
 
