@@ -1,9 +1,11 @@
 import type { ColumnsType } from "antd/es/table";
-import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useState } from "react";
+
+import { useCallback, useState } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
+
 import { instance } from "@/api/axios.ts";
 import type { IInsurance, IInsuranceCreate } from "@/types/insurance/main.ts";
 import Button from "@/components/Button/Button.tsx";
-import { newPolicyFormInitialState } from "@/pages/CustomerDetails/utils/policy.tsx";
 
 export const insuranceTableHeaders: ColumnsType = [
   {

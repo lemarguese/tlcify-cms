@@ -6,8 +6,8 @@ export interface IPolicy {
   policyNumber: string;
   type: string;
   status: string;
-  effectiveDate: string;
-  expirationDate: string;
+  effectiveDate: string | undefined;
+  expirationDate: string | undefined;
   policyTerm: string;
   premiumPrice: number;
   installmentCount: string;
@@ -26,7 +26,7 @@ export interface IUpdatePolicy extends Omit<IPolicy, 'insurance'>{
 
 export interface IPolicyFee {
   type: 'late' | 'cancellation' | 'return' | 'reinstatement';
-  dueDate: string;
+  dueDate: string | undefined;
   amount: number;
 }
 

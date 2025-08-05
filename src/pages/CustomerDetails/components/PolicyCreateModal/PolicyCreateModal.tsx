@@ -7,7 +7,9 @@ import Date from "@/components/Date/Date.tsx";
 import Input from "@/components/Input/Input.tsx";
 import Timeline from "@/components/Timeline/Timeline.tsx";
 import Radio from "@/components/Radio/Radio.tsx";
-import { BaseSyntheticEvent, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
+
 import type { IPolicyCreate, IPolicyFeeCreate } from "@/types/policy/main.ts";
 import dayjs, { Dayjs } from "dayjs";
 import advancedFormat from 'dayjs/plugin/advancedFormat';
@@ -39,7 +41,7 @@ const PolicyCreateModal = ({
                              cancel,
                              submit,
                              addPolicyFee,
-                             removePolicyFee
+                             // removePolicyFee
                            }: PolicyCreateModalProps) => {
   const [newPolicyForm, setNewPolicyForm] = useState<IPolicyCreate>(newPolicyFormInitialState);
   const { insurances, fetchInsurances } = getInsuranceFunctions();
@@ -78,7 +80,7 @@ const PolicyCreateModal = ({
     const effectiveDate = dayjs(newPolicyForm.effectiveDate);
     const installmentArray: { [k: number]: TimelineItemProps } = {};
 
-    if (newPolicyForm.installmentCount <= 1) {
+    if (+newPolicyForm.installmentCount <= 1) {
       installmentArray[0] = {
         label: effectiveDate.set('month', effectiveDate.get('month') + 1).format('Do MMMM, YYYY'),
         children: `$ ${premiumPrice}`
@@ -99,7 +101,7 @@ const PolicyCreateModal = ({
       installmentCountForDeposit -= 1;
     }
 
-    for (i; i < newPolicyForm.installmentCount; i++) {
+    for (i; i < +newPolicyForm.installmentCount; i++) {
       const dueDate = dayjs(effectiveDate).add(i, 'month').startOf('day');
 
       const matchingFees = newPolicyForm.fees.filter(fee => {
@@ -121,7 +123,7 @@ const PolicyCreateModal = ({
     }
 
     if (newPolicyForm.monthlyPayment) {
-      const lastDueDate = dayjs(effectiveDate).add(newPolicyForm.installmentCount - 1, 'month').startOf('day');
+      const lastDueDate = dayjs(effectiveDate).add(+newPolicyForm.installmentCount - 1, 'month').startOf('day');
 
       const matchingFees = newPolicyForm.fees.filter(fee => {
         return Math.abs(dayjs(fee.dueDate).diff(lastDueDate, 'day')) <= 7;
@@ -129,8 +131,8 @@ const PolicyCreateModal = ({
       const matchingFeesSum = matchingFees.reduce((acc, item) => acc + Number(item.amount), 0);
       const feesWarningText = matchingFees.length ? `(${matchingFees[0].type} fee: $ ${matchingFeesSum})` : ''
 
-      const lastPaymentPrice = premiumPrice - (newPolicyForm.installmentCount - (newPolicyForm.deposit ? 2 : 1)) * newPolicyForm.monthlyPayment;
-      installmentArray[newPolicyForm.installmentCount - 1].children = `$ ${lastPaymentPrice} ${feesWarningText}`;
+      const lastPaymentPrice = premiumPrice - (+newPolicyForm.installmentCount - (newPolicyForm.deposit ? 2 : 1)) * newPolicyForm.monthlyPayment;
+      installmentArray[+newPolicyForm.installmentCount - 1].children = `$ ${lastPaymentPrice} ${feesWarningText}`;
     }
 
     return Object.values(installmentArray)
@@ -142,10 +144,13 @@ const PolicyCreateModal = ({
         <div className='policy_create_modal_container'>
           <div className='policy_create_modal_information'>
             <Selector label='Insurance company' value={newPolicyForm.insuranceId}
-                      onChange={changePolicyFormData('insuranceId', setNewPolicyForm)} options={selectionFormedInsurance}/>
+                      onChange={changePolicyFormData('insuranceId', setNewPolicyForm)}
+                      options={selectionFormedInsurance}/>
             <div className='policy_create_modal_information_horizontal'>
-              <Selector label='Type' value={newPolicyForm.type} onChange={changePolicyFormData('type', setNewPolicyForm)}/>
-              <Selector label='Status' value={newPolicyForm.status} onChange={changePolicyFormData('status', setNewPolicyForm)}/>
+              <Selector label='Type' value={newPolicyForm.type}
+                        onChange={changePolicyFormData('type', setNewPolicyForm)}/>
+              <Selector label='Status' value={newPolicyForm.status}
+                        onChange={changePolicyFormData('status', setNewPolicyForm)}/>
             </div>
             <Divider/>
             <div className='policy_create_modal_information_vertical'>

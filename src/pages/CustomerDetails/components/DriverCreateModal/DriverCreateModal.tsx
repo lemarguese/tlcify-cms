@@ -6,7 +6,9 @@ import DatePicker from "@/components/Date/Date.tsx";
 import Modal from '@/components/Modal/Modal.tsx';
 
 import dayjs, { Dayjs } from "dayjs";
-import { BaseSyntheticEvent, Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
+
 import { newDriverFormInitialState } from "@/pages/CustomerDetails/utils/driver.tsx";
 import type { IDriver, IDriverCreate } from "@/types/driver/main.ts";
 

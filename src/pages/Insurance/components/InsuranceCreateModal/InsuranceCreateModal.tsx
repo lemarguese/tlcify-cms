@@ -1,8 +1,10 @@
 import './InsuranceCreateModal.scss';
 
-import type { IInsurance, IInsuranceCreate } from "@/types/insurance/main.ts";
-import type { Dispatch, SetStateAction } from "react";
-import { BaseSyntheticEvent, useState } from "react";
+import type { IInsuranceCreate } from "@/types/insurance/main.ts";
+
+import type { Dispatch, SetStateAction, BaseSyntheticEvent } from "react";
+import { useState } from "react";
+
 import { newInsuranceFormInitialState } from "@/pages/Insurance/utils/insurance.tsx";
 
 import Modal from '@/components/Modal/Modal.tsx';
@@ -12,7 +14,7 @@ interface InsuranceCreateModalProps {
   open: boolean;
   cancel: () => void;
   submit: (value: IInsuranceCreate, resetForm: Dispatch<SetStateAction<IInsuranceCreate>>) => void;
-  formChange: (val: keyof IInsurance, callback: Dispatch<SetStateAction<IInsuranceCreate>>) => (val: BaseSyntheticEvent) => void;
+  formChange: (val: keyof IInsuranceCreate, callback: Dispatch<SetStateAction<IInsuranceCreate>>) => (val: BaseSyntheticEvent) => void;
 }
 
 const InsuranceCreateModal = ({ open, cancel, submit, formChange }: InsuranceCreateModalProps) => {

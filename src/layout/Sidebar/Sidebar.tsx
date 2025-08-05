@@ -14,7 +14,7 @@ const sidebarOptions: { [k: string]: string } = {
   'sidebar-insurance': '/insurances'
 }
 
-const navigateOptions = {
+const navigateOptions: { [k: string]: string } = {
   '/customers': 'sidebar-customer',
   '/payments': 'sidebar-payment',
   '/insurances': 'sidebar-insurance'
@@ -27,7 +27,7 @@ const Sidebar = ({}: SidebarProps) => {
 
   return (
     <aside className='sidebar'>
-      <Sider trigger={null}  className='sidebar_container'>
+      <Sider trigger={null} className='sidebar_container'>
         <div className='sidebar_logo'>
           <h2 className='sidebar_logo_text'>TLCify</h2>
         </div>

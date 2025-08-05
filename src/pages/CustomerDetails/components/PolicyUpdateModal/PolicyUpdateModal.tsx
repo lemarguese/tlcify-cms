@@ -2,12 +2,16 @@ import './PolicyUpdateModal.scss';
 
 import { Divider } from "antd";
 import type { RadioChangeEvent, TimelineItemProps } from 'antd';
+
 import Selector from "@/components/Selector/Selector.tsx";
 import Date from "@/components/Date/Date.tsx";
 import Input from "@/components/Input/Input.tsx";
 import Timeline from "@/components/Timeline/Timeline.tsx";
 import Radio from "@/components/Radio/Radio.tsx";
-import { BaseSyntheticEvent, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+
+import { useEffect, useMemo, useState } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react'
+
 import type { IPolicy, IPolicyFeeCreate, IUpdatePolicy } from "@/types/policy/main.ts";
 import dayjs, { Dayjs } from "dayjs";
 import advancedFormat from 'dayjs/plugin/advancedFormat';
@@ -42,7 +46,7 @@ const PolicyUpdateModal = ({
                              cancel,
                              submit,
                              addPolicyFee,
-                             removePolicyFee,
+                             // removePolicyFee,
                              fetchPolicyById, policyById
                            }: PolicyCreateModalProps) => {
   const [newPolicyForm, setNewPolicyForm] = useState<IUpdatePolicy>(newPolicyFormInitialState);
@@ -54,15 +58,17 @@ const PolicyUpdateModal = ({
   } = getPolicyFeeFunctions();
 
   const submissionWithTouchedValidation = () => {
-    const touchedFields: Partial<IUpdatePolicy> = {};
+    const touchedFields: { [k: string]: Partial<IUpdatePolicy>[keyof Partial<IUpdatePolicy>] } = {};
 
     for (const key in newPolicyForm) {
+      const typedKey = key as keyof IUpdatePolicy;
+
       const originalValue = key === 'insuranceId'
         ? policyById.insurance._id
-        : policyById[key];
+        : policyById[key as keyof IPolicy];
 
-      if (newPolicyForm[key] !== originalValue) {
-        touchedFields[key] = newPolicyForm[key];
+      if (newPolicyForm[typedKey] !== originalValue) {
+        touchedFields[typedKey] = newPolicyForm[typedKey];
       }
     }
 
@@ -109,7 +115,7 @@ const PolicyUpdateModal = ({
     const effectiveDate = dayjs(newPolicyForm.effectiveDate);
     const installmentArray: { [k: number]: TimelineItemProps } = {};
 
-    if (newPolicyForm.installmentCount <= 1) {
+    if (+newPolicyForm.installmentCount <= 1) {
       installmentArray[0] = {
         label: effectiveDate.set('month', effectiveDate.get('month') + 1).format('Do MMMM, YYYY'),
         children: `$ ${premiumPrice}`
@@ -130,7 +136,7 @@ const PolicyUpdateModal = ({
       installmentCountForDeposit -= 1;
     }
 
-    for (i; i < newPolicyForm.installmentCount; i++) {
+    for (i; i < +newPolicyForm.installmentCount; i++) {
       const dueDate = dayjs(effectiveDate).add(i, 'month').startOf('day');
 
       const matchingFees = newPolicyForm.fees.filter(fee => {
@@ -152,7 +158,7 @@ const PolicyUpdateModal = ({
     }
 
     if (newPolicyForm.monthlyPayment) {
-      const lastDueDate = dayjs(effectiveDate).add(newPolicyForm.installmentCount - 1, 'month').startOf('day');
+      const lastDueDate = dayjs(effectiveDate).add(+newPolicyForm.installmentCount - 1, 'month').startOf('day');
 
       const matchingFees = newPolicyForm.fees.filter(fee => {
         return Math.abs(dayjs(fee.dueDate).diff(lastDueDate, 'day')) <= 7;
@@ -160,8 +166,8 @@ const PolicyUpdateModal = ({
       const matchingFeesSum = matchingFees.reduce((acc, item) => acc + Number(item.amount), 0);
       const feesWarningText = matchingFees.length ? `(${matchingFees[0].type} fee: $ ${matchingFeesSum})` : ''
 
-      const lastPaymentPrice = premiumPrice - (newPolicyForm.installmentCount - (newPolicyForm.deposit ? 2 : 1)) * newPolicyForm.monthlyPayment;
-      installmentArray[newPolicyForm.installmentCount - 1].children = `$ ${lastPaymentPrice} ${feesWarningText}`;
+      const lastPaymentPrice = premiumPrice - (+newPolicyForm.installmentCount - (newPolicyForm.deposit ? 2 : 1)) * newPolicyForm.monthlyPayment;
+      installmentArray[+newPolicyForm.installmentCount - 1].children = `$ ${lastPaymentPrice} ${feesWarningText}`;
     }
 
     return Object.values(installmentArray)

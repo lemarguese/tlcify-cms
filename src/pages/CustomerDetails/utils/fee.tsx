@@ -1,4 +1,6 @@
-import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
+
 import type { IPolicyFeeCreate } from "@/types/policy/main.ts";
 import { Dayjs } from "dayjs";
 
@@ -16,7 +18,7 @@ export const getPolicyFeeFunctions = () => {
 
   const changePolicyFeeFormTime = useCallback((key: keyof Pick<IPolicyFeeCreate, 'dueDate'>, callback: Dispatch<SetStateAction<IPolicyFeeCreate>>) => {
     return (val: Dayjs) => {
-      const date = val ? val.format('MM/DD/YYYY') : null
+      const date = val ? val.format('MM/DD/YYYY') : undefined
       callback(prev => ({
         ...prev,
         [key]: date,

@@ -1,18 +1,21 @@
 import type { ColumnsType } from "antd/es/table";
 import { Button } from "antd";
 import type { RadioChangeEvent } from 'antd'
-import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useState } from "react";
+
+import { useCallback, useState } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
+
 import { instance } from "@/api/axios.ts";
 import dayjs, { Dayjs } from "dayjs";
 import type { IPolicy, IPolicyCreate, IPolicyFeeCreate, IUpdatePolicy } from "@/types/policy/main.ts";
 
 import type { TableRowSelection } from "antd/es/table/interface";
 
-export const policyInitialStateTemplate: Omit<IPolicy, 'insurance'> = {
+export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id'> = {
   installmentCount: '',
   monthlyPayment: 0,
-  expirationDate: '',
-  effectiveDate: '',
+  expirationDate: undefined,
+  effectiveDate: undefined,
   status: '',
   deposit: 0,
   type: '',
@@ -24,11 +27,13 @@ export const policyInitialStateTemplate: Omit<IPolicy, 'insurance'> = {
 
 export const newPolicyFormInitialState: IPolicyCreate = {
   ...policyInitialStateTemplate,
-  insuranceId: ''
+  insuranceId: '',
+  _id: ''
 }
 
 export const policyInitialState: IPolicy = {
   ...policyInitialStateTemplate,
+  _id: '',
   insurance: {
     _id: '',
     name: '',
@@ -79,7 +84,7 @@ export const policyTableHeaders: ColumnsType = [
     title: "Fees",
     dataIndex: "fees",
     key: "fees",
-    render: (_, record) => record.fees.reduce((acc, item) => acc + item.amount, 0),
+    render: (_, record) => (record as IPolicy).fees.reduce((acc, item) => acc + item.amount, 0),
   },
   {
     title: "Amount Due",
@@ -129,7 +134,7 @@ export const getPolicyFunctions = (customerId?: string) => {
         ...prev,
         [key]: typeof val === 'string' ? val : val.target.value,
         ...(key === 'policyTerm' ? {
-          expirationDate: prev.effectiveDate ? dayjs(prev.effectiveDate).add(+(val as BaseSyntheticEvent).target.value, 'month').format('MM/DD/YYYY') : null
+          expirationDate: prev.effectiveDate ? dayjs(prev.effectiveDate).add(+(val as BaseSyntheticEvent).target.value, 'month').format('MM/DD/YYYY') : undefined
         } : {})
       }))
     }
@@ -138,7 +143,7 @@ export const getPolicyFunctions = (customerId?: string) => {
   // TODO If there will be custom, need to rewrote
   const changePolicyFormTime = useCallback((key: keyof Pick<IPolicyCreate, 'effectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
     return (val: Dayjs) => {
-      const date = val ? val.format('MM/DD/YYYY') : null
+      const date = val ? val.format('MM/DD/YYYY') : undefined
       callback(prev => ({
         ...prev,
         [key]: date,
@@ -166,7 +171,7 @@ export const getPolicyFunctions = (customerId?: string) => {
     await fetchPolicies();
   }, []);
 
-  const policiesActionButton = <div>
+  const policiesActionButton = <div className='customer_details_page_actions'>
     {selectedPolicy && <Button onClick={() => setIsPolicyUpdateModalOpen(true)}>Update the policy</Button>}
     <Button onClick={() => setIsPolicyCreateModalOpen(true)}>Add policy</Button>
   </div>

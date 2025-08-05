@@ -1,4 +1,6 @@
-import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
+
 import type { IDriver, IDriverCreate } from "@/types/driver/main.ts";
 import { instance } from "@/api/axios.ts";
 import { Dayjs } from "dayjs";

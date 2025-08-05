@@ -2,8 +2,9 @@ import './PolicyFeeCreateModal.scss';
 
 import { feeTypeOptions, newPolicyFeeFormInitialState } from "@/pages/CustomerDetails/utils/fee.tsx";
 import type { IPolicyFeeCreate } from "@/types/policy/main.ts";
-import type { Dispatch, SetStateAction } from "react";
-import { BaseSyntheticEvent, useState } from "react";
+
+import type { Dispatch, SetStateAction, BaseSyntheticEvent } from "react";
+import { useState } from "react";
 import Input from "@/components/Input/Input.tsx";
 import Selector from "@/components/Selector/Selector.tsx";
 import Date from "@/components/Date/Date.tsx";
