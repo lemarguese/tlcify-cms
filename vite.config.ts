@@ -14,9 +14,5 @@ export default defineConfig({
   server: {
     host: true,
     allowedHosts: ['admin.tlcify.com', 'www.admin.tlcify.com'],
-    fs: {
-      // Allow access only within project (default is [projectRoot])
-      allow: [path.resolve(__dirname, "src"), path.resolve(__dirname, "public")]
-    }
   }
 })

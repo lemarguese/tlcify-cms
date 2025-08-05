@@ -107,6 +107,7 @@ export const getPolicyFunctions = (customerId?: string) => {
 
   const [isPolicyCreateModalOpen, setIsPolicyCreateModalOpen] = useState(false);
   const [isPolicyUpdateModalOpen, setIsPolicyUpdateModalOpen] = useState(false);
+  const [isPolicyDeleteModalOpen, setIsPolicyDeleteModalOpen] = useState(false);
 
   const [policiesSelection] = useState<TableRowSelection>({
     onSelect: (_, _s, multipleRows) => {
@@ -172,8 +173,9 @@ export const getPolicyFunctions = (customerId?: string) => {
   }, []);
 
   const policiesActionButton = <div className='customer_details_page_actions'>
+    {selectedPolicy && <Button variant='outlined' color={'danger'} onClick={() => setIsPolicyDeleteModalOpen(true)}>Delete the policy</Button>}
     {selectedPolicy && <Button onClick={() => setIsPolicyUpdateModalOpen(true)}>Update the policy</Button>}
-    <Button onClick={() => setIsPolicyCreateModalOpen(true)}>Add policy</Button>
+    <Button variant='outlined' color={'geekblue'} onClick={() => setIsPolicyCreateModalOpen(true)}>Add policy</Button>
   </div>
 
   // Get One
@@ -184,6 +186,7 @@ export const getPolicyFunctions = (customerId?: string) => {
   }, [selectedPolicy]);
 
   const cancelUpdatePolicyModal = useCallback(async () => {
+    setSelectedPolicy(undefined);
     setIsPolicyUpdateModalOpen(false);
     await fetchPolicies();
   }, []);
@@ -192,6 +195,19 @@ export const getPolicyFunctions = (customerId?: string) => {
     await instance.patch(`/policy/${selectedPolicy!._id}`, newPolicyForm);
     resetForm(newPolicyFormInitialState);
     await cancelUpdatePolicyModal();
+  }, [selectedPolicy]);
+
+  // Delete modal
+
+  const cancelDeletePolicyModal = useCallback(async () => {
+    setSelectedPolicy(undefined);
+    setIsPolicyDeleteModalOpen(false);
+    await fetchPolicies();
+  }, []);
+
+  const deletePolicy = useCallback(async () => {
+    await instance.delete(`/policy/${selectedPolicy!._id}`);
+    await cancelDeletePolicyModal();
   }, [selectedPolicy]);
 
   return {
@@ -210,6 +226,9 @@ export const getPolicyFunctions = (customerId?: string) => {
     // get one
     updatePolicy,
     fetchPolicyById, policyById,
-    isPolicyUpdateModalOpen, cancelUpdatePolicyModal
+    isPolicyUpdateModalOpen, cancelUpdatePolicyModal,
+
+    // delete
+    cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen
   }
 }

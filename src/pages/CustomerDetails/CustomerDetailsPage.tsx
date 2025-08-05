@@ -18,6 +18,7 @@ import DriverCreateModal from "@/pages/CustomerDetails/components/DriverCreateMo
 import PolicyCreateModal from "@/pages/CustomerDetails/components/PolicyCreateModal/PolicyCreateModal.tsx";
 import { getDriverFunctions } from "@/pages/CustomerDetails/utils/driver.tsx";
 import PolicyUpdateModal from "@/pages/CustomerDetails/components/PolicyUpdateModal/PolicyUpdateModal.tsx";
+import PolicyDeleteModal from "@/pages/CustomerDetails/components/PolicyDeleteModal/PolicyDeleteModal.tsx";
 
 const CustomerDetailStatisticsItem = () => {
   return <div className='customer_details_page_statistics_item'>
@@ -75,6 +76,9 @@ const CustomerDetailsPage = () => {
     fetchPolicyById, policyById,
     isPolicyUpdateModalOpen, cancelUpdatePolicyModal,
 
+    // delete
+    cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen,
+
     // common
     ...commonPolicyFunctions
   } = getPolicyFunctions(customerId);
@@ -126,6 +130,7 @@ const CustomerDetailsPage = () => {
     <PolicyUpdateModal open={isPolicyUpdateModalOpen} cancel={cancelUpdatePolicyModal} submit={updatePolicy}
                        policyById={policyById}
                        fetchPolicyById={fetchPolicyById} {...commonPolicyFunctions}/>
+    <PolicyDeleteModal open={isPolicyDeleteModalOpen} submit={deletePolicy} cancel={cancelDeletePolicyModal} />
   </Page>
 }
 

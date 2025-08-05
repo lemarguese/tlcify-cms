@@ -1,0 +1,17 @@
+.policy_delete_modal {
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &_title {
+    text-align: center;
+    font-size: 18px;
+  }
+
+  &_description {
+    text-align: center;
+    font-size: 14px;
+  }
+}
