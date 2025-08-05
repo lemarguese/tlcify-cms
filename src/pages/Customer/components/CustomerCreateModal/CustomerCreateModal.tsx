@@ -4,12 +4,13 @@ import Input from "@/components/Input/Input.tsx";
 import GoogleAutocompleteInput from "@/components/GoogleAutocompleteInput/GoogleAutocompleteInput.tsx";
 import DatePicker from "@/components/Date/Date.tsx";
 import dayjs, { Dayjs } from "dayjs";
-import { Modal } from "antd";
 import type { BaseSyntheticEvent, Dispatch, SetStateAction } from "react";
 import { useCallback, useState } from "react";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
 import { instance } from "@/api/axios.ts";
 import type { ICustomerCreate } from "@/types/customer/main.ts";
+
+import Modal from '@/components/Modal/Modal.tsx';
 
 interface CustomerCreateModalProps {
   cancel: () => void;

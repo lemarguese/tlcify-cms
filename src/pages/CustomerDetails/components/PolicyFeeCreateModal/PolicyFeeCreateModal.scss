@@ -1,0 +1,15 @@
+.policy_fee_craete_modal {
+  padding: 20px;
+
+  &_horizontal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &_vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

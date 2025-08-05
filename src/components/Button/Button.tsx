@@ -9,8 +9,7 @@ interface CustomButtonProps extends ButtonProps {
 }
 
 const Button: FC<CustomButtonProps> = ({ ...props }) => {
-
-  return <div className='button'>
+  return <div className={`button ${props.className}`}>
     <AntButton {...props}/>
   </div>
 }

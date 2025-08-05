@@ -63,6 +63,7 @@ const CustomerDetailsPage = () => {
     addNewPolicyButton,
     changePolicyFormData,
     changePolicyFormTime,
+    addPolicyFee, removePolicyFee,
     isPolicyModalOpen,
     cancelPolicyModal,
     createPolicy,
@@ -112,7 +113,8 @@ const CustomerDetailsPage = () => {
     <DriverCreateModal formChange={changeDriverFormData} dateChange={changeDriverFormTime} cancel={cancelDriverModal}
                        open={isDriverCreateModalOpen} submit={createDriver}/>
     <PolicyCreateModal open={isPolicyModalOpen} cancel={cancelPolicyModal} dateChange={changePolicyFormTime}
-                       formChange={changePolicyFormData} submit={createPolicy}/>
+                       formChange={changePolicyFormData} submit={createPolicy} addPolicyFee={addPolicyFee}
+                       removePolicyFee={removePolicyFee}/>
   </Page>
 }
 

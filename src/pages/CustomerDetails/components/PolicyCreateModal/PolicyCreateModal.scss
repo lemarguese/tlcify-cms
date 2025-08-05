@@ -32,13 +32,61 @@
 
     display: flex;
     flex-direction: column;
-    gap: 36px;
+    justify-content: space-between;
+    gap: 24px;
+
+    &_graph {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
     &_label {
       font-size: 16px;
       font-weight: 600;
 
       text-align: center;
+    }
+
+    &_footer {
+      padding: 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+
+      border: 1px solid #F2F2F2;
+    }
+  }
+
+  &_footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+
+    &_cancel {
+      border-radius: 8px;
+      flex: unset;
+
+      background-color: #ff6565;
+      color: #FFF;
+    }
+
+    &_fee {
+      border-radius: 8px;
+      flex: unset;
+
+      background-color: #0085FF;
+      color: #FFF;
+    }
+
+    &_submit {
+      border-radius: 8px;
+      flex: unset;
+
+      background-color: #1EB386;
+      color: #FFF;
     }
   }
 }

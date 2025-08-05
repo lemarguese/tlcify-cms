@@ -10,17 +10,19 @@ export interface IPolicy {
   policyTerm: string;
   premiumPrice: number;
   installmentCount: string;
-  additionalFees: IPolicyFee[];
+  fees: IPolicyFee[];
   monthlyPayment: number;
   deposit: number;
 }
 
-export interface IPolicyCreate extends Omit<IPolicy, 'insurance' | 'additionalFees'>{
+export interface IPolicyCreate extends Omit<IPolicy, 'insurance'>{
   insuranceId: string;
 }
 
 export interface IPolicyFee {
-  policyId: string;
   type: 'late' | 'cancellation' | 'return' | 'reinstatement';
+  dueDate: string;
   amount: number;
 }
+
+export interface IPolicyFeeCreate extends IPolicyFee {}

@@ -3,8 +3,9 @@ import './DriverCreateModal.scss';
 import Input from "@/components/Input/Input.tsx";
 import GoogleAutocompleteInput from "@/components/GoogleAutocompleteInput/GoogleAutocompleteInput.tsx";
 import DatePicker from "@/components/Date/Date.tsx";
+import Modal from '@/components/Modal/Modal.tsx';
+
 import dayjs, { Dayjs } from "dayjs";
-import { Modal } from "antd";
 import { BaseSyntheticEvent, Dispatch, SetStateAction, useState } from "react";
 import { newDriverFormInitialState } from "@/pages/CustomerDetails/utils/driver.tsx";
 import type { IDriver, IDriverCreate } from "@/types/driver/main.ts";

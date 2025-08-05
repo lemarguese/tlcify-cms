@@ -4,7 +4,7 @@ import type { RadioChangeEvent } from 'antd'
 import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useState } from "react";
 import { instance } from "@/api/axios.ts";
 import dayjs, { Dayjs } from "dayjs";
-import type { IPolicy, IPolicyCreate } from "@/types/policy/main.ts";
+import type { IPolicy, IPolicyCreate, IPolicyFeeCreate } from "@/types/policy/main.ts";
 
 export const newPolicyFormInitialState: IPolicyCreate = {
   insuranceId: '',
@@ -15,6 +15,7 @@ export const newPolicyFormInitialState: IPolicyCreate = {
   status: '',
   deposit: 0,
   type: '',
+  fees: [],
   policyTerm: '',
   premiumPrice: 0,
   policyNumber: ''
@@ -59,9 +60,9 @@ export const policyTableHeaders: ColumnsType = [
   },
   {
     title: "Fees",
-    dataIndex: "additionalFees",
-    key: "additionalFees",
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
+    dataIndex: "fees",
+    key: "fees",
+    render: (_, record) => record.fees.reduce((acc, item) => acc + item.amount, 0),
   },
   {
     title: "Amount Due",
@@ -115,6 +116,20 @@ export const getPolicyFunctions = (customerId?: string) => {
     }
   }, []);
 
+  const addPolicyFee = useCallback((value: IPolicyFeeCreate, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
+    callback(prev => ({
+      ...prev,
+      fees: prev.fees.concat(value)
+    }))
+  }, []);
+
+  const removePolicyFee = useCallback((feeIndex: number, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
+    callback(prev => ({
+      ...prev,
+      fees: prev.fees.filter((_, index) => index !== feeIndex)
+    }))
+  }, [])
+
   const cancelPolicyModal = useCallback(async () => {
     setIsPolicyModalOpen(false);
     await fetchPolicies();
@@ -126,6 +141,7 @@ export const getPolicyFunctions = (customerId?: string) => {
     policies,
     addNewPolicyButton,
     changePolicyFormData, changePolicyFormTime,
+    addPolicyFee, removePolicyFee,
     isPolicyModalOpen,
     fetchPolicies,
     cancelPolicyModal,

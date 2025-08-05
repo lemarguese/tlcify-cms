@@ -1,8 +1,9 @@
 import Input from "@/components/Input/Input.tsx";
 import GoogleAutocompleteInput from "@/components/GoogleAutocompleteInput/GoogleAutocompleteInput.tsx";
 import DatePicker from "@/components/Date/Date.tsx";
+import Modal from '@/components/Modal/Modal.tsx';
+
 import dayjs, { Dayjs } from "dayjs";
-import { Modal } from "antd";
 import type { BaseSyntheticEvent } from "react";
 import type { ICustomer, ICustomerUpdate } from "@/types/customer/main.ts";
 import { useCallback, useEffect, useState } from "react";

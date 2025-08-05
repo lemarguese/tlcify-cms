@@ -1,10 +1,11 @@
 import './InsuranceCreateModal.scss';
 
-import { Modal } from "antd";
 import type { IInsurance, IInsuranceCreate } from "@/types/insurance/main.ts";
 import type { Dispatch, SetStateAction } from "react";
 import { BaseSyntheticEvent, useState } from "react";
 import { newInsuranceFormInitialState } from "@/pages/Insurance/utils/insurance.tsx";
+
+import Modal from '@/components/Modal/Modal.tsx';
 import Input from "@/components/Input/Input.tsx";
 
 interface InsuranceCreateModalProps {
