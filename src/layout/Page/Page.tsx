@@ -11,13 +11,15 @@ interface PageProps {
   setSearchQuery?: (val: string) => void;
   searchQuery?: string;
   back?: () => void;
+
+  fixedHeader?: boolean;
 }
 
-const Page: FC<PageProps> = ({ children, ...searchProps }) => {
+const Page: FC<PageProps> = ({ children, fixedHeader = false, ...searchProps }) => {
   return <Layout className='page'>
     <Sidebar/>
     <div className='page_container'>
-      <Header {...searchProps} />
+      <Header fixed={fixedHeader} {...searchProps} />
       {children}
     </div>
   </Layout>

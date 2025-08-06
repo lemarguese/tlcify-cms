@@ -14,9 +14,11 @@ interface HeaderProps {
   searchQuery?: string;
   showSearch?: boolean;
   back?: () => void;
+
+  fixed?: boolean;
 }
 
-const Header: FC<HeaderProps> = ({ showSearch = true, setSearchQuery, back, searchQuery }) => {
+const Header: FC<HeaderProps> = ({ showSearch = true, fixed = false, setSearchQuery, back, searchQuery }) => {
   const navigate = useNavigate();
 
   // todo more independent
@@ -29,7 +31,7 @@ const Header: FC<HeaderProps> = ({ showSearch = true, setSearchQuery, back, sear
     <Button onClick={logOut}>Log out</Button>
   </div>, [logOut])
 
-  return <div className='header'>
+  return <div className='header' style={{ position: fixed ? 'absolute' : 'fixed' }}>
     <AntHeader className='header_container'>
       {back && <Button onClick={back} className='header_back'>
           <LeftOutlined className='header_back_icon'/>

@@ -7,6 +7,7 @@ import { Navigate } from "react-router-dom";
 import TransactionsPage from "@/pages/Transactions/TransactionsPage.tsx";
 import TransactionsDetailsPage from "@/pages/TransactionsDetails/TransactionsDetailsPage.tsx";
 import InsurancePage from "@/pages/Insurance/InsurancePage.tsx";
+import PolicyDetailPage from "@/pages/PolicyDetail/PolicyDetailPage.tsx";
 
 const Router = () => {
   return <BrowserRouter>
@@ -28,6 +29,11 @@ const Router = () => {
       <Route element={<ProtectedRoute />}>
         <Route path='/insurances'>
           <Route index element={<InsurancePage />}/>
+        </Route>
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path='/policy/:policyId'>
+          <Route index element={<PolicyDetailPage />} />
         </Route>
       </Route>
     </Routes>

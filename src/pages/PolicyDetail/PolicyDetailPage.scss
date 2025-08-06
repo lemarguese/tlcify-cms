@@ -1,0 +1,102 @@
+.policy_detail_page {
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &_actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+
+  &_body {
+    &_tab {
+      display: flex;
+      gap: 16px;
+    }
+
+    &_left {
+      flex: 1;
+
+      &_client {
+        &_card {
+          &_avatar {
+            max-width: 140px;
+            max-height: 140px;
+
+            border-radius: 4px;
+          }
+
+          &_description {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            &_item {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            }
+          }
+        }
+      }
+
+      &_insurance {
+        background-color: #FFF;
+        padding: 16px;
+
+        border-radius: 12px;
+        border: 1px solid #F2F2F2;
+      }
+
+      &_fees {
+        padding: 16px;
+        background-color: #FFF;
+
+        border-radius: 12px;
+        border: 1px solid #F2F2F2;
+      }
+    }
+
+    &_right {
+      flex: 1;
+
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      &_calendar {
+        &_tile {
+          &_fee {
+            background-color: #ef4444 !important;
+            color: #FFF;
+          }
+        }
+      }
+    }
+  }
+
+  &_footer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &_table {
+      padding: 24px;
+      background-color: #FFF;
+
+      border-radius: 8px;
+      border: 1px solid #F2F2F2;
+    }
+  }
+
+
+}

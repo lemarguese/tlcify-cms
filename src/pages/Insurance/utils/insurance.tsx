@@ -34,6 +34,13 @@ export const insuranceTableHeaders: ColumnsType = [
   },
 ];
 
+export const insuranceTitles: { [k: keyof IInsurance]: string } = {
+  name: 'Carrier name',
+  naicCode: 'NAIC Code',
+  brokerCode: 'Broker code',
+  commissionFee: 'Commission Fee'
+}
+
 export const newInsuranceFormInitialState: IInsuranceCreate = {
   name: '',
   naicCode: '',

@@ -10,8 +10,9 @@ import dayjs, { Dayjs } from "dayjs";
 import type { IPolicy, IPolicyCreate, IPolicyFeeCreate, IUpdatePolicy } from "@/types/policy/main.ts";
 
 import type { TableRowSelection } from "antd/es/table/interface";
+import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
 
-export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id'> = {
+export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id' | 'customer'> = {
   installmentCount: '',
   monthlyPayment: 0,
   expirationDate: undefined,
@@ -40,7 +41,8 @@ export const policyInitialState: IPolicy = {
     naicCode: '',
     commissionFee: 0,
     brokerCode: ''
-  }
+  },
+  customer: { _id: '', ...newCustomerFormInitialState },
 }
 
 export const policyTableHeaders: ColumnsType = [
@@ -173,7 +175,9 @@ export const getPolicyFunctions = (customerId?: string) => {
   }, []);
 
   const policiesActionButton = <div className='customer_details_page_actions'>
-    {selectedPolicy && <Button variant='outlined' color={'danger'} onClick={() => setIsPolicyDeleteModalOpen(true)}>Delete the policy</Button>}
+    {selectedPolicy &&
+        <Button variant='outlined' color={'danger'} onClick={() => setIsPolicyDeleteModalOpen(true)}>Delete the
+            policy</Button>}
     {selectedPolicy && <Button onClick={() => setIsPolicyUpdateModalOpen(true)}>Update the policy</Button>}
     <Button variant='outlined' color={'geekblue'} onClick={() => setIsPolicyCreateModalOpen(true)}>Add policy</Button>
   </div>
