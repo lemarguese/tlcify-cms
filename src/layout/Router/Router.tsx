@@ -8,6 +8,7 @@ import TransactionsPage from "@/pages/Transactions/TransactionsPage.tsx";
 import TransactionsDetailsPage from "@/pages/TransactionsDetails/TransactionsDetailsPage.tsx";
 import InsurancePage from "@/pages/Insurance/InsurancePage.tsx";
 import PolicyDetailPage from "@/pages/PolicyDetail/PolicyDetailPage.tsx";
+import AutoPayPage from "@/pages/AutoPay/AutoPayPage.tsx";
 
 const Router = () => {
   return <BrowserRouter>
@@ -34,6 +35,11 @@ const Router = () => {
       <Route element={<ProtectedRoute />}>
         <Route path='/policy/:policyId'>
           <Route index element={<PolicyDetailPage />} />
+        </Route>
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path='/payment/:policyId'>
+          <Route index element={<AutoPayPage />} />
         </Route>
       </Route>
     </Routes>

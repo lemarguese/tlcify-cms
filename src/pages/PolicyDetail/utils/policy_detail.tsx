@@ -61,6 +61,8 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
   const [isPolicyFeeDeleteModalOpen, setIsPolicyFeeDeleteModalOpen] = useState(false);
   const [selectedPolicyFee, setSelectedPolicyFee] = useState<IPolicyFee>();
 
+  const [isAutoPayEnabled, setIsAutoPayEnabled] = useState(false);
+
   const [policyFeeSelection] = useState<TableRowSelection>({
     onSelect: (_, _s, multipleRows) => {
       const isMultipleSelected = multipleRows.length > 1;
@@ -123,6 +125,10 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
   const cancelPolicyFeeModal = useCallback(async () => {
     setSelectedPolicyFee(undefined);
     setIsPolicyFeeDeleteModalOpen(false);
+  }, []);
+
+  const changeAutoPay = useCallback((value: boolean) => {
+    setIsAutoPayEnabled(value);
   }, [])
 
   return {
@@ -130,6 +136,8 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     policyDescriptionItems,
     policyFeeSelection, selectedPolicyFee,
     calendarTileTypes,
-    isPolicyFeeDeleteModalOpen, policyFeeDeletionButton, updatePolicyFee, cancelPolicyFeeModal
+    isPolicyFeeDeleteModalOpen, policyFeeDeletionButton, updatePolicyFee, cancelPolicyFeeModal,
+
+    changeAutoPay, isAutoPayEnabled
   }
 }

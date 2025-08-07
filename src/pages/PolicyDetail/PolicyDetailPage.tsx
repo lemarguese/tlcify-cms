@@ -23,6 +23,7 @@ import Tabs from "@/components/Tabs/Tabs.tsx";
 import Calendar from "@/components/Calendar/Calendar.tsx";
 import { useEffect } from "react";
 import PolicyFeeDeleteModal from "@/pages/PolicyDetail/components/PolicyFeeDeleteModal/PolicyFeeDeleteModal.tsx";
+import Switch from "@/components/Switch/Switch.tsx";
 
 const PolicyDetailPage = () => {
   const navigate = useNavigate();
@@ -38,7 +39,9 @@ const PolicyDetailPage = () => {
     updatePolicyFee,
     policyFeeDeletionButton,
     isPolicyFeeDeleteModalOpen,
-    cancelPolicyFeeModal
+    cancelPolicyFeeModal,
+
+    isAutoPayEnabled, changeAutoPay
   } = getPolicyDetailFunctions(policyId);
 
   useEffect(() => {
@@ -82,7 +85,20 @@ const PolicyDetailPage = () => {
             </div>
           </div>
           <div className='policy_detail_page_body_right'>
-
+            <label className='policy_detail_page_body_right_autopay_title'>Autopay options</label>
+            <div className='policy_detail_page_body_right_autopay'>
+              <div className='policy_detail_page_body_right_autopay_switch'>
+                <p className='policy_detail_page_body_right_autopay_switch_text'>Setup Autopay</p>
+                <Switch onChange={changeAutoPay} value={isAutoPayEnabled}/>
+              </div>
+              <div className='policy_detail_page_body_right_autopay_actions'>
+                <Button variant='solid' disabled={!isAutoPayEnabled}
+                        className='policy_detail_page_body_right_autopay_button'>Refresh Token Info</Button>
+                <Button variant='solid' disabled={!isAutoPayEnabled}
+                        onClick={() => navigate(`/payment/${policyById._id}`)}
+                        className='policy_detail_page_body_right_autopay_button'>Manage Tokens</Button>
+              </div>
+            </div>
           </div>
         </div>
     },
