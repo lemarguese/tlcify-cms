@@ -1,10 +1,11 @@
 import './PolicyFeeCreateModal.scss';
 
+import { useState } from "react";
+import type { Dispatch, SetStateAction, BaseSyntheticEvent } from "react";
+
 import { feeTypeOptions, newPolicyFeeFormInitialState } from "@/pages/CustomerDetails/utils/fee.tsx";
 import type { IPolicyFeeCreate } from "@/types/policy/main.ts";
 
-import type { Dispatch, SetStateAction, BaseSyntheticEvent } from "react";
-import { useState } from "react";
 import Input from "@/components/Input/Input.tsx";
 import Selector from "@/components/Selector/Selector.tsx";
 import Date from "@/components/Date/Date.tsx";
@@ -17,7 +18,7 @@ interface PolicyFeeCreateModalProps {
   cancel: () => void;
   submit: (value: IPolicyFeeCreate) => void;
   dateChange: (val: keyof Pick<IPolicyFeeCreate, 'dueDate'>, callback: Dispatch<SetStateAction<IPolicyFeeCreate>>) => (val: Dayjs) => void;
-  formChange: (val: keyof Omit<IPolicyFeeCreate, 'dueDate' | 'policyId'>, callback: Dispatch<SetStateAction<IPolicyFeeCreate>>) => (val: BaseSyntheticEvent | string) => void;
+  formChange: (val: keyof Omit<IPolicyFeeCreate, 'dueDate'>, callback: Dispatch<SetStateAction<IPolicyFeeCreate>>) => (val: BaseSyntheticEvent | string) => void;
 }
 
 const PolicyFeeCreateModal = ({ open, cancel, submit, formChange, dateChange }: PolicyFeeCreateModalProps) => {

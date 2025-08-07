@@ -7,7 +7,7 @@ import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 
 import { instance } from "@/api/axios.ts";
 import dayjs, { Dayjs } from "dayjs";
-import type { IPolicy, IPolicyCreate, IPolicyFeeCreate, IUpdatePolicy } from "@/types/policy/main.ts";
+import type { IPolicy, IPolicyCreate, IPolicyFee, IPolicyFeeCreate, IUpdatePolicy } from "@/types/policy/main.ts";
 
 import type { TableRowSelection } from "antd/es/table/interface";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
@@ -158,7 +158,11 @@ export const getPolicyFunctions = (customerId?: string) => {
   const addPolicyFee = useCallback((value: IPolicyFeeCreate, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
     callback(prev => ({
       ...prev,
-      fees: prev.fees.concat(value)
+
+      // @ts-config
+
+      // TODO value is new one, without _id and casted to IPolicyFee
+      fees: prev.fees.concat(value as IPolicyFee)
     }))
   }, []);
 

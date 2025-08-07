@@ -18,11 +18,11 @@ export interface IPolicy {
   deposit: number;
 }
 
-export interface IPolicyCreate extends Omit<IPolicy, 'insurance' | 'customer'>{
+export interface IPolicyCreate extends Omit<IPolicy, 'insurance' | 'customer'> {
   insuranceId: string;
 }
 
-export interface IUpdatePolicy extends Omit<IPolicy, 'insurance' | 'customer'>{
+export interface IUpdatePolicy extends Omit<IPolicy, 'insurance' | 'customer'> {
   insuranceId: string;
 }
 
@@ -33,4 +33,4 @@ export interface IPolicyFee {
   amount: number;
 }
 
-export interface IPolicyFeeCreate extends IPolicyFee {}
+export interface IPolicyFeeCreate extends Omit<IPolicyFee, '_id'> {}

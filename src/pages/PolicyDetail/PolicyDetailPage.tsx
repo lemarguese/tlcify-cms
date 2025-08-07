@@ -24,7 +24,6 @@ import Calendar from "@/components/Calendar/Calendar.tsx";
 import { useEffect } from "react";
 import PolicyFeeDeleteModal from "@/pages/PolicyDetail/components/PolicyFeeDeleteModal/PolicyFeeDeleteModal.tsx";
 
-
 const PolicyDetailPage = () => {
   const navigate = useNavigate();
 
