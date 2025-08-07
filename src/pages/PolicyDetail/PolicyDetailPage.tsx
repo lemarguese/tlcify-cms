@@ -9,7 +9,7 @@ import Card from "@/components/Card/Card.tsx";
 import AvatarImage from '@/assets/images/ali.jpeg';
 import { PhoneTwoTone, MailTwoTone, IdcardTwoTone, HomeTwoTone } from '@ant-design/icons';
 import Description from "@/components/Description/Description.tsx";
-import type { DescriptionsProps, TabsProps } from "antd";
+import type { TabsProps } from "antd";
 import { useNavigate, useParams } from "react-router";
 import Table from "@/components/Table/Table.tsx";
 import {
@@ -20,7 +20,6 @@ import {
 import Tabs from "@/components/Tabs/Tabs.tsx";
 
 import Calendar from "@/components/Calendar/Calendar.tsx";
-import dayjs from "dayjs";
 import { useEffect } from "react";
 
 
@@ -29,21 +28,16 @@ const PolicyDetailPage = () => {
 
   const { policyId } = useParams();
 
-  const { fetchPolicyById, policyById, insuranceDescriptionItems } = getPolicyDetailFunctions(policyId);
+  const {
+    fetchPolicyById,
+    policyById,
+    policyDescriptionItems,
+    calendarTileTypes, calendarTileStatuses
+  } = getPolicyDetailFunctions(policyId);
 
   useEffect(() => {
     fetchPolicyById();
   }, []);
-
-  const calendarTileShowFees = ({ date, view }) => {
-    // Add class to tiles in month view only
-    if (view === 'month') {
-      // case for expiration, due date of monthly payment and start date
-      if (policyById.fees.find(policyFee => dayjs(policyFee.dueDate).isSame(dayjs(date)))) {
-        return 'policy_detail_page_body_right_calendar_tile_fee';
-      }
-    }
-  }
 
   const tabs: TabsProps['items'] = [
     {
@@ -87,17 +81,24 @@ const PolicyDetailPage = () => {
         </div>
     },
     {
-      label: 'Insurance information',
-      key: 'policy_detail_insurance',
+      label: 'Policy information',
+      key: 'policy_detail_policy',
       children:
         <div className='policy_detail_page_body_tab'>
           <div className='policy_detail_page_body_left'>
-            <div className='policy_detail_page_body_left_insurance'>
-              <Description title="Insurance information" layout="vertical" bordered items={insuranceDescriptionItems}/>
+            <div className='policy_detail_page_body_left_policy'>
+              <Description title="Policy information" layout="vertical" bordered items={policyDescriptionItems}/>
             </div>
           </div>
           <div className='policy_detail_page_body_right'>
-            <Calendar />
+            <div className='policy_detail_page_body_right_calendar_statuses'>
+              {calendarTileStatuses.map(status => <div className='policy_detail_page_body_right_calendar_statuses_item'>
+                <div className='policy_detail_page_body_right_calendar_statuses_item_color'
+                     style={{ backgroundColor: status.color }}></div>
+                <p className='policy_detail_page_body_right_calendar_statuses_item_text'>{status.type}</p>
+              </div>)}
+            </div>
+            <Calendar tileClassName={calendarTileTypes('due')}/>
           </div>
         </div>
     },
@@ -110,11 +111,18 @@ const PolicyDetailPage = () => {
             <div className='policy_detail_page_body_left_fees'>
               <Table actions={<div><Button variant='outlined' color='danger'>Delete policy fee</Button></div>}
                      label='Policy fee'
-                     columns={policyFeesTableHeaders} dataSource={[]}/>
+                     columns={policyFeesTableHeaders} dataSource={policyById.fees}/>
             </div>
           </div>
           <div className='policy_detail_page_body_right'>
-            <Calendar tileClassName={calendarTileShowFees}/>
+            <div className='policy_detail_page_body_right_calendar_statuses'>
+              {calendarTileStatuses.map(status => <div className='policy_detail_page_body_right_calendar_statuses_item'>
+                <div className='policy_detail_page_body_right_calendar_statuses_item_color'
+                     style={{ backgroundColor: status.color }}></div>
+                <p className='policy_detail_page_body_right_calendar_statuses_item_text'>{status.type}</p>
+              </div>)}
+            </div>
+            <Calendar tileClassName={calendarTileTypes('fee')}/>
           </div>
         </div>
     }
@@ -123,7 +131,7 @@ const PolicyDetailPage = () => {
   return <Page showSearch={false} fixedHeader back={() => navigate(-1)}>
     <div className='policy_detail_page'>
       <div className='policy_detail_page_top'>
-        <h4>Detail information of Policy No. C814952</h4>
+        <h4>Detail information of Policy No. {policyById.policyNumber}</h4>
         <div className='policy_detail_page_top_actions'>
           <Button variant='solid' color='orange' icon={<ClockCircleOutlined/>}>Show activity</Button>
           <Button variant='solid' color='primary'>Show policy ledger</Button>

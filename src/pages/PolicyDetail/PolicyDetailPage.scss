@@ -49,7 +49,7 @@
         }
       }
 
-      &_insurance {
+      &_policy {
         background-color: #FFF;
         padding: 16px;
 
@@ -78,6 +78,32 @@
           &_fee {
             background-color: #ef4444 !important;
             color: #FFF;
+          }
+
+          &_due {
+            background-color: #0085FF !important;
+            color: #FFF;
+          }
+        }
+
+        &_statuses {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          &_item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            &_color {
+              width: 15px;
+              height: 15px;
+            }
+
+            &_text {
+              font-size: 12px;
+            }
           }
         }
       }

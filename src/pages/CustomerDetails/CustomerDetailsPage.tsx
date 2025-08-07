@@ -120,8 +120,14 @@ const CustomerDetailsPage = () => {
           phoneNumber={customerById.phoneNumber}
         />
       </div>
-      <Table label='Policy' rowSelection={commonPolicyFunctions.policiesSelection} rowKey='_id' actions={policiesActionButton} columns={policyTableHeaders} dataSource={policies}/>
-      <Table label='Drivers' rowKey='_id' actions={addNewDriverButton} columns={customerTableHeaders} dataSource={drivers}/>
+      <Table label='Policy' rowSelection={commonPolicyFunctions.policiesSelection} rowKey='_id'
+             actions={policiesActionButton} columns={policyTableHeaders} dataSource={policies} onRow={(item) => ({
+        onClick: () => {
+          navigate(`/policy/${item._id}`)
+        },
+      })}/>
+      <Table label='Drivers' rowKey='_id' actions={addNewDriverButton} columns={customerTableHeaders}
+             dataSource={drivers}/>
     </div>
     <DriverCreateModal formChange={changeDriverFormData} dateChange={changeDriverFormTime} cancel={cancelDriverModal}
                        open={isDriverCreateModalOpen} submit={createDriver}/>
@@ -130,7 +136,7 @@ const CustomerDetailsPage = () => {
     <PolicyUpdateModal open={isPolicyUpdateModalOpen} cancel={cancelUpdatePolicyModal} submit={updatePolicy}
                        policyById={policyById}
                        fetchPolicyById={fetchPolicyById} {...commonPolicyFunctions}/>
-    <PolicyDeleteModal open={isPolicyDeleteModalOpen} submit={deletePolicy} cancel={cancelDeletePolicyModal} />
+    <PolicyDeleteModal open={isPolicyDeleteModalOpen} submit={deletePolicy} cancel={cancelDeletePolicyModal}/>
   </Page>
 }
 

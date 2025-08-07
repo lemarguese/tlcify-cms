@@ -5,8 +5,7 @@ import { instance } from "@/api/axios.ts";
 import type { IPolicy } from "@/types/policy/main.ts";
 import { policyInitialState } from "@/pages/CustomerDetails/utils/policy.tsx";
 import type { DescriptionsProps } from "antd";
-import type { IInsurance } from "@/types/insurance/main.ts";
-import { insuranceTitles } from "@/pages/Insurance/utils/insurance.tsx";
+import dayjs from "dayjs";
 
 export const policyDetailActions: ReactNode[] = [
   <EditOutlined key="edit"/>,
@@ -32,6 +31,19 @@ export const policyFeesTableHeaders: ColumnsType = [
   },
 ];
 
+const policyTitles: { [k: keyof IPolicy]: string } = {
+  policyNumber: 'Policy Number',
+  type: 'Policy Type',
+  status: 'Policy Status',
+  effectiveDate: 'Effective Date',
+  expirationDate: 'Expiration Date',
+  policyTerm: 'Policy Term',
+  premiumPrice: 'Premium Price',
+  installmentCount: 'Installment count',
+  monthlyPayment: 'Monthly Payment',
+  deposit: 'Deposit'
+}
+
 export const getPolicyDetailFunctions = (policyId?: string) => {
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
 
@@ -40,15 +52,43 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     setPolicyById(policyById.data);
   }, [policyId]);
 
-  // slice 1 is for _id
-  // TODO Remove slice of -1, when starting from scratch
-  // TODO NOT INSURANCE, IT IS INFORMATION OF POLICY
-  const insuranceDescriptionItems: DescriptionsProps['items'] = Object.entries(policyById.insurance).slice(1, -1).map(([insuranceKey, insuranceValue]) => {
-    return { label: insuranceTitles[insuranceKey], key: insuranceKey, children: insuranceValue }
-  })
+  // TODO __v, createdAt, updatedAt needs to be removed
+  const policyDescriptionItems: DescriptionsProps['items'] = Object.entries(policyById)
+    .filter(([k, v]) => !['_id', 'insurance', 'customer', 'fees', 'createdAt', 'updatedAt', '__v'].includes(k))
+    .map(([policyKey, policyValue]) => {
+      return { label: policyTitles[policyKey], key: policyKey, children: policyValue }
+    });
+
+  const calendarTileTypes = (type: 'fee' | 'due') => ({ date, view }) => {
+    // Add class to tiles in month view only
+    if (view === 'month') {
+      if (type === 'fee') {
+        if (policyById.fees.find(policyFee => dayjs(policyFee.dueDate).isSame(dayjs(date)))) {
+          return 'policy_detail_page_body_right_calendar_tile_fee';
+        }
+      } else {
+        const everyMonthDueDates = [];
+        const effectiveDate = dayjs(policyById.effectiveDate);
+        for (let i = policyById.deposit ? 1 : 0; i < +policyById.installmentCount; i++) {
+          everyMonthDueDates.push(effectiveDate.set('month', effectiveDate.get('month') + i));
+        }
+
+        if (everyMonthDueDates.find(dueDate => dueDate.isSame(date))) {
+          return 'policy_detail_page_body_right_calendar_tile_due';
+        }
+      }
+    }
+  }
+
+  const calendarTileStatuses = [
+    { color: '#ef4444', type: 'fee' },
+    { color: '#0085FF', type: 'due' },
+    { color: '#ffff76', type: 'today' }
+  ]
 
   return {
     fetchPolicyById, policyById,
-    insuranceDescriptionItems
+    policyDescriptionItems,
+    calendarTileTypes, calendarTileStatuses
   }
 }
