@@ -35,7 +35,6 @@ const PolicyDetailPage = () => {
     policyById,
     policyDescriptionItems,
     calendarTileTypes,
-    selectedPolicyFee,
     policyFeeSelection,
     updatePolicyFee,
     policyFeeDeletionButton,

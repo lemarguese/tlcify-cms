@@ -40,7 +40,7 @@ export const getPolicyFeeFunctions = () => {
   }
 }
 
-export const newPolicyFeeFormInitialState: IPolicyFeeCreate = {
+export const newPolicyFeeFormInitialState: Omit<IPolicyFeeCreate, '_id'> = {
   dueDate: '',
   amount: 0,
   type: 'late'
