@@ -4,11 +4,13 @@ import type { ReactNode } from 'react';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { instance } from "@/api/axios.ts";
-import type { IPolicy } from "@/types/policy/main.ts";
+import type { IPolicy, IPolicyFee } from "@/types/policy/main.ts";
 import { policyInitialState } from "@/pages/CustomerDetails/utils/policy.tsx";
 import type { DescriptionsProps } from "antd";
 import dayjs from "dayjs";
 import type { TileArgs } from "react-calendar";
+import type { TableRowSelection } from "antd/es/table/interface";
+import Button from "@/components/Button/Button.tsx";
 
 export const policyDetailActions: ReactNode[] = [
   <EditOutlined key="edit"/>,
@@ -34,6 +36,12 @@ export const policyFeesTableHeaders: ColumnsType = [
   },
 ];
 
+export const calendarTileStatuses = [
+  { color: '#ef4444', type: 'fee' },
+  { color: '#0085FF', type: 'due' },
+  { color: '#ffff76', type: 'today' }
+];
+
 const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees'>]: string } = {
   policyNumber: 'Policy Number',
   type: 'Policy Type',
@@ -49,6 +57,23 @@ const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'customer' | 'insurance'
 
 export const getPolicyDetailFunctions = (policyId?: string) => {
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
+
+  const [isPolicyFeeDeleteModalOpen, setIsPolicyFeeDeleteModalOpen] = useState(false);
+  const [selectedPolicyFee, setSelectedPolicyFee] = useState<IPolicyFee>();
+
+  const [policyFeeSelection] = useState<TableRowSelection>({
+    onSelect: (_, _s, multipleRows) => {
+      const isMultipleSelected = multipleRows.length > 1;
+      const [selectedFee] = multipleRows as IPolicyFee[];
+
+      setSelectedPolicyFee(!isMultipleSelected ? selectedFee : undefined);
+    },
+  });
+
+  const policyFeeDeletionButton =
+    selectedPolicyFee ? <div><Button variant='outlined' color='danger'
+                                     onClick={() => setIsPolicyFeeDeleteModalOpen(true)}>Delete policy fee</Button>
+    </div> : undefined
 
   const fetchPolicyById = useCallback(async () => {
     const policyById = await instance.get(`/policy/${policyId}`);
@@ -87,15 +112,24 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     }
   }
 
-  const calendarTileStatuses = [
-    { color: '#ef4444', type: 'fee' },
-    { color: '#0085FF', type: 'due' },
-    { color: '#ffff76', type: 'today' }
-  ]
+  const updatePolicyFee = useCallback(async () => {
+    const updatedPolicyFees = policyById.fees.filter(policyFee => policyFee._id !== selectedPolicyFee!._id);
+    await instance.patch(`/policy/${policyById._id}`, { fees: updatedPolicyFees });
+
+    await cancelPolicyFeeModal();
+    await fetchPolicyById();
+  }, []);
+
+  const cancelPolicyFeeModal = useCallback(async () => {
+    setSelectedPolicyFee(undefined);
+    setIsPolicyFeeDeleteModalOpen(false);
+  }, [])
 
   return {
     fetchPolicyById, policyById,
     policyDescriptionItems,
-    calendarTileTypes, calendarTileStatuses
+    policyFeeSelection, selectedPolicyFee,
+    calendarTileTypes,
+    isPolicyFeeDeleteModalOpen, policyFeeDeletionButton, updatePolicyFee, cancelPolicyFeeModal
   }
 }

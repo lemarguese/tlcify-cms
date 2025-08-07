@@ -27,6 +27,7 @@ export interface IUpdatePolicy extends Omit<IPolicy, 'insurance' | 'customer'>{
 }
 
 export interface IPolicyFee {
+  _id: string;
   type: 'late' | 'cancellation' | 'return' | 'reinstatement';
   dueDate: string | undefined;
   amount: number;

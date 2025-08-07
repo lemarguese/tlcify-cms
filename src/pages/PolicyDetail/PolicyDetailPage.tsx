@@ -13,6 +13,7 @@ import type { TabsProps } from "antd";
 import { useNavigate, useParams } from "react-router";
 import Table from "@/components/Table/Table.tsx";
 import {
+  calendarTileStatuses,
   getPolicyDetailFunctions,
   policyDetailActions,
   policyFeesTableHeaders
@@ -21,6 +22,7 @@ import Tabs from "@/components/Tabs/Tabs.tsx";
 
 import Calendar from "@/components/Calendar/Calendar.tsx";
 import { useEffect } from "react";
+import PolicyFeeDeleteModal from "@/pages/PolicyDetail/components/PolicyFeeDeleteModal/PolicyFeeDeleteModal.tsx";
 
 
 const PolicyDetailPage = () => {
@@ -32,7 +34,13 @@ const PolicyDetailPage = () => {
     fetchPolicyById,
     policyById,
     policyDescriptionItems,
-    calendarTileTypes, calendarTileStatuses
+    calendarTileTypes,
+    selectedPolicyFee,
+    policyFeeSelection,
+    updatePolicyFee,
+    policyFeeDeletionButton,
+    isPolicyFeeDeleteModalOpen,
+    cancelPolicyFeeModal
   } = getPolicyDetailFunctions(policyId);
 
   useEffect(() => {
@@ -109,9 +117,10 @@ const PolicyDetailPage = () => {
         <div className='policy_detail_page_body_tab'>
           <div className='policy_detail_page_body_left'>
             <div className='policy_detail_page_body_left_fees'>
-              <Table actions={<div><Button variant='outlined' color='danger'>Delete policy fee</Button></div>}
-                     label='Policy fee'
-                     columns={policyFeesTableHeaders} dataSource={policyById.fees}/>
+              <Table actions={policyFeeDeletionButton}
+                     label='Policy fees'
+                     rowKey='_id'
+                     columns={policyFeesTableHeaders} dataSource={policyById.fees} rowSelection={policyFeeSelection}/>
             </div>
           </div>
           <div className='policy_detail_page_body_right'>
@@ -154,6 +163,7 @@ const PolicyDetailPage = () => {
         </div>
       </div>
     </div>
+    <PolicyFeeDeleteModal open={isPolicyFeeDeleteModalOpen} cancel={cancelPolicyFeeModal} submit={updatePolicyFee}/>
   </Page>
 }
 
