@@ -34,7 +34,7 @@ export const insuranceTableHeaders: ColumnsType = [
   },
 ];
 
-export const insuranceTitles: { [k: keyof IInsurance]: string } = {
+export const insuranceTitles: { [k in keyof Omit<IInsurance, "_id">]: string } = {
   name: 'Carrier name',
   naicCode: 'NAIC Code',
   brokerCode: 'Broker code',

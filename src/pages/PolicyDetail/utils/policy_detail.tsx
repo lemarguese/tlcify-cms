@@ -1,4 +1,6 @@
-import { ReactNode, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+import type { ReactNode } from 'react';
+
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { instance } from "@/api/axios.ts";
@@ -6,6 +8,7 @@ import type { IPolicy } from "@/types/policy/main.ts";
 import { policyInitialState } from "@/pages/CustomerDetails/utils/policy.tsx";
 import type { DescriptionsProps } from "antd";
 import dayjs from "dayjs";
+import type { TileArgs } from "react-calendar";
 
 export const policyDetailActions: ReactNode[] = [
   <EditOutlined key="edit"/>,
@@ -31,7 +34,7 @@ export const policyFeesTableHeaders: ColumnsType = [
   },
 ];
 
-const policyTitles: { [k: keyof IPolicy]: string } = {
+const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees'>]: string } = {
   policyNumber: 'Policy Number',
   type: 'Policy Type',
   status: 'Policy Status',
@@ -54,12 +57,16 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
   // TODO __v, createdAt, updatedAt needs to be removed
   const policyDescriptionItems: DescriptionsProps['items'] = Object.entries(policyById)
-    .filter(([k, v]) => !['_id', 'insurance', 'customer', 'fees', 'createdAt', 'updatedAt', '__v'].includes(k))
+    .filter(([k, _]) => !['_id', 'insurance', 'customer', 'fees', 'createdAt', 'updatedAt', '__v'].includes(k))
     .map(([policyKey, policyValue]) => {
-      return { label: policyTitles[policyKey], key: policyKey, children: policyValue }
+      return {
+        label: policyTitles[policyKey as keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees'>],
+        key: policyKey,
+        children: policyValue
+      }
     });
 
-  const calendarTileTypes = (type: 'fee' | 'due') => ({ date, view }) => {
+  const calendarTileTypes = (type: 'fee' | 'due') => ({ date, view }: TileArgs) => {
     // Add class to tiles in month view only
     if (view === 'month') {
       if (type === 'fee') {
