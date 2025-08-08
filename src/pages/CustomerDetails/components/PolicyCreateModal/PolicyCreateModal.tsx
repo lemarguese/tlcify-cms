@@ -13,7 +13,11 @@ import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 import type { IPolicyCreate, IPolicyFeeCreate } from "@/types/policy/main.ts";
 import dayjs, { Dayjs } from "dayjs";
 import advancedFormat from 'dayjs/plugin/advancedFormat';
-import { newPolicyFormInitialState } from "@/pages/CustomerDetails/utils/policy.tsx";
+import {
+  newPolicyFormInitialState,
+  policyStatusSelectionOptions,
+  policyTypeSelectionOptions
+} from "@/pages/CustomerDetails/utils/policy.tsx";
 import { getInsuranceFunctions } from "@/pages/Insurance/utils/insurance.tsx";
 import PolicyFeeCreateModal from "@/pages/CustomerDetails/components/PolicyFeeCreateModal/PolicyFeeCreateModal.tsx";
 import { getPolicyFeeFunctions } from "@/pages/CustomerDetails/utils/fee.tsx";
@@ -148,8 +152,10 @@ const PolicyCreateModal = ({
                       options={selectionFormedInsurance}/>
             <div className='policy_create_modal_information_horizontal'>
               <Selector label='Type' value={newPolicyForm.type}
+                        options={policyTypeSelectionOptions}
                         onChange={changePolicyFormData('type', setNewPolicyForm)}/>
               <Selector label='Status' value={newPolicyForm.status}
+                        options={policyStatusSelectionOptions}
                         onChange={changePolicyFormData('status', setNewPolicyForm)}/>
             </div>
             <Divider/>

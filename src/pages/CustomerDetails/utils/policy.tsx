@@ -240,3 +240,18 @@ export const getPolicyFunctions = (customerId?: string) => {
     cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen
   }
 }
+
+export const policyTypeSelectionOptions = [
+  { label: 'New', value: 'new' },
+  { label: 'Quote', value: 'quote' },
+  { label: 'Renewal', value: 'renewal' }
+];
+
+export const policyStatusSelectionOptions = [
+  { label: 'New', value: 'new' },
+  { label: 'Quote', value: 'quote' },
+  { label: 'Bound', value: 'bound' },
+  { label: 'Renew', value: 'renew' },
+  { label: 'Change', value: 'change' },
+  { label: 'Cancel', value: 'cancel' },
+]
