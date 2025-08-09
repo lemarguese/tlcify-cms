@@ -1,6 +1,6 @@
 import './PolicyFeeCreateModal.scss';
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Dispatch, SetStateAction, BaseSyntheticEvent } from "react";
 
 import { feeTypeOptions, newPolicyFeeFormInitialState } from "@/pages/CustomerDetails/utils/fee.tsx";
@@ -30,16 +30,26 @@ const PolicyFeeCreateModal = ({ open, cancel, submit, formChange, dateChange }: 
     cancel();
   }
 
-  return <Modal open={open} onOk={submitPolicyFee} onCancel={cancel}>
+  const validForm = useMemo(() => {
+    const options = {
+      feeTypeValid: !!newPolicyFeeForm.type,
+      dueDateValid: !!newPolicyFeeForm.dueDate,
+      feeAmountValid: !!newPolicyFeeForm.amount,
+    };
+
+    return Object.values(options).every(el => el);
+  }, [newPolicyFeeForm]);
+
+  return <Modal open={open} onOk={submitPolicyFee} okButtonProps={{ disabled: !validForm }} onCancel={cancel}>
     <div className='policy_fee_craete_modal'>
       <div className='policy_fee_craete_modal_vertical'>
-        <Selector label='Policy Fee Type' value={newPolicyFeeForm.type} options={feeTypeOptions}
+        <Selector label='Policy Fee Type' required value={newPolicyFeeForm.type} options={feeTypeOptions}
                   onChange={formChange('type', setNewPolicyFeeForm)}/>
         <div className='policy_fee_craete_modal_horizontal'>
-          <Date label='Policy fee due date'
+          <Date label='Policy fee due date' allowClear={false} required
                 value={newPolicyFeeForm.dueDate ? dayjs(newPolicyFeeForm.dueDate) : undefined}
                 onChange={dateChange('dueDate', setNewPolicyFeeForm)}/>
-          <Input label='Policy fee amount' addonBefore='$' value={newPolicyFeeForm.amount}
+          <Input label='Policy fee amount' addonBefore='$' required value={newPolicyFeeForm.amount}
                  onChange={formChange('amount', setNewPolicyFeeForm)}/>
         </div>
       </div>

@@ -6,12 +6,13 @@ import dayjs from "dayjs";
 
 interface CustomDatePickerProps extends DatePickerProps {
   label: string;
+  required?: boolean;
 }
 
-const CustomDatePicker: FC<CustomDatePickerProps> = ({ label, ...props }) => {
+const CustomDatePicker: FC<CustomDatePickerProps> = ({ label, required = false, ...props }) => {
   return <div className='date'>
     <label className='date_label'>{label}</label>
-    <DatePicker  {...props} defaultValue={dayjs(new Date(Date.now()))} format={'MM/DD/YYYY'}/>
+    <DatePicker status={!props.value && required ? 'error' : undefined} {...props} defaultValue={dayjs(new Date(Date.now()))} format={'MM/DD/YYYY'}/>
   </div>;
 }
 

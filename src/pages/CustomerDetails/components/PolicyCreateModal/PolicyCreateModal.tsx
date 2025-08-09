@@ -55,16 +55,6 @@ const PolicyCreateModal = ({
     changePolicyFeeFormTime, changePolicyFeeFormData
   } = getPolicyFeeFunctions();
 
-  const openPolicyFeeModalButton = <div className='policy_create_modal_footer'>
-    <Button className='policy_create_modal_footer_fee'
-            onClick={openPolicyFeeModal}>Create fee for this
-      policy</Button>
-    <Button className='policy_create_modal_footer_cancel' onClick={cancel}>Cancel</Button>
-    <Button className='policy_create_modal_footer_submit'
-            onClick={() => submit(newPolicyForm, setNewPolicyForm)}>Create
-      policy</Button>
-  </div>
-
   useEffect(() => {
     if (open) fetchInsurances();
   }, [open]);
@@ -142,32 +132,60 @@ const PolicyCreateModal = ({
     return Object.values(installmentArray)
   }, [newPolicyForm.installmentCount, newPolicyForm.premiumPrice, newPolicyForm.effectiveDate, newPolicyForm.deposit, newPolicyForm.monthlyPayment, newPolicyForm.fees])
 
+  const validForm = useMemo(() => {
+    const options = {
+      insuranceCompanyValid: !!newPolicyForm.insuranceId,
+      policyTypeValid: !!newPolicyForm.type,
+      policyStatusValid: !!newPolicyForm.status,
+      policyTermsValid: !!newPolicyForm.policyTerm,
+      policyInstallmentCountValid: !!newPolicyForm.installmentCount,
+      effectiveDateValid: !!newPolicyForm.effectiveDate,
+      expirationDateValid: !!newPolicyForm.expirationDate,
+      policyNumberValid: !!newPolicyForm.policyNumber.trim(),
+      policyPremiumDepositValid: !!newPolicyForm.premiumPrice,
+    };
+
+    return Object.values(options).every(el => el);
+  }, [newPolicyForm]);
+
+  const openPolicyFeeModalButton = <div className='policy_create_modal_footer'>
+    <Button className='policy_create_modal_footer_fee'
+            onClick={openPolicyFeeModal}>Create fee for this
+      policy</Button>
+    <Button className='policy_create_modal_footer_cancel' onClick={cancel}>Cancel</Button>
+    <Button className='policy_create_modal_footer_submit' disabled={!validForm}
+            onClick={() => submit(newPolicyForm, setNewPolicyForm)}>Create
+      policy</Button>
+  </div>
+
   return <>
-    <Modal width={800} footer={openPolicyFeeModalButton} onCancel={cancel} open={open}>
+    <Modal width={800} footer={openPolicyFeeModalButton} onCancel={cancel}
+           open={open}>
       <div className='policy_create_modal'>
         <div className='policy_create_modal_container'>
           <div className='policy_create_modal_information'>
-            <Selector label='Insurance company' value={newPolicyForm.insuranceId}
+            <Selector label='Insurance company' value={newPolicyForm.insuranceId} required
                       onChange={changePolicyFormData('insuranceId', setNewPolicyForm)}
                       options={selectionFormedInsurance}/>
             <div className='policy_create_modal_information_horizontal'>
-              <Selector label='Type' value={newPolicyForm.type}
+              <Selector label='Type' value={newPolicyForm.type} required
                         options={policyTypeSelectionOptions}
                         onChange={changePolicyFormData('type', setNewPolicyForm)}/>
-              <Selector label='Status' value={newPolicyForm.status}
+              <Selector label='Status' value={newPolicyForm.status} required
                         options={policyStatusSelectionOptions}
                         onChange={changePolicyFormData('status', setNewPolicyForm)}/>
             </div>
             <Divider/>
             <div className='policy_create_modal_information_vertical'>
-              <Radio label='Policy terms (months)' block optionType='button' value={newPolicyForm.policyTerm}
+              <Radio label='Policy terms (months)' block optionType='button'
+                     value={newPolicyForm.policyTerm} defaultValue='3'
                      onChange={changePolicyFormData('policyTerm', setNewPolicyForm)} buttonStyle='solid' options={[
                 { label: '3', value: '3' },
                 { label: '6', value: '6' },
                 { label: '12', value: '12' },
                 { label: '24', value: '24' },
               ]}/>
-              <Selector label='Installment count' value={newPolicyForm.installmentCount}
+              <Selector label='Installment count' value={newPolicyForm.installmentCount} required
                         onChange={changePolicyFormData('installmentCount', setNewPolicyForm)} options={[
                 { label: '1', value: '1' },
                 { label: '2', value: '2' },
@@ -185,16 +203,16 @@ const PolicyCreateModal = ({
             </div>
             <Divider/>
             <div className='policy_create_modal_information_horizontal'>
-              <Date label='Effective date' allowClear={false}
+              <Date label='Effective date' allowClear={false} required
                     value={newPolicyForm.effectiveDate ? dayjs(newPolicyForm.effectiveDate) : null}
                     onChange={changePolicyFormTime('effectiveDate', setNewPolicyForm)}/>
               <Date label='Expiration date' disabled
                     value={newPolicyForm.expirationDate ? dayjs(newPolicyForm.expirationDate) : undefined}/>
             </div>
             <div className='policy_create_modal_information_vertical'>
-              <Input label='Policy number' placeholder='Ex. C813P05' value={newPolicyForm.policyNumber}
+              <Input label='Policy number' placeholder='Ex. C813P05' required value={newPolicyForm.policyNumber}
                      onChange={changePolicyFormData('policyNumber', setNewPolicyForm)}/>
-              <Input label='Premium' addonBefore='$' value={newPolicyForm.premiumPrice}
+              <Input label='Premium' addonBefore='$' required value={newPolicyForm.premiumPrice}
                      onChange={changePolicyFormData('premiumPrice', setNewPolicyForm)}/>
             </div>
             <div className='policy_create_modal_information_horizontal'>

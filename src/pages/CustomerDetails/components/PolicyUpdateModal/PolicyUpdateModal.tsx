@@ -15,7 +15,11 @@ import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react'
 import type { IPolicy, IPolicyFeeCreate, IUpdatePolicy } from "@/types/policy/main.ts";
 import dayjs, { Dayjs } from "dayjs";
 import advancedFormat from 'dayjs/plugin/advancedFormat';
-import { newPolicyFormInitialState } from "@/pages/CustomerDetails/utils/policy.tsx";
+import {
+  newPolicyFormInitialState,
+  policyStatusSelectionOptions,
+  policyTypeSelectionOptions
+} from "@/pages/CustomerDetails/utils/policy.tsx";
 import { getInsuranceFunctions } from "@/pages/Insurance/utils/insurance.tsx";
 import PolicyFeeCreateModal from "@/pages/CustomerDetails/components/PolicyFeeCreateModal/PolicyFeeCreateModal.tsx";
 import { getPolicyFeeFunctions } from "@/pages/CustomerDetails/utils/fee.tsx";
@@ -75,12 +79,40 @@ const PolicyUpdateModal = ({
     submit(touchedFields, setNewPolicyForm);
   }
 
+  const validAndTouchedForm = useMemo(() => {
+    const options = {
+      insuranceCompanyValid: !!newPolicyForm.insuranceId,
+      policyTypeValid: !!newPolicyForm.type,
+      policyStatusValid: !!newPolicyForm.status,
+      policyTermsValid: !!newPolicyForm.policyTerm,
+      policyInstallmentCountValid: !!newPolicyForm.installmentCount,
+      effectiveDateValid: !!newPolicyForm.effectiveDate,
+      expirationDateValid: !!newPolicyForm.expirationDate,
+      policyNumberValid: !!newPolicyForm.policyNumber.trim(),
+      policyPremiumDepositValid: !!newPolicyForm.premiumPrice,
+    };
+
+    const touchedOptions = {
+      insuranceCompanyTouched: newPolicyForm.insuranceId.localeCompare(policyById.insurance._id) !== 0,
+      policyTypeTouched: newPolicyForm.type.localeCompare(policyById.type) !== 0,
+      policyStatusTouched: newPolicyForm.status.localeCompare(policyById.status) !== 0,
+      policyTermsTouched: newPolicyForm.policyTerm.localeCompare(policyById.policyTerm) !== 0,
+      policyInstallmentCountTouched: newPolicyForm.installmentCount !== policyById.installmentCount,
+      effectiveDateTouched: (newPolicyForm.effectiveDate ?? '').localeCompare(policyById.effectiveDate ?? '') !== 0,
+      policyNumberTouched: newPolicyForm.policyNumber.localeCompare(policyById.policyNumber) !== 0,
+      policyPremiumDepositTouched: newPolicyForm.deposit !== policyById.deposit
+    }
+
+    // if some of them touched, and it is filled (or valid)
+    return Object.values(touchedOptions).some(el => el) && Object.values(options).every(el => el);
+  }, [newPolicyForm, policyById]);
+
   const openPolicyFeeModalButton = <div className='policy_update_modal_footer'>
     <Button className='policy_update_modal_footer_fee'
             onClick={openPolicyFeeModal}>Create fee for this
       policy</Button>
     <Button className='policy_update_modal_footer_cancel' onClick={cancel}>Cancel</Button>
-    <Button className='policy_update_modal_footer_submit'
+    <Button className='policy_update_modal_footer_submit' disabled={!validAndTouchedForm}
             onClick={submissionWithTouchedValidation}>Update
       policy</Button>
   </div>
@@ -179,24 +211,25 @@ const PolicyUpdateModal = ({
         <div className='policy_update_modal_container'>
           <div className='policy_update_modal_information'>
             <Selector label='Insurance company' value={newPolicyForm.insuranceId}
-                      onChange={changePolicyFormData('insuranceId', setNewPolicyForm)}
+                      onChange={changePolicyFormData('insuranceId', setNewPolicyForm)} required
                       options={selectionFormedInsurance}/>
             <div className='policy_update_modal_information_horizontal'>
-              <Selector label='Type' value={newPolicyForm.type}
+              <Selector label='Type' value={newPolicyForm.type} required options={policyTypeSelectionOptions}
                         onChange={changePolicyFormData('type', setNewPolicyForm)}/>
-              <Selector label='Status' value={newPolicyForm.status}
+              <Selector label='Status' value={newPolicyForm.status} required options={policyStatusSelectionOptions}
                         onChange={changePolicyFormData('status', setNewPolicyForm)}/>
             </div>
             <Divider/>
             <div className='policy_update_modal_information_vertical'>
-              <Radio label='Policy terms (months)' block optionType='button' value={newPolicyForm.policyTerm}
+              <Radio label='Policy terms (months)' defaultValue='3' block optionType='button'
+                     value={newPolicyForm.policyTerm}
                      onChange={changePolicyFormData('policyTerm', setNewPolicyForm)} buttonStyle='solid' options={[
                 { label: '3', value: '3' },
                 { label: '6', value: '6' },
                 { label: '12', value: '12' },
                 { label: '24', value: '24' },
               ]}/>
-              <Selector label='Installment count' value={newPolicyForm.installmentCount}
+              <Selector label='Installment count' value={newPolicyForm.installmentCount} required
                         onChange={changePolicyFormData('installmentCount', setNewPolicyForm)} options={[
                 { label: '1', value: '1' },
                 { label: '2', value: '2' },
@@ -214,16 +247,16 @@ const PolicyUpdateModal = ({
             </div>
             <Divider/>
             <div className='policy_update_modal_information_horizontal'>
-              <Date label='Effective date' allowClear={false}
+              <Date label='Effective date' allowClear={false} required
                     value={newPolicyForm.effectiveDate ? dayjs(newPolicyForm.effectiveDate) : null}
                     onChange={changePolicyFormTime('effectiveDate', setNewPolicyForm)}/>
               <Date label='Expiration date' disabled
                     value={newPolicyForm.expirationDate ? dayjs(newPolicyForm.expirationDate) : undefined}/>
             </div>
             <div className='policy_update_modal_information_vertical'>
-              <Input label='Policy number' placeholder='Ex. C813P05' value={newPolicyForm.policyNumber}
+              <Input label='Policy number' placeholder='Ex. C813P05' required value={newPolicyForm.policyNumber}
                      onChange={changePolicyFormData('policyNumber', setNewPolicyForm)}/>
-              <Input label='Premium' addonBefore='$' value={newPolicyForm.premiumPrice}
+              <Input label='Premium' addonBefore='$' required value={newPolicyForm.premiumPrice}
                      onChange={changePolicyFormData('premiumPrice', setNewPolicyForm)}/>
             </div>
             <div className='policy_update_modal_information_horizontal'>

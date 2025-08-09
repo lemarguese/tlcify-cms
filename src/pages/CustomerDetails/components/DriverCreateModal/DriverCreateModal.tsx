@@ -23,26 +23,28 @@ interface DriverCreateModalProps {
 const DriverCreateModal = ({ open, cancel, formChange, dateChange, submit }: DriverCreateModalProps) => {
   const [newDriverForm, setNewDriverForm] = useState<IDriverCreate>(newDriverFormInitialState);
 
+
+  // TODO What fields are required ?
   return <Modal open={open} onOk={() => submit(newDriverForm, setNewDriverForm)} onCancel={cancel}>
     <div className='driver_create_modal_container'>
       <div className='driver_create_modal'>
-        <Input placeholder={'First name'} value={newDriverForm.firstName}
+        <Input placeholder={'First name'} value={newDriverForm.firstName} required
                onChange={formChange('firstName', setNewDriverForm)} label={'First Name'}/>
-        <Input placeholder={'Last name'} value={newDriverForm.lastName}
+        <Input placeholder={'Last name'} value={newDriverForm.lastName} required
                onChange={formChange('lastName', setNewDriverForm)} label={'Last Name'}/>
       </div>
       <div>
-        <Input placeholder={'Phone number'} value={newDriverForm.phoneNumber}
+        <Input placeholder={'Phone number'} value={newDriverForm.phoneNumber} required
                onChange={formChange('phoneNumber', setNewDriverForm)}
                label={'Phone number'}/>
-        <GoogleAutocompleteInput placeholder={'Address'} value={newDriverForm.address}
+        <GoogleAutocompleteInput placeholder={'Address'} value={newDriverForm.address} required
                                  onChange={formChange('address', setNewDriverForm)}
                                  label={'Address'}/>
         <Input placeholder={'Email'} value={newDriverForm.email} onChange={formChange('email', setNewDriverForm)}
                label={'Email'}/>
       </div>
       <div>
-        <DatePicker label='Date of birth'
+        <DatePicker label='Date of birth' required
                     value={newDriverForm.dateOfBirth ? dayjs(newDriverForm.dateOfBirth) : undefined}
                     onChange={dateChange('dateOfBirth', setNewDriverForm)}/>
       </div>
