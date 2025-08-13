@@ -1,5 +1,8 @@
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
+import { useState } from "react";
+import type { IPayment } from "@/types/transactions/main.ts";
+import { instance } from "@/api/axios.ts";
 
 export const transactionsTableHeaders: ColumnsType = [
   // TODO What do i need with private fields
@@ -128,3 +131,14 @@ export const transactionsPartialInvoiceHeaders: ColumnsType = [
     key: "fullAmount",
   }
 ]
+
+export const getTransactionFunctions = () => {
+  const [payments, setPayments] = useState<IPayment[]>([]);
+
+  const fetchAllPayments = async () => {
+    const rawPayments = await instance.get('/payment');
+    setPayments(rawPayments.data);
+  };
+
+  return { payments, fetchAllPayments }
+}
