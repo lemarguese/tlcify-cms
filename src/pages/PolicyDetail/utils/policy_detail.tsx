@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import type { TileArgs } from "react-calendar";
 import type { TableRowSelection } from "antd/es/table/interface";
 import Button from "@/components/Button/Button.tsx";
+import type { IPayment } from "@/types/transactions/main.ts";
 
 export const policyDetailActions: ReactNode[] = [
   <EditOutlined key="edit"/>,
@@ -57,6 +58,7 @@ const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'customer' | 'insurance'
 
 export const getPolicyDetailFunctions = (policyId?: string) => {
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
+  const [paymentsByPolicy, setPaymentsByPolicy] = useState<IPayment[]>([]);
 
   const [isPolicyFeeDeleteModalOpen, setIsPolicyFeeDeleteModalOpen] = useState(false);
   const [selectedPolicyFee, setSelectedPolicyFee] = useState<IPolicyFee>();
@@ -81,6 +83,11 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     const policyById = await instance.get(`/policy/${policyId}`);
     setPolicyById(policyById.data);
   }, [policyId]);
+
+  const fetchPaymentsByPolicy = useCallback(async () => {
+    const payments = await instance.get(`/payment/byPolicy/${policyId}`);
+    setPaymentsByPolicy(payments.data);
+  }, [policyId])
 
   // TODO __v, createdAt, updatedAt needs to be removed
   const policyDescriptionItems: DescriptionsProps['items'] = Object.entries(policyById)
@@ -138,6 +145,9 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     calendarTileTypes,
     isPolicyFeeDeleteModalOpen, policyFeeDeletionButton, updatePolicyFee, cancelPolicyFeeModal,
 
-    changeAutoPay, isAutoPayEnabled
+    changeAutoPay, isAutoPayEnabled,
+
+    // payments
+    fetchPaymentsByPolicy, paymentsByPolicy
   }
 }

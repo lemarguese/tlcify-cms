@@ -24,6 +24,7 @@ import Calendar from "@/components/Calendar/Calendar.tsx";
 import { useEffect } from "react";
 import PolicyFeeDeleteModal from "@/pages/PolicyDetail/components/PolicyFeeDeleteModal/PolicyFeeDeleteModal.tsx";
 import Switch from "@/components/Switch/Switch.tsx";
+import { transactionsTableHeaders } from "@/pages/Transactions/utils/transactions.tsx";
 
 const PolicyDetailPage = () => {
   const navigate = useNavigate();
@@ -41,11 +42,13 @@ const PolicyDetailPage = () => {
     isPolicyFeeDeleteModalOpen,
     cancelPolicyFeeModal,
 
-    isAutoPayEnabled, changeAutoPay
+    isAutoPayEnabled, changeAutoPay,
+    paymentsByPolicy, fetchPaymentsByPolicy
   } = getPolicyDetailFunctions(policyId);
 
   useEffect(() => {
     fetchPolicyById();
+    fetchPaymentsByPolicy();
   }, []);
 
   const tabs: TabsProps['items'] = [
@@ -122,6 +125,31 @@ const PolicyDetailPage = () => {
             </div>
             <Calendar tileClassName={calendarTileTypes('due')}/>
           </div>
+        </div>
+    },
+    {
+      label: 'Settlements',
+      key: 'policy_detail_settlements',
+      children:
+        <div className='policy_detail_page_body_tab'>
+          <div className='policy_detail_page_body_left'>
+            <div className='policy_detail_page_body_left_fees'>
+              <Table actions={<></>}
+                     label='Paid payments'
+                     rowKey='_id'
+                     columns={transactionsTableHeaders} dataSource={paymentsByPolicy}/>
+            </div>
+          </div>
+          {/*<div className='policy_detail_page_body_right'>*/}
+          {/*  <div className='policy_detail_page_body_right_calendar_statuses'>*/}
+          {/*    {calendarTileStatuses.map(status => <div className='policy_detail_page_body_right_calendar_statuses_item'>*/}
+          {/*      <div className='policy_detail_page_body_right_calendar_statuses_item_color'*/}
+          {/*           style={{ backgroundColor: status.color }}></div>*/}
+          {/*      <p className='policy_detail_page_body_right_calendar_statuses_item_text'>{status.type}</p>*/}
+          {/*    </div>)}*/}
+          {/*  </div>*/}
+          {/*  <Calendar tileClassName={calendarTileTypes('fee')}/>*/}
+          {/*</div>*/}
         </div>
     },
     {

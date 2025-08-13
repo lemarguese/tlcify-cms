@@ -65,10 +65,22 @@ const PolicyCreateModal = ({
     })
   }, [insurances]);
 
-  const taxesAndFees = useMemo(() => newPolicyForm.fees.reduce((acc, item) => Number(item.amount) + acc, 0), [newPolicyForm.fees]);
+  const taxesAndFees = useMemo(() => {
+    const insurance = insurances.find(ins => ins._id === newPolicyForm.insuranceId);
+    const insuranceFee = insurance ? insurance.commissionFee : 0;
+    const feesWithInsurance = +newPolicyForm.premiumPrice * insuranceFee / 100;
+
+    const policyFees = newPolicyForm.fees.reduce((acc, item) => Number(item.amount) + acc, 0)
+
+    return policyFees + feesWithInsurance;
+  }, [newPolicyForm.fees, insurances, newPolicyForm.insuranceId, newPolicyForm.premiumPrice]);
 
   const timelineOptions = useMemo(() => {
-    let premiumPrice = newPolicyForm.premiumPrice; // 8k
+    const insurance = insurances.find(insurance => insurance._id === newPolicyForm.insuranceId);
+
+    if (!insurance) return [];
+
+    let premiumPrice = +newPolicyForm.premiumPrice + +newPolicyForm.premiumPrice * insurance.commissionFee / 100; // 8k
     let installmentCountForDeposit = +newPolicyForm.installmentCount; // 7
 
     const effectiveDate = dayjs(newPolicyForm.effectiveDate);
@@ -130,7 +142,7 @@ const PolicyCreateModal = ({
     }
 
     return Object.values(installmentArray)
-  }, [newPolicyForm.installmentCount, newPolicyForm.premiumPrice, newPolicyForm.effectiveDate, newPolicyForm.deposit, newPolicyForm.monthlyPayment, newPolicyForm.fees])
+  }, [newPolicyForm.installmentCount, newPolicyForm.premiumPrice, newPolicyForm.effectiveDate, newPolicyForm.deposit, newPolicyForm.monthlyPayment, newPolicyForm.fees, insurances, newPolicyForm.insuranceId])
 
   const validForm = useMemo(() => {
     const options = {

@@ -1,25 +1,85 @@
 import type { ColumnsType } from "antd/es/table";
-import { Tag } from "antd";
+import dayjs from "dayjs";
 
 export const transactionsTableHeaders: ColumnsType = [
+  // TODO What do i need with private fields
   {
-    title: "Transaction ID",
-    dataIndex: "transactionId",
-    key: "transactionId",
+    title: "Payment ID",
+    dataIndex: "_id",
+    key: "_id",
+  },
+  // {
+  //   title: "Policy No.",
+  //   dataIndex: ['policy', "policyNumber"],
+  //   key: "policyId",
+  // },
+  // {
+  //   title: "Cycle",
+  //   dataIndex: "cycle",
+  //   key: "cycle",
+  // },
+  {
+    title: "Due Date",
+    dataIndex: "dueDate",
+    key: "dueDate",
+    render: (_, a) => dayjs(a.dueDate).format('MM/DD/YYYY')
   },
   {
-    title: "Placed Date",
-    dataIndex: "createdAt",
-    key: "createdAt",
+    title: "Currency",
+    dataIndex: "currency",
+    key: "currency",
   },
-  { title: "Order By", dataIndex: "phoneNumber", key: "phoneNumber" },
-  { title: "Address", dataIndex: "address", key: "address" },
-  { title: "Amount", dataIndex: "address", key: "address" },
   {
-    title: "Status", dataIndex: "status", key: "status", render: () => <>
-      <Tag color={'green'}>Processed</Tag>
-    </>,
-  }
+    title: "Base Amount",
+    dataIndex: "baseAmount",
+    key: "baseAmount",
+  },
+  {
+    title: "Discount Amount",
+    dataIndex: "discountAmount",
+    key: "discountAmount",
+  },
+  {
+    title: "Total Paid",
+    dataIndex: "totalPaid",
+    key: "totalPaid",
+  },
+  // {
+  //   title: "Provider",
+  //   dataIndex: "provider",
+  //   key: "provider",
+  // },
+  // {
+  //   title: "Provider Ref",
+  //   dataIndex: "providerRef",
+  //   key: "providerRef",
+  // },
+  {
+    title: "Method",
+    dataIndex: "method",
+    key: "method",
+  },
+  {
+    title: "Paid At",
+    dataIndex: "paidAt",
+    key: "paidAt",
+    render: (_, a) => dayjs(a.paidAt).format('MM/DD/YYYY')
+  },
+  {
+    title: "Notes",
+    dataIndex: "notes",
+    key: "notes",
+  },
+  // {
+  //   title: "Created At",
+  //   dataIndex: "createdAt",
+  //   key: "createdAt",
+  // },
+  // {
+  //   title: "Updated At",
+  //   dataIndex: "updatedAt",
+  //   key: "updatedAt",
+  // }
 ];
 
 export const transactionsPartialInvoiceHeaders: ColumnsType = [
