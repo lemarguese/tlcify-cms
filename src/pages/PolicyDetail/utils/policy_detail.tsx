@@ -12,6 +12,7 @@ import type { TileArgs } from "react-calendar";
 import type { TableRowSelection } from "antd/es/table/interface";
 import Button from "@/components/Button/Button.tsx";
 import type { IPayment } from "@/types/transactions/main.ts";
+import { useNavigate } from "react-router";
 
 export const policyDetailActions: ReactNode[] = [
   <EditOutlined key="edit"/>,
@@ -57,6 +58,8 @@ const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'customer' | 'insurance'
 }
 
 export const getPolicyDetailFunctions = (policyId?: string) => {
+  const navigate = useNavigate();
+
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
   const [paymentsByPolicy, setPaymentsByPolicy] = useState<IPayment[]>([]);
 
@@ -64,6 +67,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
   const [selectedPolicyFee, setSelectedPolicyFee] = useState<IPolicyFee>();
 
   const [isAutoPayEnabled, setIsAutoPayEnabled] = useState(false);
+  const [isClientEmailModalOpen, setIsClientEmailModalOpen] = useState(false);
 
   const [policyFeeSelection] = useState<TableRowSelection>({
     onSelect: (_, _s, multipleRows) => {
@@ -136,6 +140,27 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
   const changeAutoPay = useCallback((value: boolean) => {
     setIsAutoPayEnabled(value);
+  }, []);
+
+  const navigateToBillingPage = () => {
+    navigate(`/billing/${policyId}`)
+  }
+
+  const navigateBack = () => {
+    navigate(-1)
+  }
+
+  const sendFormToClientEmail = useCallback(async (clientEmail: string) => {
+    await instance.post(`/email/payment-request/${policyId}`, { clientEmail });
+    cancelClientFormSend();
+  }, [policyId]);
+
+  const openClientFormEmail = () => {
+    setIsClientEmailModalOpen(true)
+  }
+
+  const cancelClientFormSend = useCallback(() => {
+    setIsClientEmailModalOpen(false);
   }, [])
 
   return {
@@ -148,6 +173,11 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     changeAutoPay, isAutoPayEnabled,
 
     // payments
-    fetchPaymentsByPolicy, paymentsByPolicy
+    fetchPaymentsByPolicy, paymentsByPolicy,
+    navigateToBillingPage, isClientEmailModalOpen,
+    cancelClientFormSend, sendFormToClientEmail, openClientFormEmail,
+
+    // common
+    navigateBack
   }
 }

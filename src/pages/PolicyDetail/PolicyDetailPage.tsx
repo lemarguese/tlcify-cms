@@ -10,7 +10,7 @@ import AvatarImage from '@/assets/images/ali.jpeg';
 import { PhoneTwoTone, MailTwoTone, IdcardTwoTone, HomeTwoTone } from '@ant-design/icons';
 import Description from "@/components/Description/Description.tsx";
 import type { TabsProps } from "antd";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import Table from "@/components/Table/Table.tsx";
 import {
   calendarTileStatuses,
@@ -25,9 +25,9 @@ import { useEffect } from "react";
 import PolicyFeeDeleteModal from "@/pages/PolicyDetail/components/PolicyFeeDeleteModal/PolicyFeeDeleteModal.tsx";
 import Switch from "@/components/Switch/Switch.tsx";
 import { transactionsTableHeaders } from "@/pages/Transactions/utils/transactions.tsx";
+import ClientEmailModal from "@/pages/PolicyDetail/components/ClientEmailModal/ClientEmailModal.tsx";
 
 const PolicyDetailPage = () => {
-  const navigate = useNavigate();
 
   const { policyId } = useParams();
 
@@ -43,7 +43,10 @@ const PolicyDetailPage = () => {
     cancelPolicyFeeModal,
 
     isAutoPayEnabled, changeAutoPay,
-    paymentsByPolicy, fetchPaymentsByPolicy
+    paymentsByPolicy, fetchPaymentsByPolicy,
+
+    sendFormToClientEmail, cancelClientFormSend, isClientEmailModalOpen,
+    navigateBack, navigateToBillingPage, openClientFormEmail
   } = getPolicyDetailFunctions(policyId);
 
   useEffect(() => {
@@ -95,11 +98,12 @@ const PolicyDetailPage = () => {
                 <Switch onChange={changeAutoPay} value={isAutoPayEnabled}/>
               </div>
               <div className='policy_detail_page_body_right_autopay_actions'>
+                <Button variant='solid' disabled={!isAutoPayEnabled} onClick={openClientFormEmail}
+                        className='policy_detail_page_body_right_autopay_button'>Send form to a client</Button>
                 <Button variant='solid' disabled={!isAutoPayEnabled}
-                        className='policy_detail_page_body_right_autopay_button'>Refresh Token Info</Button>
-                <Button variant='solid' disabled={!isAutoPayEnabled}
-                        onClick={() => navigate(`/payment/${policyById._id}`)}
-                        className='policy_detail_page_body_right_autopay_button'>Manage Tokens</Button>
+                        onClick={navigateToBillingPage}
+                        className='policy_detail_page_body_right_autopay_button'>Fill out the form for the
+                  client</Button>
               </div>
             </div>
           </div>
@@ -179,7 +183,7 @@ const PolicyDetailPage = () => {
     }
   ]
 
-  return <Page showSearch={false} fixedHeader back={() => navigate(-1)}>
+  return <Page showSearch={false} fixedHeader back={navigateBack}>
     <div className='policy_detail_page'>
       <div className='policy_detail_page_top'>
         <h4>Detail information of Policy No. {policyById.policyNumber}</h4>
@@ -206,6 +210,7 @@ const PolicyDetailPage = () => {
       </div>
     </div>
     <PolicyFeeDeleteModal open={isPolicyFeeDeleteModalOpen} cancel={cancelPolicyFeeModal} submit={updatePolicyFee}/>
+    <ClientEmailModal open={isClientEmailModalOpen} submit={sendFormToClientEmail} cancel={cancelClientFormSend}/>
   </Page>
 }
 

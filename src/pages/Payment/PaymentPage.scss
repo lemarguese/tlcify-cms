@@ -138,6 +138,28 @@
       }
     }
 
+    &_check {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      &_title {
+        font-size: 24px;
+      }
+
+      &_public {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      &_private {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+      }
+    }
+
     &_submit {
       flex: 1;
       background-color: #12372A;

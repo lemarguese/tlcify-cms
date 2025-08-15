@@ -15,3 +15,15 @@ export interface IPayment {
   createdAt: Date;
   updatedAt: Date;
 }
+
+// export interface IPaymentSubmit<T> {
+//   policyId: string,
+//   provider: string,
+//   providerRef: string,
+//   method: 'card' | 'check' | 'other',
+//   totalPaid: number,
+//   currency?: 'USD',
+//   discountAmount?: number,
+//   paidAt: string,
+//   notes?: string
+// }
