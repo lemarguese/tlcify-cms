@@ -16,7 +16,7 @@ import {
   calendarTileStatuses,
   getPolicyDetailFunctions,
   policyDetailActions,
-  policyFeesTableHeaders
+  policyFeesTableHeaders, vehicleLicenseColumns
 } from "@/pages/PolicyDetail/utils/policy_detail.tsx";
 import Tabs from "@/components/Tabs/Tabs.tsx";
 
@@ -45,6 +45,8 @@ const PolicyDetailPage = () => {
     isAutoPayEnabled, changeAutoPay,
     paymentsByPolicy, fetchPaymentsByPolicy,
 
+    fetchVehicleInformation, vehicles,
+
     sendFormToClientEmail, cancelClientFormSend, isClientEmailModalOpen,
     navigateBack, navigateToBillingPage, openClientFormEmail
   } = getPolicyDetailFunctions(policyId);
@@ -52,61 +54,37 @@ const PolicyDetailPage = () => {
   useEffect(() => {
     fetchPolicyById();
     fetchPaymentsByPolicy();
+    fetchVehicleInformation();
   }, []);
 
   const tabs: TabsProps['items'] = [
     {
-      label: 'Client information',
-      key: 'policy_detail_client',
+      label: 'Vehicle information',
+      key: 'policy_detail_fhv',
       children:
         <div className='policy_detail_page_body_tab'>
           <div className='policy_detail_page_body_left'>
-            <div className='policy_detail_page_body_left_client'>
-              <Card variant={'borderless'} title={'Customer information'}
-                    className='policy_detail_page_body_left_client_card' loading={false} actions={policyDetailActions}
-                    style={{ minWidth: 300 }}
-                    avatarProps={{
-                      avatar: <img src={AvatarImage} className='policy_detail_page_body_left_client_card_avatar'/>,
-                      title: 'Margellan Amangeldin',
-                      description: <div className='policy_detail_page_body_left_client_card_description'>
-                        <div className='policy_detail_page_body_left_client_card_description_item'>
-                          <PhoneTwoTone/>
-                          <p>{policyById.customer.phoneNumber}</p>
-                        </div>
-                        <div className='policy_detail_page_body_left_client_card_description_item'>
-                          <MailTwoTone/>
-                          <p>{policyById.customer.email}</p>
-                        </div>
-                        <div className='policy_detail_page_body_left_client_card_description_item'>
-                          <IdcardTwoTone/>
-                          <p>{policyById.customer.dateOfBirth}</p>
-                        </div>
-                        <div className='policy_detail_page_body_left_client_card_description_item'>
-                          <HomeTwoTone/>
-                          <p>{policyById.customer.address}</p>
-                        </div>
-                      </div>
-                    }}/>
-              {/*// TODO Do i need to add TLC detail?*/}
+            <div className='policy_detail_page_body_left_fhv'>
+              <Table actions={<></>} columns={vehicleLicenseColumns} dataSource={vehicles} />
             </div>
           </div>
-          <div className='policy_detail_page_body_right'>
-            <label className='policy_detail_page_body_right_autopay_title'>Autopay options</label>
-            <div className='policy_detail_page_body_right_autopay'>
-              <div className='policy_detail_page_body_right_autopay_switch'>
-                <p className='policy_detail_page_body_right_autopay_switch_text'>Setup Autopay</p>
-                <Switch onChange={changeAutoPay} value={isAutoPayEnabled}/>
-              </div>
-              <div className='policy_detail_page_body_right_autopay_actions'>
-                <Button variant='solid' disabled={!isAutoPayEnabled} onClick={openClientFormEmail}
-                        className='policy_detail_page_body_right_autopay_button'>Send form to a client</Button>
-                <Button variant='solid' disabled={!isAutoPayEnabled}
-                        onClick={navigateToBillingPage}
-                        className='policy_detail_page_body_right_autopay_button'>Fill out the form for the
-                  client</Button>
-              </div>
-            </div>
-          </div>
+          {/*<div className='policy_detail_page_body_right'>*/}
+          {/*  <label className='policy_detail_page_body_right_autopay_title'>Autopay options</label>*/}
+          {/*  <div className='policy_detail_page_body_right_autopay'>*/}
+          {/*    <div className='policy_detail_page_body_right_autopay_switch'>*/}
+          {/*      <p className='policy_detail_page_body_right_autopay_switch_text'>Setup Autopay</p>*/}
+          {/*      <Switch onChange={changeAutoPay} value={isAutoPayEnabled}/>*/}
+          {/*    </div>*/}
+          {/*    <div className='policy_detail_page_body_right_autopay_actions'>*/}
+          {/*      <Button variant='solid' disabled={!isAutoPayEnabled} onClick={openClientFormEmail}*/}
+          {/*              className='policy_detail_page_body_right_autopay_button'>Send form to a client</Button>*/}
+          {/*      <Button variant='solid' disabled={!isAutoPayEnabled}*/}
+          {/*              onClick={navigateToBillingPage}*/}
+          {/*              className='policy_detail_page_body_right_autopay_button'>Fill out the form for the*/}
+          {/*        client</Button>*/}
+          {/*    </div>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
         </div>
     },
     {

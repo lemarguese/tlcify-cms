@@ -158,7 +158,7 @@ const PolicyUpdateModal = ({
 
     let i = +newPolicyForm.deposit ? 1 : 0;
 
-    if (newPolicyForm.deposit) {
+    if (+newPolicyForm.deposit) {
       installmentArray[0] = {
         label: dayjs(newPolicyForm.effectiveDate).format('Do MMMM, YYYY'),
         children: `$ ${newPolicyForm.deposit}`
