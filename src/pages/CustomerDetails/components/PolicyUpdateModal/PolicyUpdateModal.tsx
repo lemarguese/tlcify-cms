@@ -156,7 +156,7 @@ const PolicyUpdateModal = ({
       return [installmentArray[0]];
     }
 
-    let i = newPolicyForm.deposit ? 1 : 0;
+    let i = +newPolicyForm.deposit ? 1 : 0;
 
     if (newPolicyForm.deposit) {
       installmentArray[0] = {
@@ -164,7 +164,7 @@ const PolicyUpdateModal = ({
         children: `$ ${newPolicyForm.deposit}`
       }
 
-      premiumPrice -= newPolicyForm.deposit;
+      premiumPrice -= +newPolicyForm.deposit;
       installmentCountForDeposit -= 1;
     }
 
@@ -180,7 +180,7 @@ const PolicyUpdateModal = ({
 
       installmentArray[i] = {
         label: effectiveDate.set('month', effectiveDate.get('month') + i).format('Do MMMM, YYYY'),
-        children: `$ ${newPolicyForm.monthlyPayment ? newPolicyForm.monthlyPayment : premiumPrice / installmentCountForDeposit} ${feesWarningText}`
+        children: `$ ${+newPolicyForm.monthlyPayment ? +newPolicyForm.monthlyPayment : premiumPrice / installmentCountForDeposit} ${feesWarningText}`
       }
 
       if (matchingFees.length) {
@@ -189,7 +189,7 @@ const PolicyUpdateModal = ({
       }
     }
 
-    if (newPolicyForm.monthlyPayment) {
+    if (+newPolicyForm.monthlyPayment) {
       const lastDueDate = dayjs(effectiveDate).add(+newPolicyForm.installmentCount - 1, 'month').startOf('day');
 
       const matchingFees = newPolicyForm.fees.filter(fee => {
@@ -198,7 +198,7 @@ const PolicyUpdateModal = ({
       const matchingFeesSum = matchingFees.reduce((acc, item) => acc + Number(item.amount), 0);
       const feesWarningText = matchingFees.length ? `(${matchingFees[0].type} fee: $ ${matchingFeesSum})` : ''
 
-      const lastPaymentPrice = premiumPrice - (+newPolicyForm.installmentCount - (newPolicyForm.deposit ? 2 : 1)) * newPolicyForm.monthlyPayment;
+      const lastPaymentPrice = premiumPrice - (+newPolicyForm.installmentCount - (+newPolicyForm.deposit ? 2 : 1)) * newPolicyForm.monthlyPayment;
       installmentArray[+newPolicyForm.installmentCount - 1].children = `$ ${lastPaymentPrice} ${feesWarningText}`;
     }
 

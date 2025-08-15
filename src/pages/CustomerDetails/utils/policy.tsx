@@ -126,7 +126,8 @@ export const getPolicyFunctions = (customerId?: string) => {
   }, [customerId]);
 
   const createPolicy = useCallback(async (newPolicyForm: IPolicyCreate, resetForm: Dispatch<SetStateAction<IPolicyCreate>>) => {
-    await instance.post('/policy', { ...newPolicyForm, customerId });
+    const { _id, ...policyFormWithoutId } = newPolicyForm;
+    await instance.post('/policy', { ...policyFormWithoutId, customerId });
     resetForm(newPolicyFormInitialState);
     await cancelCreatePolicyModal();
   }, [customerId])
