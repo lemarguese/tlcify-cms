@@ -5,11 +5,10 @@ interface CustomerDetailContactSectionProps {
   title: string;
   content: string;
   iconUrl: string;
-  backgroundColor: string;
 }
 
-const CustomerDetailContactSection: FC<CustomerDetailContactSectionProps> = ({ title, content, iconUrl, backgroundColor }) => {
-  return <div className='customer_details_page_contacts_section' style={{ backgroundColor }}>
+const CustomerDetailContactSection: FC<CustomerDetailContactSectionProps> = ({ title, content, iconUrl }) => {
+  return <div className='customer_details_page_contacts_section'>
     <div className='customer_details_page_contacts_section_icon'>
       <img src={iconUrl} alt={`${title}-icon`} />
     </div>

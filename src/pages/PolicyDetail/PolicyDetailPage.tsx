@@ -4,10 +4,6 @@ import Page from "@/layout/Page/Page.tsx";
 import Button from "@/components/Button/Button.tsx";
 import { ClockCircleOutlined } from "@ant-design/icons";
 
-import Card from "@/components/Card/Card.tsx";
-
-import AvatarImage from '@/assets/images/ali.jpeg';
-import { PhoneTwoTone, MailTwoTone, IdcardTwoTone, HomeTwoTone } from '@ant-design/icons';
 import Description from "@/components/Description/Description.tsx";
 import type { TabsProps } from "antd";
 import { useParams } from "react-router";
@@ -15,7 +11,6 @@ import Table from "@/components/Table/Table.tsx";
 import {
   calendarTileStatuses,
   getPolicyDetailFunctions,
-  policyDetailActions,
   policyFeesTableHeaders, vehicleLicenseColumns
 } from "@/pages/PolicyDetail/utils/policy_detail.tsx";
 import Tabs from "@/components/Tabs/Tabs.tsx";
@@ -23,9 +18,7 @@ import Tabs from "@/components/Tabs/Tabs.tsx";
 import Calendar from "@/components/Calendar/Calendar.tsx";
 import { useEffect } from "react";
 import PolicyFeeDeleteModal from "@/pages/PolicyDetail/components/PolicyFeeDeleteModal/PolicyFeeDeleteModal.tsx";
-import Switch from "@/components/Switch/Switch.tsx";
 import { transactionsTableHeaders } from "@/pages/Transactions/utils/transactions.tsx";
-import ClientEmailModal from "@/pages/PolicyDetail/components/ClientEmailModal/ClientEmailModal.tsx";
 
 const PolicyDetailPage = () => {
 
@@ -42,13 +35,12 @@ const PolicyDetailPage = () => {
     isPolicyFeeDeleteModalOpen,
     cancelPolicyFeeModal,
 
-    isAutoPayEnabled, changeAutoPay,
     paymentsByPolicy, fetchPaymentsByPolicy,
 
     fetchVehicleInformation, vehicles,
 
     sendFormToClientEmail, cancelClientFormSend, isClientEmailModalOpen,
-    navigateBack, navigateToBillingPage, openClientFormEmail
+    navigateBack
   } = getPolicyDetailFunctions(policyId);
 
   useEffect(() => {
@@ -65,26 +57,9 @@ const PolicyDetailPage = () => {
         <div className='policy_detail_page_body_tab'>
           <div className='policy_detail_page_body_left'>
             <div className='policy_detail_page_body_left_fhv'>
-              <Table actions={<></>} columns={vehicleLicenseColumns} dataSource={vehicles} />
+              <Table actions={<></>} columns={vehicleLicenseColumns} dataSource={vehicles}/>
             </div>
           </div>
-          {/*<div className='policy_detail_page_body_right'>*/}
-          {/*  <label className='policy_detail_page_body_right_autopay_title'>Autopay options</label>*/}
-          {/*  <div className='policy_detail_page_body_right_autopay'>*/}
-          {/*    <div className='policy_detail_page_body_right_autopay_switch'>*/}
-          {/*      <p className='policy_detail_page_body_right_autopay_switch_text'>Setup Autopay</p>*/}
-          {/*      <Switch onChange={changeAutoPay} value={isAutoPayEnabled}/>*/}
-          {/*    </div>*/}
-          {/*    <div className='policy_detail_page_body_right_autopay_actions'>*/}
-          {/*      <Button variant='solid' disabled={!isAutoPayEnabled} onClick={openClientFormEmail}*/}
-          {/*              className='policy_detail_page_body_right_autopay_button'>Send form to a client</Button>*/}
-          {/*      <Button variant='solid' disabled={!isAutoPayEnabled}*/}
-          {/*              onClick={navigateToBillingPage}*/}
-          {/*              className='policy_detail_page_body_right_autopay_button'>Fill out the form for the*/}
-          {/*        client</Button>*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
         </div>
     },
     {
@@ -188,7 +163,6 @@ const PolicyDetailPage = () => {
       </div>
     </div>
     <PolicyFeeDeleteModal open={isPolicyFeeDeleteModalOpen} cancel={cancelPolicyFeeModal} submit={updatePolicyFee}/>
-    <ClientEmailModal open={isClientEmailModalOpen} submit={sendFormToClientEmail} cancel={cancelClientFormSend}/>
   </Page>
 }
 

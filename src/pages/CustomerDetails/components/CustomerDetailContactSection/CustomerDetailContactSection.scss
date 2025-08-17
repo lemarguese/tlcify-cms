@@ -1,44 +1,27 @@
-.customer_details_page_contacts {
-  padding: 20px;
+.customer_details_page_contacts_section {
+  padding: 10.31px;
 
-  border: 1px solid #F2F2F2;
-  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 
-  box-shadow: 0 6px 9px -5px rgba(186, 186, 186, .15);
-  background-color: #FFF;
+  border-radius: 8px;
+  border: 1px solid #12372A;
 
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  grid-template-columns: 1fr 1fr;
-  gap: 9.46px 18.56px;
-
-  grid-area: 1/1/2/4;
-
-  &_section {
-    padding: 10.31px;
-
+  &_icon {
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
 
-    border-radius: 8px;
-    background-color: navy;
+    width: 39px;
+    height: 39px;
 
-    &_icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    border-radius: 4px;
+  }
 
-      width: 39px;
-      height: 39px;
-
-      border-radius: 4px;
-    }
-
-    &_content {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+  &_content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 }

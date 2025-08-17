@@ -1,0 +1,42 @@
+.customer_detail_statistics_item {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  flex: 1;
+
+  border: 1px solid #E3EBEE;
+  border-radius: 10px;
+
+  padding: 17.5px 14.41px;
+
+  &_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &_icon_block {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+
+      &_icon {
+        width: 28px;
+        height: 28px;
+
+        background-color: green;
+      }
+    }
+  }
+
+  &_footer {
+    display: flex;
+    flex-direction: column;
+
+    &_content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}

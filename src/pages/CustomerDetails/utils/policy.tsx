@@ -11,6 +11,11 @@ import type { IPolicy, IPolicyCreate, IPolicyFee, IPolicyFeeCreate, IUpdatePolic
 
 import type { TableRowSelection } from "antd/es/table/interface";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
+import EmailIcon from "@/assets/icons/email_icon.svg";
+import RegisteredIcon from "@/assets/icons/registered_icon.svg";
+import type { ICustomerCreate } from "@/types/customer/main.ts";
+import { useNavigate } from "react-router";
+import type { IDocument, IDocumentCreate } from "@/types/document/main.ts";
 
 export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id' | 'customer'> = {
   installmentCount: '',
@@ -99,7 +104,30 @@ export const policyTableHeaders: ColumnsType = [
     key: "dueDate",
     sorter: (a, b) => a.firstName.localeCompare(b.firstName)
   },
-]
+];
+
+export const documentTableHeaders: ColumnsType = [
+  {
+    title: "URL",
+    dataIndex: "url",
+    key: "url",
+    render: (text, item) => (
+      <a href={text} target="_blank" rel="noopener noreferrer">
+        {item.type}
+      </a>
+    ),
+  },
+  {
+    title: "Meta Description",
+    dataIndex: "metaDescription",
+    key: "metaDescription",
+  },
+  {
+    title: "Type",
+    dataIndex: "type",
+    key: "type",
+  },
+];
 
 export const getPolicyFunctions = (customerId?: string) => {
   const [policies, setPolicies] = useState<IPolicy[]>([]);
@@ -118,7 +146,7 @@ export const getPolicyFunctions = (customerId?: string) => {
 
       setSelectedPolicy(!isMultipleSelected ? selectedPolicy : undefined);
     },
-  })
+  });
 
   const fetchPolicies = useCallback(async () => {
     const policiesByCustomer = await instance.get('/policy/byCustomer', { params: { id: customerId } });
@@ -229,7 +257,6 @@ export const getPolicyFunctions = (customerId?: string) => {
     fetchPolicies,
     cancelCreatePolicyModal,
     createPolicy,
-
     policiesSelection,
 
     // get one
@@ -238,7 +265,107 @@ export const getPolicyFunctions = (customerId?: string) => {
     isPolicyUpdateModalOpen, cancelUpdatePolicyModal,
 
     // delete
-    cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen
+    cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen,
+  }
+}
+
+export const getCustomerFunction = (customerId?: string) => {
+  const [isClientEmailModalOpen, setIsClientEmailModalOpen] = useState(false);
+  const [isAutoPayEnabled, setIsAutoPayEnabled] = useState(false);
+
+  const [customerById, setCustomerById] = useState<ICustomerCreate>(newCustomerFormInitialState);
+
+  const contactSections = [
+    { title: 'TLC Expiration Date', content: customerById.tlcExp, iconUrl: EmailIcon },
+    { title: 'TLC Number', content: customerById.tlcNumber, iconUrl: EmailIcon },
+    { title: 'DDC Expiration Date', content: customerById.defensiveDriverCourseExp, iconUrl: RegisteredIcon },
+    { title: 'DL Number', content: customerById.driverLicenseExp, iconUrl: RegisteredIcon },
+  ];
+
+  const fetchCustomerById = useCallback(async () => {
+    const customer = await instance.get(`/customer/${customerId}`);
+    setCustomerById(customer.data);
+  }, [customerId]);
+
+  const sendFormToClientEmail = useCallback(async (clientEmail: string) => {
+    await instance.post(`/email/payment-request/${customerId}`, { clientEmail });
+    cancelClientFormSend();
+  }, [customerId]);
+
+  const openClientFormEmail = () => {
+    setIsClientEmailModalOpen(true)
+  }
+
+  const cancelClientFormSend = useCallback(() => {
+    setIsClientEmailModalOpen(false);
+  }, []);
+
+  const changeAutoPay = useCallback((value: boolean) => {
+    setIsAutoPayEnabled(value);
+  }, []);
+
+  return {
+    customerById, fetchCustomerById,
+
+    sendFormToClientEmail, openClientFormEmail, cancelClientFormSend,
+    changeAutoPay, isAutoPayEnabled, isClientEmailModalOpen,
+
+    contactSections
+  }
+}
+
+export const newDocumentFormInitialState: IDocumentCreate = {
+  metaDescription: '',
+  type: '',
+}
+
+export const documentTypeSelectionOptions = [
+  { label: 'TLC License', value: 'tlc_license' },
+  { label: 'DL License', value: 'dl_license' },
+  { label: 'DDC License', value: 'ddc_license' },
+  { label: 'Other', value: 'other' }
+]
+
+export const getDocumentFunction = (customerId?: string) => {
+  const [documents, setDocuments] = useState<IDocument[]>([]);
+
+  const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
+
+  const fetchDocumentsByCustomerId = async () => {
+    const response = await instance.get(`/document/customer/${customerId}`);
+    setDocuments(response.data);
+  }
+
+  const uploadCustomerDocument = useCallback(async (form: IDocumentCreate) => {
+    const formData = new FormData();
+    formData.set('customerId', customerId);
+
+    for (const [key, value] of Object.entries(form)) {
+      formData.set(key, value);
+    }
+
+    await instance.post('/document/customer', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    cancelDocumentModal();
+  }, [customerId]);
+
+  const addNewDocumentButton =
+    <Button variant='outlined' onClick={() => setIsDocumentModalOpen(true)}>Add
+      Document</Button>
+
+  const cancelDocumentModal = useCallback(() => {
+    setIsDocumentModalOpen(false);
+  }, [])
+
+  return {
+    fetchDocumentsByCustomerId, documents,
+    uploadCustomerDocument,
+
+    cancelDocumentModal, isDocumentModalOpen, addNewDocumentButton
   }
 }
 
