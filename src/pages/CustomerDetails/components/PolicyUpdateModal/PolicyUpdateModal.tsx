@@ -141,69 +141,49 @@ const PolicyUpdateModal = ({
   const taxesAndFees = useMemo(() => newPolicyForm.fees.reduce((acc, item) => Number(item.amount) + acc, 0), [newPolicyForm.fees]);
 
   const timelineOptions = useMemo(() => {
-    let premiumPrice = newPolicyForm.premiumPrice; // 8k
-    let installmentCountForDeposit = +newPolicyForm.installmentCount; // 7
+    const { installmentCount, premiumPrice, deposit, fees, monthlyPayment, effectiveDate } = newPolicyForm;
 
-    const effectiveDate = dayjs(newPolicyForm.effectiveDate);
+    const effectiveDateWrapped = dayjs(effectiveDate).startOf('day');
     const installmentArray: { [k: number]: TimelineItemProps } = {};
 
-    if (+newPolicyForm.installmentCount <= 1) {
-      installmentArray[0] = {
-        label: effectiveDate.set('month', effectiveDate.get('month') + 1).format('Do MMMM, YYYY'),
-        children: `$ ${premiumPrice}`
-      }
+    let installmentAmount = 0;
 
-      return [installmentArray[0]];
-    }
+    for (let index = 0; index < +installmentCount; index++) {
+      const dueDate = effectiveDateWrapped.add(index, 'month');
 
-    let i = +newPolicyForm.deposit ? 1 : 0;
-
-    if (+newPolicyForm.deposit) {
-      installmentArray[0] = {
-        label: dayjs(newPolicyForm.effectiveDate).format('Do MMMM, YYYY'),
-        children: `$ ${newPolicyForm.deposit}`
-      }
-
-      premiumPrice -= +newPolicyForm.deposit;
-      installmentCountForDeposit -= 1;
-    }
-
-    for (i; i < +newPolicyForm.installmentCount; i++) {
-      const dueDate = dayjs(effectiveDate).add(i, 'month').startOf('day');
-
-      const matchingFees = newPolicyForm.fees.filter(fee => {
-        return Math.abs(dayjs(fee.dueDate).diff(dueDate, 'day')) <= 7;
+      const matchingFees = fees.filter(fee => {
+        return Math.abs(dayjs(fee.dueDate).diff(dueDate, 'day')) <= 14;
       });
 
       const matchingFeesSum = matchingFees.reduce((acc, item) => acc + Number(item.amount), 0);
       const feesWarningText = matchingFees.length ? `(${matchingFees[0].type} fee: $ ${matchingFeesSum})` : ''
 
-      installmentArray[i] = {
-        label: effectiveDate.set('month', effectiveDate.get('month') + i).format('Do MMMM, YYYY'),
-        children: `$ ${+newPolicyForm.monthlyPayment ? +newPolicyForm.monthlyPayment : premiumPrice / installmentCountForDeposit} ${feesWarningText}`
+      installmentAmount = +premiumPrice / +installmentCount;
+
+      if (+monthlyPayment) {
+        if (index === +installmentCount - 1) installmentAmount = +premiumPrice - (+installmentCount - 1) * +monthlyPayment;
+        else installmentAmount = monthlyPayment;
+      }
+
+      if (+deposit) {
+        if (index === 0) {
+          installmentAmount = (+monthlyPayment ? +monthlyPayment : (+premiumPrice / +installmentCount)) - deposit;
+        }
+      }
+
+      installmentArray[index] = {
+        label: effectiveDateWrapped.set('month', effectiveDateWrapped.get('month') + index).format('Do MMMM, YYYY'),
+        children: `$ ${installmentAmount} ${feesWarningText}`
       }
 
       if (matchingFees.length) {
-        installmentArray[i].dot = <ClockCircleOutlined/>;
-        installmentArray[i].color = 'red';
+        installmentArray[index].dot = <ClockCircleOutlined/>;
+        installmentArray[index].color = 'red';
       }
     }
 
-    if (+newPolicyForm.monthlyPayment) {
-      const lastDueDate = dayjs(effectiveDate).add(+newPolicyForm.installmentCount - 1, 'month').startOf('day');
-
-      const matchingFees = newPolicyForm.fees.filter(fee => {
-        return Math.abs(dayjs(fee.dueDate).diff(lastDueDate, 'day')) <= 7;
-      });
-      const matchingFeesSum = matchingFees.reduce((acc, item) => acc + Number(item.amount), 0);
-      const feesWarningText = matchingFees.length ? `(${matchingFees[0].type} fee: $ ${matchingFeesSum})` : ''
-
-      const lastPaymentPrice = premiumPrice - (+newPolicyForm.installmentCount - (+newPolicyForm.deposit ? 2 : 1)) * newPolicyForm.monthlyPayment;
-      installmentArray[+newPolicyForm.installmentCount - 1].children = `$ ${lastPaymentPrice} ${feesWarningText}`;
-    }
-
     return Object.values(installmentArray)
-  }, [newPolicyForm.installmentCount, newPolicyForm.premiumPrice, newPolicyForm.effectiveDate, newPolicyForm.deposit, newPolicyForm.monthlyPayment, newPolicyForm.fees])
+  }, [newPolicyForm.installmentCount, newPolicyForm.premiumPrice, newPolicyForm.deposit, newPolicyForm.monthlyPayment, newPolicyForm.fees, newPolicyForm.effectiveDate])
 
   return <>
     <Modal width={800} footer={openPolicyFeeModalButton} onCancel={cancel} open={open}>
@@ -262,7 +242,7 @@ const PolicyUpdateModal = ({
             <div className='policy_update_modal_information_horizontal'>
               <Input label='Deposit' addonBefore='$' value={newPolicyForm.deposit}
                      onChange={changePolicyFormData('deposit', setNewPolicyForm)}/>
-              <Input label='Monthly payment' addonBefore='$' value={newPolicyForm.monthlyPayment}
+              <Input label='Monthly payment' addonBefore='$' disabled={+newPolicyForm.installmentCount <= 1} value={newPolicyForm.monthlyPayment}
                      onChange={changePolicyFormData('monthlyPayment', setNewPolicyForm)}/>
             </div>
           </div>

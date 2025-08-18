@@ -14,8 +14,8 @@ import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx
 import EmailIcon from "@/assets/icons/email_icon.svg";
 import RegisteredIcon from "@/assets/icons/registered_icon.svg";
 import type { ICustomerCreate } from "@/types/customer/main.ts";
-import { useNavigate } from "react-router";
 import type { IDocument, IDocumentCreate } from "@/types/document/main.ts";
+import type { IPaymentCreate } from "@/types/transactions/main.ts";
 
 export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id' | 'customer'> = {
   installmentCount: '',
@@ -138,6 +138,7 @@ export const getPolicyFunctions = (customerId?: string) => {
   const [isPolicyCreateModalOpen, setIsPolicyCreateModalOpen] = useState(false);
   const [isPolicyUpdateModalOpen, setIsPolicyUpdateModalOpen] = useState(false);
   const [isPolicyDeleteModalOpen, setIsPolicyDeleteModalOpen] = useState(false);
+  const [isPaymentCreateModalOpen, setIsPaymentCreateModalOpen] = useState(false);
 
   const [policiesSelection] = useState<TableRowSelection>({
     onSelect: (_, _s, multipleRows) => {
@@ -212,6 +213,8 @@ export const getPolicyFunctions = (customerId?: string) => {
         <Button variant='outlined' color={'danger'} onClick={() => setIsPolicyDeleteModalOpen(true)}>Delete the
             policy</Button>}
     {selectedPolicy && <Button onClick={() => setIsPolicyUpdateModalOpen(true)}>Update the policy</Button>}
+    {selectedPolicy && <Button color={'magenta'} variant='solid' onClick={() => setIsPaymentCreateModalOpen(true)}>Create
+        payment</Button>}
     <Button variant='outlined' color={'geekblue'} onClick={() => setIsPolicyCreateModalOpen(true)}>Add policy</Button>
   </div>
 
@@ -247,6 +250,22 @@ export const getPolicyFunctions = (customerId?: string) => {
     await cancelDeletePolicyModal();
   }, [selectedPolicy]);
 
+  // payment
+
+  const cancelPaymentCreateModal = useCallback(() => {
+    setIsPaymentCreateModalOpen(false);
+  }, []);
+
+  const createPayment = useCallback(async (paymentForm: IPaymentCreate) => {
+    await instance.post('/payment/application', {
+      ...paymentForm,
+      policyId: selectedPolicy!._id,
+      provider: paymentForm.method.toUpperCase(),
+    });
+
+    cancelPaymentCreateModal();
+  }, [selectedPolicy]);
+
   return {
     // all policies
     policies,
@@ -266,6 +285,9 @@ export const getPolicyFunctions = (customerId?: string) => {
 
     // delete
     cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen,
+
+    // payment
+    cancelPaymentCreateModal, isPaymentCreateModalOpen, createPayment
   }
 }
 
@@ -314,6 +336,21 @@ export const getCustomerFunction = (customerId?: string) => {
   }
 }
 
+export const newPaymentFormInitialState: IPaymentCreate = {
+  discountAmount: 0,
+  notes: '',
+  method: 'other',
+  totalPaid: 0,
+  paidAt: undefined
+}
+
+export const paymentTypeRadioOptions = [
+  { label: 'Card', value: 'card' },
+  { label: 'Cash', value: 'cash' },
+  { label: 'Zelle', value: 'zelle' },
+  { label: 'Other', value: 'other' },
+];
+
 export const newDocumentFormInitialState: IDocumentCreate = {
   metaDescription: '',
   type: '',
@@ -338,7 +375,7 @@ export const getDocumentFunction = (customerId?: string) => {
 
   const uploadCustomerDocument = useCallback(async (form: IDocumentCreate) => {
     const formData = new FormData();
-    formData.set('customerId', customerId);
+    formData.set('customerId', customerId!);
 
     for (const [key, value] of Object.entries(form)) {
       formData.set(key, value);

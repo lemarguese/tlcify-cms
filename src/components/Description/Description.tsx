@@ -5,7 +5,7 @@ import type { FC } from "react";
 interface CustomDescription extends DescriptionsProps {
 }
 
-const Description: FC<CustomDescription> = ({ ...props }) => {
+const Description: FC<CustomDescription> = (props) => {
   return <AntDescription {...props}/>
 }
 

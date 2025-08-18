@@ -51,4 +51,5 @@ export const feeTypeOptions = [
   { label: 'Cancellation', value: 'cancellation' },
   { label: 'Return', value: 'return' },
   { label: 'Reinstatement', value: 'reinstatement' },
+  { label: 'Additional invoice', value: 'invoice' },
 ]

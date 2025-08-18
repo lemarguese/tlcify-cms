@@ -26,6 +26,7 @@ import Switch from "@/components/Switch/Switch.tsx";
 import Button from "@/components/Button/Button.tsx";
 import ClientEmailModal from "@/pages/CustomerDetails/components/ClientEmailModal/ClientEmailModal.tsx";
 import DocumentCreateModal from "@/pages/CustomerDetails/components/DocumentCreateModal/DocumentCreateModal.tsx";
+import PaymentCreateModal from "@/pages/CustomerDetails/components/PaymentCreateModal/PaymentCreateModal.tsx";
 
 const CustomerDetailsPage = () => {
 
@@ -60,6 +61,9 @@ const CustomerDetailsPage = () => {
 
     // delete
     cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen,
+
+    // payment
+    isPaymentCreateModalOpen, cancelPaymentCreateModal, createPayment,
 
     // common
     ...commonPolicyFunctions
@@ -114,9 +118,12 @@ const CustomerDetailsPage = () => {
           </div>
         </div>
         <div className='customer_details_page_statistics'>
-          <CustomerDetailStatisticsItem key={`1`} title='Total amount of payments' description={'300'}/>
-          <CustomerDetailStatisticsItem key={`2`} title='Next due amount' description={'300'}/>
-          <CustomerDetailStatisticsItem key={`3`} title='Total amount of fees' description={'300'}/>
+          <CustomerDetailStatisticsItem key={`customer-details-page-statistics-item-total-amount`}
+                                        title='Total amount of payments' description={'300'}/>
+          <CustomerDetailStatisticsItem key={`customer-details-page-statistics-item-next-due`} title='Next due amount'
+                                        description={'300'}/>
+          <CustomerDetailStatisticsItem key={`customer-details-page-statistics-item-total-fee`}
+                                        title='Total amount of fees' description={'300'}/>
         </div>
         <CustomerDetailProfile
           firstName={customerById.firstName}
@@ -125,7 +132,8 @@ const CustomerDetailsPage = () => {
           phoneNumber={customerById.phoneNumber}
         />
       </div>
-      <Table label='Documents' actions={addNewDocumentButton} columns={documentTableHeaders} dataSource={documents} rowKey='_id'/>
+      <Table label='Documents' actions={addNewDocumentButton} columns={documentTableHeaders} dataSource={documents}
+             rowKey='_id'/>
       <Table label='Policy' rowSelection={commonPolicyFunctions.policiesSelection} rowKey='_id'
              actions={policiesActionButton} columns={policyTableHeaders} dataSource={policies} onRow={(item) => ({
         onClick: () => {
@@ -145,6 +153,7 @@ const CustomerDetailsPage = () => {
     <PolicyDeleteModal open={isPolicyDeleteModalOpen} submit={deletePolicy} cancel={cancelDeletePolicyModal}/>
     <ClientEmailModal open={isClientEmailModalOpen} submit={sendFormToClientEmail} cancel={cancelClientFormSend}/>
     <DocumentCreateModal open={isDocumentModalOpen} cancel={cancelDocumentModal} submit={uploadCustomerDocument}/>
+    <PaymentCreateModal open={isPaymentCreateModalOpen} submit={createPayment} cancel={cancelPaymentCreateModal}/>
   </Page>
 }
 

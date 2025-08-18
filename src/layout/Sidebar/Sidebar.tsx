@@ -1,6 +1,6 @@
 import './Sidebar.scss';
 import { Layout, Menu } from 'antd';
-import { UserOutlined, MoneyCollectOutlined } from '@ant-design/icons';
+import { UserOutlined, MoneyCollectOutlined, BarChartOutlined, ContainerOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from "react-router";
 
 const { Sider } = Layout;
@@ -11,13 +11,17 @@ interface SidebarProps {
 const sidebarOptions: { [k: string]: string } = {
   'sidebar-customer': '/customers',
   'sidebar-payment': '/payments',
-  'sidebar-insurance': '/insurances'
+  'sidebar-insurance': '/insurances',
+  'sidebar-analytic': '/analytics',
+  'sidebar-renewal': '/renewals'
 }
 
 const navigateOptions: { [k: string]: string } = {
   '/customers': 'sidebar-customer',
   '/payments': 'sidebar-payment',
-  '/insurances': 'sidebar-insurance'
+  '/insurances': 'sidebar-insurance',
+  '/analytics': 'sidebar-analytic',
+  '/renewals': 'sidebar-renewal',
 }
 
 const Sidebar = ({}: SidebarProps) => {
@@ -52,6 +56,16 @@ const Sidebar = ({}: SidebarProps) => {
               key: 'sidebar-insurance',
               icon: <MoneyCollectOutlined/>,
               label: 'Insurance',
+            },
+            {
+              key: 'sidebar-analytic',
+              icon: <BarChartOutlined/>,
+              label: 'Analytics',
+            },
+            {
+              key: 'sidebar-renewal',
+              icon: <ContainerOutlined/>,
+              label: 'Renewal',
             },
           ]}
         />

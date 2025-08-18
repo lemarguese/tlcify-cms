@@ -1,7 +1,4 @@
-import { useCallback, useState } from "react";
-import type { ReactNode } from 'react';
-
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from "@ant-design/icons";
+import { useCallback, useMemo, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import { instance } from "@/api/axios.ts";
 import type { IPolicy, IPolicyFee, VehicleLicenseInfo } from "@/types/policy/main.ts";
@@ -12,15 +9,9 @@ import type { TileArgs } from "react-calendar";
 import type { TableRowSelection } from "antd/es/table/interface";
 import Button from "@/components/Button/Button.tsx";
 import type { IPayment } from "@/types/transactions/main.ts";
-
-export const policyDetailActions: ReactNode[] = [
-  <EditOutlined key="edit"/>,
-  <SettingOutlined key="setting"/>,
-  <EllipsisOutlined key="ellipsis"/>,
-];
+import { Tag } from "antd";
 
 export const vehicleLicenseColumns: ColumnsType = [
-  { title: "Active", dataIndex: "active", key: "active" },
   { title: "Vehicle License Number", dataIndex: "vehicle_license_number", key: "vehicle_license_number" },
   { title: "Name", dataIndex: "name", key: "name" },
   { title: "License Type", dataIndex: "license_type", key: "license_type" },
@@ -40,6 +31,11 @@ export const vehicleLicenseColumns: ColumnsType = [
   { title: "Reason", dataIndex: "reason", key: "reason" },
   { title: "Last Date Updated", dataIndex: "last_date_updated", key: "last_date_updated" },
   { title: "Last Time Updated", dataIndex: "last_time_updated", key: "last_time_updated" },
+  {
+    title: "Status", dataIndex: "active", key: "active", render: (isActive) => <>
+      <Tag color={isActive ? 'green' : 'red'}>{isActive ? 'Active' : 'Inactive'}</Tag>
+    </>,
+  },
 ];
 
 
@@ -110,11 +106,11 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
   const fetchPaymentsByPolicy = useCallback(async () => {
     const payments = await instance.get(`/payment/byPolicy/${policyId}`);
     setPaymentsByPolicy(payments.data);
-  }, [policyId])
+  }, [policyId]);
 
   // TODO __v, createdAt, updatedAt needs to be removed
   const policyDescriptionItems: DescriptionsProps['items'] = Object.entries(policyById)
-    .filter(([k, _]) => !['_id', 'insurance', 'customer', 'fees', 'createdAt', 'updatedAt', '__v'].includes(k))
+    .filter(([k, _]) => !['_id', 'insurance', 'customer', 'fees', 'createdAt', 'updatedAt', '__v', 'type', 'status'].includes(k))
     .map(([policyKey, policyValue]) => {
       return {
         label: policyTitles[policyKey as keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees'>],
@@ -122,6 +118,103 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
         children: policyValue
       }
     });
+
+  const installmentsDescriptionItems: DescriptionsProps['items'] = useMemo(() => {
+    const paymentsMap = new Map(
+      paymentsByPolicy.map(p => [p.cycle, p])
+    );
+
+    const { deposit, premiumPrice, installmentCount, effectiveDate, monthlyPayment, fees } = policyById;
+
+    const wrappedEffectiveDate = dayjs(effectiveDate).startOf('day');
+    const rows: {
+      dueDate: string,
+      monthlyAmount: number,
+      dueAmount: number,
+      matchingFeeAmount: number,
+      type: 'Monthly'
+    }[] = [];
+
+    let scheduledAmount = 0;
+    let totalScheduledAmount = 0;
+    let totalDueNowAmount = 0;
+
+    for (let index = 0; index < +installmentCount; index++) {
+      const dueDate = wrappedEffectiveDate.add(index, 'month');
+
+      const matchingFees = fees.filter(fee => {
+        return Math.abs(dayjs(fee.dueDate).diff(dueDate, 'day')) <= 14;
+      });
+
+      const matchingFeeSum = matchingFees.reduce((acc, item) => acc + item.amount, 0);
+      scheduledAmount = premiumPrice / +installmentCount;
+
+      if (deposit) {
+        if (index === 0) {
+          totalDueNowAmount = (monthlyPayment ? monthlyPayment : (premiumPrice / +installmentCount)) - deposit;
+        }
+      }
+
+      if (monthlyPayment) {
+        if (index === +installmentCount - 1) scheduledAmount = premiumPrice - monthlyPayment * (+installmentCount - 1);
+        else scheduledAmount = monthlyPayment;
+      }
+
+      const dueAmount = paymentsMap.get(index);
+
+      rows.push({
+        monthlyAmount: scheduledAmount,
+        dueDate: dueDate.format('MM/DD/YYYY'),
+        dueAmount: dueAmount ? scheduledAmount + matchingFeeSum - dueAmount.totalPaid : scheduledAmount,
+        matchingFeeAmount: matchingFeeSum,
+        type: 'Monthly'
+      })
+
+      totalDueNowAmount += scheduledAmount + matchingFeeSum - (dueAmount ? dueAmount.totalPaid : 0)
+      totalScheduledAmount += scheduledAmount + matchingFeeSum;
+    }
+
+    const descriptionItems = rows.map(({ dueDate, dueAmount, matchingFeeAmount, monthlyAmount, type }, index) => ({
+      label: `Cycle ${index + 1}`,
+      key: `cycle_${index + 1}`,
+      children: <div className='policy_detail_page_body_left_installments_content'>
+        <div className='policy_detail_page_body_left_installments_content_item'>
+          <strong>Due Date:</strong>
+          <p>{dueDate}</p>
+        </div>
+        <div className='policy_detail_page_body_left_installments_content_item'>
+          <strong>Monthly amount:</strong>
+          <p>{(monthlyAmount + matchingFeeAmount).toFixed(2)}</p>
+        </div>
+        <div className='policy_detail_page_body_left_installments_content_item'>
+          <strong>Due amount:</strong>
+          <p>{dueAmount}</p>
+        </div>
+        <div className='policy_detail_page_body_left_installments_content_item'>
+          <strong>Type:</strong>
+          <p>{type}</p>
+        </div>
+      </div>
+    }));
+
+    descriptionItems.push({
+      label: '',
+      key: 'policy_detail_total_amounts',
+      children: <div className='policy_detail_page_body_left_installments_content_footer'>
+        <div className='policy_detail_page_body_left_installments_content_footer_item'>
+          <strong>Total Scheduled amount: </strong>
+          <p>{totalScheduledAmount}</p>
+        </div>
+        <div className='policy_detail_page_body_left_installments_content_footer_item'>
+          <strong>Total Remaining amount: </strong>
+          <p>{totalDueNowAmount}</p>
+        </div>
+      </div>
+    })
+
+    return descriptionItems as DescriptionsProps['items'];
+  }, [policyById, paymentsByPolicy]);
+
 
   const calendarTileTypes = (type: 'fee' | 'due') => ({ date, view }: TileArgs) => {
     // Add class to tiles in month view only
@@ -176,5 +269,9 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
     // fhv
     fetchVehicleInformation, vehicles,
+
+    // installments
+
+    installmentsDescriptionItems
   }
 }

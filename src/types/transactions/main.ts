@@ -9,21 +9,13 @@ export interface IPayment {
   totalPaid: number;
   provider: string;
   providerRef: string;
-  method: "card" | "cash" | "check";
-  paidAt: Date;
+  method: 'card' | 'check' | 'zelle' | 'cash' | 'other';
+  paidAt?: Date | string;
   notes?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// export interface IPaymentSubmit<T> {
-//   policyId: string,
-//   provider: string,
-//   providerRef: string,
-//   method: 'card' | 'check' | 'other',
-//   totalPaid: number,
-//   currency?: 'USD',
-//   discountAmount?: number,
-//   paidAt: string,
-//   notes?: string
-// }
+export interface IPaymentCreate extends Pick<IPayment, 'method' | 'paidAt' | 'notes' | 'discountAmount' | 'totalPaid'> {
+  paidAt?: string | Date
+}

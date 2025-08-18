@@ -9,6 +9,7 @@ import TransactionsDetailsPage from "@/pages/TransactionsDetails/TransactionsDet
 import InsurancePage from "@/pages/Insurance/InsurancePage.tsx";
 import PolicyDetailPage from "@/pages/PolicyDetail/PolicyDetailPage.tsx";
 import PaymentPage from "@/pages/Payment/PaymentPage.tsx";
+import RenewalPage from "@/pages/Renewal/RenewalPage.tsx";
 
 const Router = () => {
   return <BrowserRouter>
@@ -38,8 +39,18 @@ const Router = () => {
         </Route>
       </Route>
       <Route element={<ProtectedRoute />}>
-        <Route path='/billing/:policyId'>
+        <Route path='/billing/:customerId'>
           <Route index element={<PaymentPage />} />
+        </Route>
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path='/renewals'>
+          <Route index element={<RenewalPage />} />
+        </Route>
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path='/analytics'>
+          <Route index element={<RenewalPage />} />
         </Route>
       </Route>
     </Routes>

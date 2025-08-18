@@ -1,0 +1,13 @@
+.payment_create_modal {
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &_horizontal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
