@@ -5,9 +5,13 @@ export interface IInvoicePolicy {
   policy: IPolicy;
   number: string;
   insuranceCarrierName: string;
-  dueDate: string;
+  dueDate: Date;
   amount: number;
   totalDueDateFee: number;
+}
+
+export interface IInvoicePolicyCreate extends Omit<IInvoicePolicy, 'policy'> {
+  policy: string;
 }
 
 export interface IInvoice {
@@ -25,5 +29,5 @@ export interface IInvoice {
 
 export interface IInvoiceCreate extends Omit<IInvoice, 'customer' | 'policies' | '_id' | 'status' | 'paidAt' | 'invoiceNumber' | 'currency' | 'emailSent'> {
   customer: string;
-  policies: Omit<IInvoicePolicy, 'policy'> & { policy: string; }
+  policies: IInvoicePolicyCreate[]
 }

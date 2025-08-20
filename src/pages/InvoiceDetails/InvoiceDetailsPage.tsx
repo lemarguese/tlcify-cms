@@ -8,7 +8,7 @@ import Table from "@/components/Table/Table.tsx";
 import TransactionDetailTotalTableFooter
   from "@/pages/InvoiceDetails/components/TotalTableFooter/TotalTableFooter.tsx";
 
-import { ClockCircleOutlined, SendOutlined } from '@ant-design/icons'
+import { SendOutlined } from '@ant-design/icons'
 import TransactionsDetailsPaymentStepper
   from "@/pages/InvoiceDetails/components/PaymentStepper/PaymentStepper.tsx";
 import { useNavigate, useParams } from "react-router";
@@ -16,6 +16,10 @@ import {
   getInvoiceDetailFunctions, invoiceDetailTableHeaders,
 } from "@/pages/InvoiceDetails/utils/invoice_details.tsx";
 import { useEffect } from "react";
+import dayjs from "dayjs";
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+
+dayjs.extend(advancedFormat);
 
 const InvoiceDetailsPage = () => {
   const navigate = useNavigate();
@@ -40,7 +44,7 @@ const InvoiceDetailsPage = () => {
         <div className='transactions_details_page_header_description'>
           <h4 className='transactions_details_page_header_description_title'>Invoice #{invoiceById.invoiceNumber}</h4>
           {invoiceById.paidAt ? <p className='transactions_details_page_header_description_paid_date'>Paid
-            on {invoiceById.paidAt}</p> : undefined}
+            on {dayjs(invoiceById.paidAt).format('Do MMMM, YYYY')}</p> : undefined}
         </div>
         <div className='transactions_details_page_header_actions'>
           <Button>More Options</Button>
@@ -78,9 +82,9 @@ const InvoiceDetailsPage = () => {
           </div>
           <div className='transactions_details_page_body_footer'>
             <Table rowKey='transactionId'
-                   footer={(data) => <TransactionDetailTotalTableFooter totalAmount={totalDueAmount}
-                                                                        totalFees={totalFeesAmount}
-                                                                        totalPrice={totalPrice}/>}
+                   footer={() => <TransactionDetailTotalTableFooter totalAmount={totalDueAmount}
+                                                                    totalFees={totalFeesAmount}
+                                                                    totalPrice={totalPrice}/>}
                    actions={<></>}
                    columns={invoiceDetailTableHeaders} dataSource={invoiceById.policies}/>
           </div>

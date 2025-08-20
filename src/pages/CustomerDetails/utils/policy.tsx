@@ -25,7 +25,7 @@ import RegisteredIcon from "@/assets/icons/registered_icon.svg";
 import type { ICustomerCreate } from "@/types/customer/main.ts";
 import type { IDocument, IDocumentCreate } from "@/types/document/main.ts";
 import type { IPaymentCreate } from "@/types/transactions/main.ts";
-import type { IInvoiceCreate, IInvoicePolicy } from "@/types/invoice/main.ts";
+import type { IInvoiceCreate, IInvoicePolicyCreate } from "@/types/invoice/main.ts";
 import type { NavigateFunction } from "react-router";
 
 export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id' | 'customer' | 'matchedFees'> = {
@@ -186,7 +186,7 @@ export const getPolicyFunctions = (customerId?: string) => {
         ...prev,
         [key]: typeof val === 'string' ? val : val.target.value,
         ...(key === 'policyTerm' ? {
-          expirationDate: prev.effectiveDate ? dayjs(prev.effectiveDate).add(+(val as BaseSyntheticEvent).target.value, 'month') : undefined
+          expirationDate: prev.effectiveDate ? dayjs(prev.effectiveDate).add(+(val as BaseSyntheticEvent).target.value, 'month').toDate() : undefined
         } : {})
       }))
     }
@@ -301,7 +301,7 @@ export const getPolicyFunctions = (customerId?: string) => {
           amount: p.amountDue,
           totalDueDateFee: p.matchedFees.total
         }
-      )) as Omit<IInvoicePolicy, 'policy'> & { policy: string; },
+      )) as IInvoicePolicyCreate[],
       issuedAt: new Date(),
     }
 

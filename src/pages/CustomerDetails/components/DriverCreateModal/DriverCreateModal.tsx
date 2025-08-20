@@ -10,14 +10,14 @@ import { useState } from "react";
 import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 
 import { newDriverFormInitialState } from "@/pages/CustomerDetails/utils/driver.tsx";
-import type { IDriver, IDriverCreate } from "@/types/driver/main.ts";
+import type { IDriverCreate } from "@/types/driver/main.ts";
 
 interface DriverCreateModalProps {
   open: boolean;
   cancel: () => void;
   submit: (value: IDriverCreate, resetForm: Dispatch<SetStateAction<IDriverCreate>>) => void;
-  dateChange: (val: keyof Pick<IDriver, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => (val: Dayjs) => void;
-  formChange: (val: keyof Omit<IDriver, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => (val: BaseSyntheticEvent) => void;
+  dateChange: (val: keyof Pick<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => (val: Dayjs) => void;
+  formChange: (val: keyof Omit<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => (val: BaseSyntheticEvent) => void;
 }
 
 const DriverCreateModal = ({ open, cancel, formChange, dateChange, submit }: DriverCreateModalProps) => {

@@ -63,7 +63,7 @@ export const calendarTileStatuses = [
   { color: '#ffff76', type: 'today' }
 ];
 
-const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees'>]: string } = {
+const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees' | 'matchedFees'>]: string } = {
   policyNumber: 'Policy Number',
   type: 'Policy Type',
   status: 'Policy Status',
@@ -113,7 +113,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     .filter(([k, _]) => !['_id', 'insurance', 'customer', 'fees', 'createdAt', 'updatedAt', '__v', 'type', 'status'].includes(k))
     .map(([policyKey, policyValue]) => {
       return {
-        label: policyTitles[policyKey as keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees'>],
+        label: policyTitles[policyKey as keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees' | 'matchedFees'>],
         key: policyKey,
         children: policyValue
       }
