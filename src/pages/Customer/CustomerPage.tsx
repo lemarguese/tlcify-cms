@@ -60,7 +60,7 @@ const CustomerPage = () => {
 
   const changeCustomerFormTime = useCallback((key: keyof Pick<ICustomer, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => {
     return (val: Dayjs) => {
-      const date = val ? val.format('MM/DD/YYYY') : undefined
+      const date = val ? val.toDate() : undefined
       callback(prev => ({
         ...prev,
         [key]: date

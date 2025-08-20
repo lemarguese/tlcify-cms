@@ -4,14 +4,14 @@ export interface ICustomer {
   lastName: string,
   phoneNumber: string,
   email: string,
-  dateOfBirth: string,
+  dateOfBirth: Date,
   address: string,
   tlcNumber: string,
-  tlcExp: string,
+  tlcExp: Date,
   driverLicenseNumber: string,
-  driverLicenseExp: string,
+  driverLicenseExp: Date,
   lastSSN: string,
-  defensiveDriverCourseExp: string,
+  defensiveDriverCourseExp: Date,
 }
 
 export interface ICustomerCreate extends Omit<ICustomer, '_id'> {}

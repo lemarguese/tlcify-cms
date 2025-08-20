@@ -8,32 +8,42 @@ export interface IPolicy {
   policyNumber: string;
   type: string;
   status: string;
-  effectiveDate: string | undefined;
-  expirationDate: string | undefined;
+  effectiveDate: Date | undefined;
+  expirationDate: Date | undefined;
   policyTerm: string;
   premiumPrice: number;
   installmentCount: string;
   fees: IPolicyFee[];
+  matchedFees: {
+    fees: IPolicyFee[];
+    total: number;
+  }
   monthlyPayment: number;
   deposit: number;
 }
 
-export interface IPolicyCreate extends Omit<IPolicy, 'insurance' | 'customer'> {
+export interface IPolicyCreate extends Omit<IPolicy, 'insurance' | 'customer' | 'matchedFees'> {
   insuranceId: string;
 }
 
-export interface IUpdatePolicy extends Omit<IPolicy, 'insurance' | 'customer'> {
+export interface IUpdatePolicy extends Omit<IPolicy, 'insurance' | 'customer' | 'matchedFees'> {
   insuranceId: string;
+}
+
+export interface IPolicyByCustomer extends IPolicy {
+  dueDate: Date;
+  amountDue: number;
 }
 
 export interface IPolicyFee {
   _id: string;
   type: 'late' | 'cancellation' | 'return' | 'reinstatement';
-  dueDate: string | undefined;
+  dueDate: Date | undefined;
   amount: number;
 }
 
-export interface IPolicyFeeCreate extends Omit<IPolicyFee, '_id'> {}
+export interface IPolicyFeeCreate extends Omit<IPolicyFee, '_id'> {
+}
 
 export interface VehicleLicenseInfo {
   active: string;

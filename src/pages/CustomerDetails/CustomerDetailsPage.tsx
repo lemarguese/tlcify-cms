@@ -27,6 +27,7 @@ import Button from "@/components/Button/Button.tsx";
 import ClientEmailModal from "@/pages/CustomerDetails/components/ClientEmailModal/ClientEmailModal.tsx";
 import DocumentCreateModal from "@/pages/CustomerDetails/components/DocumentCreateModal/DocumentCreateModal.tsx";
 import PaymentCreateModal from "@/pages/CustomerDetails/components/PaymentCreateModal/PaymentCreateModal.tsx";
+import InvoiceCreateModal from "@/pages/CustomerDetails/components/InvoiceCreateModal/InvoiceCreateModal.tsx";
 
 const CustomerDetailsPage = () => {
 
@@ -64,6 +65,9 @@ const CustomerDetailsPage = () => {
 
     // payment
     isPaymentCreateModalOpen, cancelPaymentCreateModal, createPayment,
+
+    // invoice
+    cancelInvoiceCreateModal, isInvoiceConfirmModalOpen, createInvoice,
 
     // common
     ...commonPolicyFunctions
@@ -154,6 +158,9 @@ const CustomerDetailsPage = () => {
     <ClientEmailModal open={isClientEmailModalOpen} submit={sendFormToClientEmail} cancel={cancelClientFormSend}/>
     <DocumentCreateModal open={isDocumentModalOpen} cancel={cancelDocumentModal} submit={uploadCustomerDocument}/>
     <PaymentCreateModal open={isPaymentCreateModalOpen} submit={createPayment} cancel={cancelPaymentCreateModal}/>
+    <InvoiceCreateModal open={isInvoiceConfirmModalOpen} cancel={cancelInvoiceCreateModal}
+                        submit={() => createInvoice(navigate)}
+    />
   </Page>
 }
 

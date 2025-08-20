@@ -54,7 +54,7 @@ const PaymentCreateModal = ({ open, cancel, submit }: PaymentCreateModalProps) =
     return Object.values(validation).every(el => el);
   }, [newPaymentForm.method, newPaymentForm.totalPaid, newPaymentForm.paidAt])
 
-  return <Modal open={open} onCancel={cancel} okButtonProps={{ title: 'Submit', disabled: !submitValid }}
+  return <Modal open={open} onCancel={cancel} okText='Submit' okButtonProps={{ disabled: !submitValid }}
                 onOk={() => submit(newPaymentForm)}>
     <div className='payment_create_modal'>
       <Radio label='Payment method' value={newPaymentForm.method} onChange={changeRadios}

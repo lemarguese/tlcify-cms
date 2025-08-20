@@ -7,7 +7,16 @@ import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 
 import { instance } from "@/api/axios.ts";
 import dayjs, { Dayjs } from "dayjs";
-import type { IPolicy, IPolicyCreate, IPolicyFee, IPolicyFeeCreate, IUpdatePolicy } from "@/types/policy/main.ts";
+import type {
+  IPolicy,
+  IPolicyByCustomer,
+  IPolicyCreate,
+  IPolicyFee,
+  IPolicyFeeCreate,
+  IUpdatePolicy
+} from "@/types/policy/main.ts";
+
+import { SendOutlined } from '@ant-design/icons'
 
 import type { TableRowSelection } from "antd/es/table/interface";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
@@ -16,8 +25,10 @@ import RegisteredIcon from "@/assets/icons/registered_icon.svg";
 import type { ICustomerCreate } from "@/types/customer/main.ts";
 import type { IDocument, IDocumentCreate } from "@/types/document/main.ts";
 import type { IPaymentCreate } from "@/types/transactions/main.ts";
+import type { IInvoiceCreate, IInvoicePolicy } from "@/types/invoice/main.ts";
+import type { NavigateFunction } from "react-router";
 
-export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id' | 'customer'> = {
+export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id' | 'customer' | 'matchedFees'> = {
   installmentCount: '',
   monthlyPayment: 0,
   expirationDate: undefined,
@@ -40,6 +51,10 @@ export const newPolicyFormInitialState: IPolicyCreate = {
 export const policyInitialState: IPolicy = {
   ...policyInitialStateTemplate,
   _id: '',
+  matchedFees: {
+    fees: [],
+    total: 0
+  },
   insurance: {
     _id: '',
     name: '',
@@ -67,12 +82,14 @@ export const policyTableHeaders: ColumnsType = [
     title: "Effective Date",
     dataIndex: "effectiveDate",
     key: "effectiveDate",
+    render: (value) => dayjs(value).format('MM/DD/YYYY'),
     sorter: (a, b) => a.firstName.localeCompare(b.firstName)
   },
   {
     title: "Expiration Date",
     dataIndex: "expirationDate",
     key: "expirationDate",
+    render: (value) => dayjs(value).format('MM/DD/YYYY'),
     sorter: (a, b) => a.firstName.localeCompare(b.firstName)
   },
   {
@@ -102,6 +119,7 @@ export const policyTableHeaders: ColumnsType = [
     title: "Due Date",
     dataIndex: "dueDate",
     key: "dueDate",
+    render: (value) => dayjs(value).format('MM/DD/YYYY'),
     sorter: (a, b) => a.firstName.localeCompare(b.firstName)
   },
 ];
@@ -130,7 +148,7 @@ export const documentTableHeaders: ColumnsType = [
 ];
 
 export const getPolicyFunctions = (customerId?: string) => {
-  const [policies, setPolicies] = useState<IPolicy[]>([]);
+  const [policies, setPolicies] = useState<IPolicyByCustomer[]>([]);
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
 
   const [selectedPolicy, setSelectedPolicy] = useState<IPolicy>();
@@ -139,6 +157,7 @@ export const getPolicyFunctions = (customerId?: string) => {
   const [isPolicyUpdateModalOpen, setIsPolicyUpdateModalOpen] = useState(false);
   const [isPolicyDeleteModalOpen, setIsPolicyDeleteModalOpen] = useState(false);
   const [isPaymentCreateModalOpen, setIsPaymentCreateModalOpen] = useState(false);
+  const [isInvoiceConfirmModalOpen, setIsInvoiceConfirmModalOpen] = useState(false);
 
   const [policiesSelection] = useState<TableRowSelection>({
     onSelect: (_, _s, multipleRows) => {
@@ -167,7 +186,7 @@ export const getPolicyFunctions = (customerId?: string) => {
         ...prev,
         [key]: typeof val === 'string' ? val : val.target.value,
         ...(key === 'policyTerm' ? {
-          expirationDate: prev.effectiveDate ? dayjs(prev.effectiveDate).add(+(val as BaseSyntheticEvent).target.value, 'month').format('MM/DD/YYYY') : undefined
+          expirationDate: prev.effectiveDate ? dayjs(prev.effectiveDate).add(+(val as BaseSyntheticEvent).target.value, 'month') : undefined
         } : {})
       }))
     }
@@ -176,11 +195,11 @@ export const getPolicyFunctions = (customerId?: string) => {
   // TODO If there will be custom, need to rewrote
   const changePolicyFormTime = useCallback((key: keyof Pick<IPolicyCreate, 'effectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
     return (val: Dayjs) => {
-      const date = val ? val.format('MM/DD/YYYY') : undefined
+      const date = val ? val.toDate() : undefined
       callback(prev => ({
         ...prev,
         [key]: date,
-        expirationDate: val.add(+prev.policyTerm, 'month').format('MM/DD/YYYY')
+        expirationDate: val.add(+prev.policyTerm, 'month').toDate()
       }))
     }
   }, []);
@@ -216,6 +235,8 @@ export const getPolicyFunctions = (customerId?: string) => {
     {selectedPolicy && <Button color={'magenta'} variant='solid' onClick={() => setIsPaymentCreateModalOpen(true)}>Create
         payment</Button>}
     <Button variant='outlined' color={'geekblue'} onClick={() => setIsPolicyCreateModalOpen(true)}>Add policy</Button>
+    <Button variant='solid' color='green' icon={<SendOutlined/>} onClick={() => setIsInvoiceConfirmModalOpen(true)}>Send
+      invoice</Button>
   </div>
 
   // Get One
@@ -266,6 +287,33 @@ export const getPolicyFunctions = (customerId?: string) => {
     cancelPaymentCreateModal();
   }, [selectedPolicy]);
 
+  // invoice
+
+  const createInvoice = useCallback(async (navigate: NavigateFunction) => {
+    const invoiceBody: IInvoiceCreate = {
+      customer: customerId!,
+      policies: policies.map(p => (
+        {
+          policy: p._id,
+          number: p.policyNumber,
+          insuranceCarrierName: p.insurance.name,
+          dueDate: p.dueDate,
+          amount: p.amountDue,
+          totalDueDateFee: p.matchedFees.total
+        }
+      )) as Omit<IInvoicePolicy, 'policy'> & { policy: string; },
+      issuedAt: new Date(),
+    }
+
+    const response = await instance.post('/invoice', invoiceBody);
+    setIsInvoiceConfirmModalOpen(false);
+    navigate(`/invoice/${response.data._id}`);
+  }, [customerId, policies]);
+
+  const cancelInvoiceCreateModal = useCallback(() => {
+    setIsInvoiceConfirmModalOpen(false)
+  }, [])
+
   return {
     // all policies
     policies,
@@ -287,7 +335,10 @@ export const getPolicyFunctions = (customerId?: string) => {
     cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen,
 
     // payment
-    cancelPaymentCreateModal, isPaymentCreateModalOpen, createPayment
+    cancelPaymentCreateModal, isPaymentCreateModalOpen, createPayment,
+
+    // invoice
+    createInvoice, isInvoiceConfirmModalOpen, cancelInvoiceCreateModal
   }
 }
 
@@ -298,10 +349,10 @@ export const getCustomerFunction = (customerId?: string) => {
   const [customerById, setCustomerById] = useState<ICustomerCreate>(newCustomerFormInitialState);
 
   const contactSections = [
-    { title: 'TLC Expiration Date', content: customerById.tlcExp, iconUrl: EmailIcon },
+    { title: 'TLC Expiration Date', content: dayjs(customerById.tlcExp).format('MM/DD/YYYY'), iconUrl: EmailIcon },
     { title: 'TLC Number', content: customerById.tlcNumber, iconUrl: EmailIcon },
-    { title: 'DDC Expiration Date', content: customerById.defensiveDriverCourseExp, iconUrl: RegisteredIcon },
-    { title: 'DL Number', content: customerById.driverLicenseExp, iconUrl: RegisteredIcon },
+    { title: 'DDC Expiration Date', content: dayjs(customerById.defensiveDriverCourseExp).format('MM/DD/YYYY'), iconUrl: RegisteredIcon },
+    { title: 'DL Number', content: dayjs(customerById.driverLicenseExp).format('MM/DD/YYYY'), iconUrl: RegisteredIcon },
   ];
 
   const fetchCustomerById = useCallback(async () => {
@@ -338,6 +389,7 @@ export const getCustomerFunction = (customerId?: string) => {
 
 export const newPaymentFormInitialState: IPaymentCreate = {
   discountAmount: 0,
+  policyId: '',
   notes: '',
   method: 'other',
   totalPaid: 0,

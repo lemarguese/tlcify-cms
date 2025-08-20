@@ -18,7 +18,7 @@ export const getPolicyFeeFunctions = () => {
 
   const changePolicyFeeFormTime = useCallback((key: keyof Pick<IPolicyFeeCreate, 'dueDate'>, callback: Dispatch<SetStateAction<IPolicyFeeCreate>>) => {
     return (val: Dayjs) => {
-      const date = val ? val.format('MM/DD/YYYY') : undefined
+      const date = val ? val.toDate() : undefined
       callback(prev => ({
         ...prev,
         [key]: date,
@@ -41,7 +41,7 @@ export const getPolicyFeeFunctions = () => {
 }
 
 export const newPolicyFeeFormInitialState: Omit<IPolicyFeeCreate, '_id'> = {
-  dueDate: '',
+  dueDate: new Date(Date.now()),
   amount: 0,
   type: 'late'
 }

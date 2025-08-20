@@ -1,5 +1,7 @@
+import type { ICustomer } from "@/types/customer/main.ts";
+
 export interface IDriver {
-  customerId: string,
+  customer: ICustomer,
   firstName: string,
   lastName: string,
   phoneNumber: string,
@@ -14,4 +16,6 @@ export interface IDriver {
   defensiveDriverCourseExp: string,
 }
 
-export interface IDriverCreate extends IDriver {}
+export interface IDriverCreate extends Omit<IDriver, 'customer'> {
+  customerId: string;
+}

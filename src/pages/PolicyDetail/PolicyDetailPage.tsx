@@ -70,7 +70,8 @@ const PolicyDetailPage = () => {
           <div className='policy_detail_page_body_vertical'>
             <div className='policy_detail_page_body_left'>
               <div className='policy_detail_page_body_left_policy'>
-                <Description title="Policy information" layout="horizontal" column={1} bordered items={policyDescriptionItems}/>
+                <Description title="Policy information" layout="horizontal" column={1} bordered
+                             items={policyDescriptionItems}/>
               </div>
             </div>
             <div className='policy_detail_page_body_right'>
@@ -100,7 +101,8 @@ const PolicyDetailPage = () => {
       children:
         <div className='policy_detail_page_body_horizontal'>
           <div className='policy_detail_page_body_left'>
-            <Description title="Installments" layout="horizontal"  className='policy_detail_page_body_left_installments' size='small' column={1} bordered
+            <Description title="Installments" layout="horizontal" className='policy_detail_page_body_left_installments'
+                         size='small' column={1} bordered
                          items={installmentsDescriptionItems}/>
           </div>
           <div className='policy_detail_page_body_right'>

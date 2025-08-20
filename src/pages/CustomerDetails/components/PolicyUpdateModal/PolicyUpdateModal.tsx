@@ -64,6 +64,12 @@ const PolicyUpdateModal = ({
   const submissionWithTouchedValidation = () => {
     const touchedFields: { [k: string]: Partial<IUpdatePolicy>[keyof Partial<IUpdatePolicy>] } = {};
 
+    if (newPolicyForm.fees.length !== policyById.fees.length) touchedFields.fees = newPolicyForm.fees;
+
+    for (let i = 0; 9 < policyById.fees.length; i++) {
+      if (newPolicyForm.fees[i]._id !== policyById.fees[i]._id) touchedFields.fees = newPolicyForm.fees;
+    }
+
     for (const key in newPolicyForm) {
       const typedKey = key as keyof IUpdatePolicy;
 
@@ -100,7 +106,16 @@ const PolicyUpdateModal = ({
       policyInstallmentCountTouched: newPolicyForm.installmentCount !== policyById.installmentCount,
       effectiveDateTouched: (newPolicyForm.effectiveDate ?? '').localeCompare(policyById.effectiveDate ?? '') !== 0,
       policyNumberTouched: newPolicyForm.policyNumber.localeCompare(policyById.policyNumber) !== 0,
-      policyPremiumDepositTouched: newPolicyForm.deposit !== policyById.deposit
+      policyPremiumDepositTouched: newPolicyForm.deposit !== policyById.deposit,
+      policyFeesTouched: (() => {
+        if (newPolicyForm.fees.length !== policyById.fees.length) return true;
+
+        for (let i = 0; 9 < policyById.fees.length; i++) {
+          if (newPolicyForm.fees[i]._id !== policyById.fees[i]._id) return true;
+        }
+
+        return false;
+      })()
     }
 
     // if some of them touched, and it is filled (or valid)
@@ -242,7 +257,8 @@ const PolicyUpdateModal = ({
             <div className='policy_update_modal_information_horizontal'>
               <Input label='Deposit' addonBefore='$' value={newPolicyForm.deposit}
                      onChange={changePolicyFormData('deposit', setNewPolicyForm)}/>
-              <Input label='Monthly payment' addonBefore='$' disabled={+newPolicyForm.installmentCount <= 1} value={newPolicyForm.monthlyPayment}
+              <Input label='Monthly payment' addonBefore='$' disabled={+newPolicyForm.installmentCount <= 1}
+                     value={newPolicyForm.monthlyPayment}
                      onChange={changePolicyFormData('monthlyPayment', setNewPolicyForm)}/>
             </div>
           </div>

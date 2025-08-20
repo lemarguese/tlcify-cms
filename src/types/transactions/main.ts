@@ -1,6 +1,8 @@
+import type { IPolicy } from "@/types/policy/main.ts";
+
 export interface IPayment {
   _id: string;
-  policyId: string
+  policy: IPolicy;
   cycle: number;
   dueDate: Date;
   currency: string;
@@ -10,12 +12,13 @@ export interface IPayment {
   provider: string;
   providerRef: string;
   method: 'card' | 'check' | 'zelle' | 'cash' | 'other';
-  paidAt?: Date | string;
+  paidAt?: Date;
   notes?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface IPaymentCreate extends Pick<IPayment, 'method' | 'paidAt' | 'notes' | 'discountAmount' | 'totalPaid'> {
-  paidAt?: string | Date
+  policyId: string;
+  paidAt?: Date
 }

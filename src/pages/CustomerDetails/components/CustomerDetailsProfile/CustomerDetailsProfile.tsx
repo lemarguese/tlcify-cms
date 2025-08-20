@@ -4,12 +4,13 @@ import AvatarImage from '@/assets/images/avatar.jpg';
 import BirthdayIcon from '@/assets/icons/birthday_icon.svg';
 
 import type { FC } from "react";
+import dayjs from 'dayjs'
 
 interface CustomerDetailProfileProps {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  dateOfBirth: string;
+  dateOfBirth: Date;
 }
 
 const CustomerDetailProfile: FC<CustomerDetailProfileProps> = ({ firstName, lastName, phoneNumber, dateOfBirth }) => {
@@ -28,7 +29,7 @@ const CustomerDetailProfile: FC<CustomerDetailProfileProps> = ({ firstName, last
         </div>
         <div className='customer_details_page_profile_footer_section_content'>
           <p>Birthday</p>
-          <p>{dateOfBirth}</p>
+          <p>{dayjs(dateOfBirth).format('MM/DD/YYYY')}</p>
         </div>
       </div>
       <div className='customer_details_page_profile_footer_section'>

@@ -6,7 +6,7 @@ import { instance } from "@/api/axios.ts";
 import { Dayjs } from "dayjs";
 import { Button } from "antd";
 
-export const newDriverFormInitialState = {
+export const newDriverFormInitialState: IDriverCreate = {
   customerId: '',
   firstName: '',
   lastName: '',
@@ -50,7 +50,7 @@ export const getDriverFunctions = (customerId?: string) => {
 
   const changeDriverFormTime = useCallback((key: keyof Pick<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => {
     return (val: Dayjs) => {
-      const date = val ? val.format('MM/DD/YYYY') : null
+      const date = val ? val.toDate() : null
       callback(prev => ({
         ...prev,
         [key]: date
