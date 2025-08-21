@@ -33,11 +33,15 @@ const CustomerPage = () => {
 
       setSelectedCustomer(!isMultipleSelected ? selectedCustomer : undefined);
     },
-  })
+  });
 
-  useEffect(() => {
+  const onSearch = useCallback(async () => {
     fetchCustomers(searchQuery);
   }, [searchQuery]);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
 
   const fetchCustomers = useCallback(async (query?: string) => {
     const all = await instance.get('/customer', { params: { search: query } });
@@ -68,11 +72,11 @@ const CustomerPage = () => {
     }
   }, []);
 
-  const handleSearchQuery = useCallback((value: string) => {
-    setSearchQuery(value ? value : undefined);
+  const handleSearchQuery = useCallback((value: BaseSyntheticEvent) => {
+    setSearchQuery(value ? value.target.value : undefined);
   }, []);
 
-  return <Page showSearch setSearchQuery={handleSearchQuery} searchQuery={searchQuery}>
+  return <Page showSearch onSearchChange={handleSearchQuery} onSearchPress={onSearch} searchQuery={searchQuery}>
     <div className='customer_page'>
       {/*<SalesSection />*/}
       <Table columns={customerTableHeaders} rowSelection={customersSelection} onRow={(item) => {

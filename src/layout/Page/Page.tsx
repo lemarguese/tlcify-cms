@@ -1,15 +1,17 @@
 import './Page.scss';
-import type { FC, ReactNode } from "react";
+import type { BaseSyntheticEvent, FC, ReactNode } from "react";
 import { Layout } from "antd";
 import Sidebar from "../../layout/Sidebar/Sidebar.tsx";
 import Header from "../Header/Header.tsx";
 
 interface PageProps {
   children: ReactNode;
-  showSearch?: boolean;
 
-  setSearchQuery?: (val: string) => void;
+  showSearch?: boolean;
+  onSearchChange?: (val: BaseSyntheticEvent) => void;
+  onSearchPress?: () => void;
   searchQuery?: string;
+
   back?: () => void;
 
   fixedHeader?: boolean;

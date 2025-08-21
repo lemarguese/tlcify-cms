@@ -69,6 +69,9 @@ const CustomerDetailsPage = () => {
     // invoice
     cancelInvoiceCreateModal, isInvoiceConfirmModalOpen, createInvoice,
 
+    // statistics
+    totalFeesAmount, totalPaymentAmount, nextDueAmount,
+
     // common
     ...commonPolicyFunctions
   } = getPolicyFunctions(customerId);
@@ -123,11 +126,11 @@ const CustomerDetailsPage = () => {
         </div>
         <div className='customer_details_page_statistics'>
           <CustomerDetailStatisticsItem key={`customer-details-page-statistics-item-total-amount`}
-                                        title='Total amount of payments' description={'300'}/>
+                                        title='Total amount of payments' description={totalPaymentAmount}/>
           <CustomerDetailStatisticsItem key={`customer-details-page-statistics-item-next-due`} title='Next due amount'
-                                        description={'300'}/>
+                                        description={nextDueAmount}/>
           <CustomerDetailStatisticsItem key={`customer-details-page-statistics-item-total-fee`}
-                                        title='Total amount of fees' description={'300'}/>
+                                        title='Total amount of fees' description={totalFeesAmount}/>
         </div>
         <CustomerDetailProfile
           firstName={customerById.firstName}

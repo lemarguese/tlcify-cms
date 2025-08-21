@@ -1,26 +1,59 @@
 import type { ColumnsType } from "antd/es/table";
 import { useState } from "react";
-import type { IRenewal } from "@/types/renewal/main.ts";
+import type { IRenewal, IRenewalFilter } from "@/types/renewal/main.ts";
 import { instance } from "@/api/axios.ts";
+import Date from "@/components/Date/Date.tsx";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 export const renewalTableHeaders: ColumnsType = [
   { title: "First Name", dataIndex: "firstName", key: "firstName" },
   { title: "Last Name", dataIndex: "lastName", key: "lastName" },
   { title: "TLC Number", dataIndex: "tlcNumber", key: "tlcNumber" },
   { title: "TLC Exp. Date", dataIndex: "tlcExp", key: "tlcExp" },
-  { title: "DDC Exp. Date", dataIndex: "driverDefensiveCourseExp", key: "driverDefensiveCourseExp" },
+  { title: "DDC Exp. Date", dataIndex: "defensiveDriverCourseExp", key: "defensiveDriverCourseExp" },
 ];
 
-export const getRenewalsFunction = () => {
-  const [renewals, setRenewals] = useState<IRenewal[]>([])
+const renewalFilterInitialState: IRenewalFilter = {
+  tlcExp: undefined,
+  defensiveDriverCourseExp: undefined
+}
 
-  const fetchRenewalsOfCustomers = async () => {
-    const response = await instance.get('/customer/renewals');
+export const getRenewalsFunction = () => {
+  const [renewals, setRenewals] = useState<IRenewal[]>([]);
+  const [renewalsFilters, setRenewalsFilter] = useState<IRenewalFilter>(renewalFilterInitialState)
+
+  const fetchRenewalsOfCustomers = async (params: IRenewalFilter) => {
+    const response = await instance.get('/customer/renewals', {
+      params
+    });
     setRenewals(response.data);
   }
 
+  const changeFilters = (key: keyof IRenewalFilter) => {
+    return (value: Dayjs | null) => {
+      setRenewalsFilter(prev => ({
+        ...prev,
+        [key]: value ? value.toDate() : undefined
+      }))
+    }
+  }
+
+  const actions = <div className='renewals_page_actions'>
+    <label className='renewals_page_actions_label'>Filters</label>
+    <div className='renewals_page_actions_filters'>
+      <Date label='TLC Expiration' value={renewalsFilters.tlcExp ? dayjs(renewalsFilters.tlcExp) : null}
+            onChange={changeFilters('tlcExp')}/>
+      <Date label='DDC Expiration'
+            value={renewalsFilters.defensiveDriverCourseExp ? dayjs(renewalsFilters.defensiveDriverCourseExp) : null}
+            onChange={changeFilters('defensiveDriverCourseExp')}/>
+    </div>
+  </div>
+
   return {
-    fetchRenewalsOfCustomers, renewals,
+    fetchRenewalsOfCustomers, renewals, renewalsFilters,
+
+    actions
   }
 }
 

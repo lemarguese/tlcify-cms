@@ -2,7 +2,7 @@ import type { ColumnsType } from "antd/es/table";
 import { Button } from "antd";
 import type { RadioChangeEvent } from 'antd'
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 
 import { instance } from "@/api/axios.ts";
@@ -16,12 +16,10 @@ import type {
   IUpdatePolicy
 } from "@/types/policy/main.ts";
 
-import { SendOutlined } from '@ant-design/icons'
+import { SendOutlined, FieldNumberOutlined, ScheduleOutlined } from '@ant-design/icons'
 
 import type { TableRowSelection } from "antd/es/table/interface";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
-import EmailIcon from "@/assets/icons/email_icon.svg";
-import RegisteredIcon from "@/assets/icons/registered_icon.svg";
 import type { ICustomerCreate } from "@/types/customer/main.ts";
 import type { IDocument, IDocumentCreate } from "@/types/document/main.ts";
 import type { IPaymentCreate } from "@/types/transactions/main.ts";
@@ -312,7 +310,18 @@ export const getPolicyFunctions = (customerId?: string) => {
 
   const cancelInvoiceCreateModal = useCallback(() => {
     setIsInvoiceConfirmModalOpen(false)
-  }, [])
+  }, []);
+
+  // statistics
+
+  const { totalPaymentAmount, totalFeesAmount, nextDueAmount } = useMemo(() => {
+    return policies.reduce((acc, item) => {
+      acc.totalPaymentAmount += item.premiumPrice;
+      acc.nextDueAmount += item.amountDue;
+      acc.totalFeesAmount += item.fees.reduce((a, i) => a + i.amount, 0);
+      return acc;
+    }, { totalPaymentAmount: 0, nextDueAmount: 0, totalFeesAmount: 0 })
+  }, [policies])
 
   return {
     // all policies
@@ -338,7 +347,13 @@ export const getPolicyFunctions = (customerId?: string) => {
     cancelPaymentCreateModal, isPaymentCreateModalOpen, createPayment,
 
     // invoice
-    createInvoice, isInvoiceConfirmModalOpen, cancelInvoiceCreateModal
+    createInvoice, isInvoiceConfirmModalOpen, cancelInvoiceCreateModal,
+
+    // statistics
+
+    totalFeesAmount,
+    totalPaymentAmount,
+    nextDueAmount
   }
 }
 
@@ -349,10 +364,14 @@ export const getCustomerFunction = (customerId?: string) => {
   const [customerById, setCustomerById] = useState<ICustomerCreate>(newCustomerFormInitialState);
 
   const contactSections = [
-    { title: 'TLC Expiration Date', content: dayjs(customerById.tlcExp).format('MM/DD/YYYY'), iconUrl: EmailIcon },
-    { title: 'TLC Number', content: customerById.tlcNumber, iconUrl: EmailIcon },
-    { title: 'DDC Expiration Date', content: dayjs(customerById.defensiveDriverCourseExp).format('MM/DD/YYYY'), iconUrl: RegisteredIcon },
-    { title: 'DL Number', content: dayjs(customerById.driverLicenseExp).format('MM/DD/YYYY'), iconUrl: RegisteredIcon },
+    { title: 'TLC Expiration Date', content: dayjs(customerById.tlcExp).format('MM/DD/YYYY'), icon: <FieldNumberOutlined style={{ fontSize: 32 }} /> },
+    { title: 'TLC Number', content: customerById.tlcNumber, icon: <FieldNumberOutlined style={{ fontSize: 32 }} /> },
+    {
+      title: 'DDC Expiration Date',
+      content: dayjs(customerById.defensiveDriverCourseExp).format('MM/DD/YYYY'),
+      icon: <ScheduleOutlined style={{ fontSize: 32 }} />
+    },
+    { title: 'DL Number', content: dayjs(customerById.driverLicenseExp).format('MM/DD/YYYY'), icon: <ScheduleOutlined style={{ fontSize: 32 }} /> },
   ];
 
   const fetchCustomerById = useCallback(async () => {

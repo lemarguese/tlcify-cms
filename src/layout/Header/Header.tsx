@@ -4,21 +4,30 @@ import './Header.scss';
 import { LeftOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import type { FC } from "react";
 import Button from "@/components/Button/Button.tsx";
-import { useCallback, useMemo } from "react";
+import { BaseSyntheticEvent, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router";
 
 const { Header: AntHeader } = Layout;
 
 interface HeaderProps {
-  setSearchQuery?: (val: string) => void;
+  onSearchChange?: (val: BaseSyntheticEvent) => void;
+  onSearchPress?: () => void;
   searchQuery?: string;
   showSearch?: boolean;
+
   back?: () => void;
 
   fixed?: boolean;
 }
 
-const Header: FC<HeaderProps> = ({ showSearch = true, fixed = false, setSearchQuery, back, searchQuery }) => {
+const Header: FC<HeaderProps> = ({
+                                   showSearch = true,
+                                   fixed = false,
+                                   onSearchChange,
+                                   onSearchPress,
+                                   back,
+                                   searchQuery
+                                 }) => {
   const navigate = useNavigate();
 
   // todo more independent
@@ -37,7 +46,8 @@ const Header: FC<HeaderProps> = ({ showSearch = true, fixed = false, setSearchQu
           <LeftOutlined className='header_back_icon'/>
       </Button>}
       {showSearch &&
-          <Input.Search value={searchQuery} allowClear onSearch={setSearchQuery} rootClassName='header_center_search'
+          <Input.Search value={searchQuery} allowClear={false} onSearch={onSearchPress} onChange={onSearchChange}
+                        rootClassName='header_center_search'
                         placeholder={'Search'} enterButton/>}
       <div className='header_end'>
         <Select
@@ -62,7 +72,7 @@ const Header: FC<HeaderProps> = ({ showSearch = true, fixed = false, setSearchQu
         <NotificationOutlined className='header_end_notification'/>
         <Tooltip title={profileTools} color={'#FFF'}>
           <div className='header_end_avatar'>
-            <UserOutlined className='header_end_avatar_icon' />
+            <UserOutlined className='header_end_avatar_icon'/>
           </div>
         </Tooltip>
       </div>
