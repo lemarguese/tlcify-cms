@@ -2,9 +2,9 @@ import { Select, Layout, Input, Tooltip } from 'antd';
 import './Header.scss';
 
 import { LeftOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
-import type { FC } from "react";
+import type { FC, BaseSyntheticEvent } from "react";
 import Button from "@/components/Button/Button.tsx";
-import { BaseSyntheticEvent, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router";
 
 const { Header: AntHeader } = Layout;
