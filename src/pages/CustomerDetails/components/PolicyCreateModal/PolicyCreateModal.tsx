@@ -106,7 +106,7 @@ const PolicyCreateModal = ({
 
       if (+monthlyPayment) {
         if (index === +installmentCount - 1) installmentAmount = +premiumPrice - (+installmentCount - 1) * +monthlyPayment;
-        else installmentAmount = monthlyPayment;
+        else installmentAmount = +monthlyPayment;
       }
 
       installmentArray[index] = {
