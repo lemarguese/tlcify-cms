@@ -26,6 +26,10 @@ import type { IPaymentCreate } from "@/types/transactions/main.ts";
 import type { IInvoiceCreate, IInvoicePolicyCreate } from "@/types/invoice/main.ts";
 import type { NavigateFunction } from "react-router";
 
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
+
 export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id' | 'customer' | 'matchedFees'> = {
   installmentCount: '',
   monthlyPayment: 0,

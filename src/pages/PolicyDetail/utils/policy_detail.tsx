@@ -54,6 +54,7 @@ export const policyFeesTableHeaders: ColumnsType = [
     title: "Due date",
     dataIndex: 'dueDate',
     key: 'dueDate',
+    render: (value) => dayjs(value).format('MM/DD/YYYY')
   },
 ];
 
@@ -112,10 +113,13 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
   const policyDescriptionItems: DescriptionsProps['items'] = Object.entries(policyById)
     .filter(([k, _]) => !['_id', 'insurance', 'customer', 'fees', 'createdAt', 'updatedAt', '__v', 'type', 'status'].includes(k))
     .map(([policyKey, policyValue]) => {
+      let children = policyValue;
+      if (['effectiveDate', 'expirationDate'].includes(policyKey)) children = dayjs(policyValue).format('MM/DD/YYYY');
+
       return {
         label: policyTitles[policyKey as keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees' | 'matchedFees'>],
         key: policyKey,
-        children: policyValue
+        children
       }
     });
 

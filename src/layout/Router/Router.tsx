@@ -10,6 +10,7 @@ import InsurancePage from "@/pages/Insurance/InsurancePage.tsx";
 import PolicyDetailPage from "@/pages/PolicyDetail/PolicyDetailPage.tsx";
 import PaymentPage from "@/pages/Payment/PaymentPage.tsx";
 import RenewalPage from "@/pages/Renewal/RenewalPage.tsx";
+import AnalyticsPage from "@/pages/Analytics/AnalyticsPage.tsx";
 
 const Router = () => {
   return <BrowserRouter>
@@ -49,7 +50,7 @@ const Router = () => {
       </Route>
       <Route element={<ProtectedRoute/>}>
         <Route path='/analytics'>
-          <Route index element={<RenewalPage/>}/>
+          <Route index element={<AnalyticsPage/>}/>
         </Route>
       </Route>
       <Route element={<ProtectedRoute/>}>
