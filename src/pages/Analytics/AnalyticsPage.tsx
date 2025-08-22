@@ -6,20 +6,35 @@ import Card from "@/components/Card/Card.tsx";
 import { ArrowUpOutlined } from '@ant-design/icons';
 import { ResponsiveLine } from '@nivo/line';
 import {
+  frequencyRadioOptions,
   getAnalyticsFunctions,
   soonestExpiringPoliciesTableHeaders
 } from "@/pages/Analytics/utils/analytics.tsx";
 import Table from "@/components/Table/Table.tsx";
 import { useEffect } from "react";
+import Radio from "@/components/Radio/Radio.tsx";
 
 
 const AnalyticsPage = () => {
-  const { kpis, fetchKpis, fetchRevenueByFrequency, revenueByFrequency, frequency } = getAnalyticsFunctions()
+  const {
+    kpis,
+    fetchKpis,
+    fetchRevenueByFrequency,
+    revenueByFrequency,
+    frequency,
+    expiringPolicies,
+    fetchExpiringPolicies,
+    changeFrequency
+  } = getAnalyticsFunctions()
 
   useEffect(() => {
     fetchRevenueByFrequency(frequency);
-    fetchKpis();
   }, [frequency])
+
+  useEffect(() => {
+    fetchKpis();
+    fetchExpiringPolicies()
+  }, [])
 
   return <Page title='Analytics'>
     <div className='analytics_page'>
@@ -63,7 +78,10 @@ const AnalyticsPage = () => {
       </div>
       <div className='analytics_page_kpis_charts'>
         <div className='analytics_page_kpis_charts_revenue'>
-          <label className='analytics_page_kpis_charts_revenue_title'>Revenue by Month</label>
+          <div className='analytics_page_kpis_charts_revenue_header'>
+            <label className='analytics_page_kpis_charts_revenue_header_title'>Revenue by Month</label>
+            <Radio label='' buttonStyle='solid' block optionType='button' options={frequencyRadioOptions} onChange={changeFrequency} value={frequency}/>
+          </div>
           <ResponsiveLine
             data={revenueByFrequency}
             margin={{ top: 20, right: 20, bottom: 60, left: 80 }}
@@ -73,21 +91,11 @@ const AnalyticsPage = () => {
             // axisBottom={{ legend: 'Month', legendOffset: 40 }}
             axisLeft={{ legend: 'Value', legendOffset: -50 }}
             enableSlices="x"
-            legends={[
-              {
-                anchor: 'bottom',
-                direction: 'row',
-                translateY: 50,
-                itemWidth: 80,
-                itemHeight: 20,
-                toggleSerie: true
-              }
-            ]}
           />
         </div>
       </div>
       <div className='analytics_page_tables'>
-        <Table actions={<></>} label='Soonest expiring policies' dataSource={[]}
+        <Table actions={<></>} label='Soonest expiring policies' dataSource={expiringPolicies}
                columns={soonestExpiringPoliciesTableHeaders}/>
       </div>
     </div>

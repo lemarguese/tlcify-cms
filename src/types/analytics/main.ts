@@ -1,4 +1,4 @@
-import type { LineSeries } from "@nivo/line/dist/types/types";
+import type { LineSeries } from "@nivo/line";
 
 export interface IAnalyticsKpi {
   totalRevenue: number,

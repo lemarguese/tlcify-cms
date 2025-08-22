@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { IAnalyticsFrequency, IAnalyticsKpi, IAnalyticsRevenueByFrequency } from "@/types/analytics/main.ts";
 import { instance } from "@/api/axios.ts";
+import dayjs from "dayjs";
+import type { IPolicy } from "@/types/policy/main.ts";
+import type { RadioChangeEvent } from "antd";
 
 export const soonestExpiringPoliciesTableHeaders = [
   {
@@ -17,13 +20,13 @@ export const soonestExpiringPoliciesTableHeaders = [
     title: 'TLC Expiration',
     dataIndex: 'tlcExp',
     key: 'tlcExp',
-    render: (date) => new Date(date).toLocaleDateString(),
+    render: (date: Date) => dayjs(date).format('MM/DD/YYYY'),
   },
   {
     title: 'Policy Expiration',
-    dataIndex: 'policyExpirationDate',
-    key: 'policyExpirationDate',
-    render: (date) => new Date(date).toLocaleDateString(),
+    dataIndex: 'expirationDate',
+    key: 'expirationDate',
+    render: (date: Date) => dayjs(date).format('MM/DD/YYYY'),
   },
 ];
 
@@ -39,6 +42,7 @@ export const getAnalyticsFunctions = () => {
   const [kpis, setKpis] = useState<IAnalyticsKpi>(analyticsKpisInitialState);
   const [revenueByFrequency, setRevenueByFrequency] = useState<IAnalyticsRevenueByFrequency[]>([]);
   const [frequency, setFrequency] = useState<IAnalyticsFrequency>('daily');
+  const [expiringPolicies, setExpiringPolicies] = useState<IPolicy[]>([]);
 
   const fetchKpis = async () => {
     const response = await instance.get('/analytics/kpis');
@@ -54,9 +58,26 @@ export const getAnalyticsFunctions = () => {
     setRevenueByFrequency([response.data]);
   }
 
+  const fetchExpiringPolicies = async () => {
+    const response = await instance.get('/analytics/expiring-policies');
+    setExpiringPolicies(response.data);
+  }
+
+  const changeFrequency = useCallback((e: RadioChangeEvent) => {
+    setFrequency(e.target.value)
+  }, [])
+
   return {
     kpis, fetchKpis,
     revenueByFrequency, fetchRevenueByFrequency,
-    frequency, setFrequency
+    frequency, changeFrequency,
+    expiringPolicies, fetchExpiringPolicies
   }
 }
+
+export const frequencyRadioOptions = [
+  { label: 'Daily', value: 'daily' },
+  { label: 'Weekly', value: 'weekly' },
+  { label: 'Monthly', value: 'monthly' },
+  { label: 'Yearly', value: 'yearly' },
+]
