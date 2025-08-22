@@ -223,7 +223,7 @@ const PolicyCreateModal = ({
             <div className='policy_create_modal_installment_footer'>
               <div>
                 <p>Premiums: </p>
-                <p> Commission: </p>
+                <p>Commission: </p>
                 <p>Tax and Fees: </p>
                 <p>Total Policy Cost: </p>
               </div>

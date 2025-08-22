@@ -153,7 +153,18 @@ const PolicyUpdateModal = ({
     })
   }, [insurances]);
 
-  const taxesAndFees = useMemo(() => newPolicyForm.fees.reduce((acc, item) => Number(item.amount) + acc, 0), [newPolicyForm.fees]);
+  const { policyFees, feesWithInsurance } = useMemo(() => {
+    const insurance = insurances.find(ins => ins._id === newPolicyForm.insuranceId);
+    const insuranceFee = insurance ? insurance.commissionFee : 0;
+    const feesWithInsurance = +newPolicyForm.premiumPrice * insuranceFee / 100;
+
+    const policyFees = newPolicyForm.fees.reduce((acc, item) => Number(item.amount) + acc, 0)
+
+    return {
+      policyFees,
+      feesWithInsurance
+    };
+  }, [newPolicyForm.fees, insurances, newPolicyForm.insuranceId, newPolicyForm.premiumPrice]);
 
   const timelineOptions = useMemo(() => {
     const { installmentCount, premiumPrice, deposit, fees, monthlyPayment, effectiveDate } = newPolicyForm;
@@ -272,13 +283,15 @@ const PolicyUpdateModal = ({
             <div className='policy_update_modal_installment_footer'>
               <div>
                 <p>Premiums: </p>
+                <p>Commission: </p>
                 <p>Tax and Fees: </p>
                 <p>Total Policy Cost: </p>
               </div>
               <div>
                 <p>$ {newPolicyForm.premiumPrice}</p>
-                <p>$ {taxesAndFees}</p>
-                <p>$ {Number(newPolicyForm.premiumPrice) + taxesAndFees}</p>
+                <p>$ {feesWithInsurance}</p>
+                <p>$ {policyFees}</p>
+                <p>$ {Number(newPolicyForm.premiumPrice) + policyFees}</p>
               </div>
             </div>
           </div>

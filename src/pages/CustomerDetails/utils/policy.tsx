@@ -450,7 +450,7 @@ export const getDocumentFunction = (customerId?: string) => {
 
   const uploadCustomerDocument = useCallback(async (form: IDocumentCreate) => {
     const formData = new FormData();
-    formData.set('customerId', customerId!);
+    formData.set('customer', customerId!);
 
     for (const [key, value] of Object.entries(form)) {
       formData.set(key, value);
@@ -463,6 +463,7 @@ export const getDocumentFunction = (customerId?: string) => {
     });
 
     cancelDocumentModal();
+    await fetchDocumentsByCustomerId();
   }, [customerId]);
 
   const addNewDocumentButton =
