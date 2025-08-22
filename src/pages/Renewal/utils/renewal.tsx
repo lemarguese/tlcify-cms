@@ -10,8 +10,18 @@ export const renewalTableHeaders: ColumnsType = [
   { title: "First Name", dataIndex: "firstName", key: "firstName" },
   { title: "Last Name", dataIndex: "lastName", key: "lastName" },
   { title: "TLC Number", dataIndex: "tlcNumber", key: "tlcNumber" },
-  { title: "TLC Exp. Date", dataIndex: "tlcExp", key: "tlcExp" },
-  { title: "DDC Exp. Date", dataIndex: "defensiveDriverCourseExp", key: "defensiveDriverCourseExp" },
+  {
+    title: "TLC Exp. Date",
+    dataIndex: "tlcExp",
+    key: "tlcExp",
+    render: (value) => dayjs(value).format('MM/DD/YYYY')
+  },
+  {
+    title: "DDC Exp. Date",
+    dataIndex: "defensiveDriverCourseExp",
+    key: "defensiveDriverCourseExp",
+    render: (value) => dayjs(value).format('MM/DD/YYYY')
+  },
 ];
 
 const renewalFilterInitialState: IRenewalFilter = {
