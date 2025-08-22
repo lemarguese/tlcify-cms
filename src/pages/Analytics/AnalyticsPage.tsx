@@ -21,17 +21,23 @@ const AnalyticsPage = () => {
     fetchKpis();
   }, [frequency])
 
-  return <Page>
+  return <Page title='Analytics'>
     <div className='analytics_page'>
       <div className='analytics_page_kpis'>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' value={kpis.totalRevenue} prefix={<ArrowUpOutlined/>}
+          <Statistic className='analytics_page_kpis_card_item' value={kpis.totalRevenue} prefix={<div>
+            <ArrowUpOutlined/>
+            $
+          </div>}
                      valueStyle={{ color: '#3f8600' }} title='Total Revenue'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
           <Statistic className='analytics_page_kpis_card_item' valueStyle={{ color: '#3f8600' }}
                      value={kpis.totalCommissionFee}
-                     prefix={<ArrowUpOutlined/>}
+                     prefix={<div>
+                       <ArrowUpOutlined/>
+                       $
+                     </div>}
                      title='Total commission fee'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
@@ -48,7 +54,10 @@ const AnalyticsPage = () => {
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
           <Statistic className='analytics_page_kpis_card_item' valueStyle={{ color: '#3f8600' }} value={kpis.totalFees}
-                     prefix={<ArrowUpOutlined/>}
+                     prefix={<div>
+                       <ArrowUpOutlined/>
+                       $
+                     </div>}
                      title='Total fees'/>
         </Card>
       </div>

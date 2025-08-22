@@ -12,7 +12,7 @@ const RenewalPage = () => {
     fetchRenewalsOfCustomers(renewalsFilters);
   }, [renewalsFilters])
 
-  return <Page showSearch>
+  return <Page title='Renewals' showSearch>
     <div className='renewals_page'>
       <Table label='Renewals' actions={actions} columns={renewalTableHeaders} dataSource={renewals}/>
     </div>

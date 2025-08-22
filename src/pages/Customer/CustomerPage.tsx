@@ -76,7 +76,7 @@ const CustomerPage = () => {
     setSearchQuery(value ? value.target.value : undefined);
   }, []);
 
-  return <Page showSearch onSearchChange={handleSearchQuery} onSearchPress={onSearch} searchQuery={searchQuery}>
+  return <Page title='Customers' showSearch onSearchChange={handleSearchQuery} onSearchPress={onSearch} searchQuery={searchQuery}>
     <div className='customer_page'>
       {/*<SalesSection />*/}
       <Table columns={customerTableHeaders} rowSelection={customersSelection} onRow={(item) => {

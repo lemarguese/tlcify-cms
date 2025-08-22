@@ -22,7 +22,7 @@ const InsurancePage = () => {
     fetchInsurances();
   }, []);
 
-  return <Page showSearch>
+  return <Page title='Insurances' showSearch>
     <div className='insurance_page'>
       <Table actions={addNewInsuranceButton} label='Insurance carriers list' columns={insuranceTableHeaders}
              dataSource={insurances}/>

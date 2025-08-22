@@ -20,7 +20,7 @@ const TransactionsPage: FC<TransactionsPageProps> = ({}) => {
     fetchAllPayments();
   }, []);
 
-  return <Page showSearch>
+  return <Page title='Transactions' showSearch>
     <div className='transactions_page_container'>
       <Table columns={transactionsTableHeaders} actions={<></>} onRow={(item) => {
         return {

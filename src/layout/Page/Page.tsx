@@ -15,13 +15,17 @@ interface PageProps {
   back?: () => void;
 
   fixedHeader?: boolean;
+  title?: string;
 }
 
-const Page: FC<PageProps> = ({ children, fixedHeader = false, ...searchProps }) => {
+const Page: FC<PageProps> = ({ children, title, fixedHeader = false, ...searchProps }) => {
   return <Layout className='page'>
     <Sidebar/>
     <div className='page_container'>
       <Header fixed={fixedHeader} {...searchProps} />
+      <div className='page_container_label'>
+        <label className='page_container_label_title'>{title}</label>
+      </div>
       {children}
     </div>
   </Layout>

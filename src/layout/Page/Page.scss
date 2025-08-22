@@ -3,5 +3,14 @@
     width: 100%;
 
     padding: 80px 0 0 0;
+
+    &_label {
+      padding-left: 24px;
+
+      &_title {
+        font-size: 32px;
+        font-weight: 600;
+      }
+    }
   }
 }
