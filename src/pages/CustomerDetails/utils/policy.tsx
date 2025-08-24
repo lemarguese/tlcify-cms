@@ -132,9 +132,9 @@ export const documentTableHeaders: ColumnsType = [
     title: "URL",
     dataIndex: "url",
     key: "url",
-    render: (text, item) => (
+    render: (text, _, index) => (
       <a href={text} target="_blank" rel="noopener noreferrer">
-        {documentTypeTitleOptions[item.type]}
+        Document #{index + 1}
       </a>
     ),
   },
@@ -147,7 +147,7 @@ export const documentTableHeaders: ColumnsType = [
     title: "Type",
     dataIndex: "type",
     key: "type",
-    render: (value) => documentTypeTitleOptions[value]
+    render: (value: IDocumentType) => documentTypeTitleOptions[value]
   },
 ];
 
@@ -484,7 +484,7 @@ export const paymentTypeRadioOptions = [
 export const newDocumentFormInitialState: IDocumentCreate = {
   file: undefined,
   metaDescription: '',
-  type: '',
+  type: 'other',
 }
 
 export const documentTypeSelectionOptions = [

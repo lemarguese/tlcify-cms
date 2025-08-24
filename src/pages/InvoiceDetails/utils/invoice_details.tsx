@@ -5,7 +5,6 @@ import { instance } from "@/api/axios.ts";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import { formatCurrency } from "@/utils/payment.ts";
-import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 const invoiceInitialState: IInvoice = {
   _id: '',
