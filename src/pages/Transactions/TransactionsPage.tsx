@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import Page from "@/layout/Page/Page.tsx";
 import Table from "@/components/Table/Table.tsx";
 import { getTransactionFunctions, transactionsTableHeaders } from "@/pages/Transactions/utils/transactions.tsx";
@@ -7,11 +6,7 @@ import { useNavigate } from "react-router";
 import './TransactionsPage.scss';
 import { useEffect } from "react";
 
-interface TransactionsPageProps {
-
-}
-
-const TransactionsPage: FC<TransactionsPageProps> = ({}) => {
+const TransactionsPage = ({}) => {
   const navigate = useNavigate();
 
   const { payments, fetchAllPayments } = getTransactionFunctions();
@@ -25,7 +20,7 @@ const TransactionsPage: FC<TransactionsPageProps> = ({}) => {
       <Table columns={transactionsTableHeaders} actions={<></>} onRow={(item) => {
         return {
           onClick: () => {
-            navigate(`${item._id}`)
+            navigate(`/invoice/${item._id}`)
           },
         }
       }} dataSource={payments} rowKey='_id' label='Transactions'/>

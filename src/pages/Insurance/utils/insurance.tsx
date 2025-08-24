@@ -6,6 +6,7 @@ import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 import { instance } from "@/api/axios.ts";
 import type { IInsurance, IInsuranceCreate } from "@/types/insurance/main.ts";
 import Button from "@/components/Button/Button.tsx";
+import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 export const insuranceTableHeaders: ColumnsType = [
   {
@@ -49,6 +50,7 @@ export const newInsuranceFormInitialState: IInsuranceCreate = {
 }
 
 export const getInsuranceFunctions = () => {
+  const { success, error } = useNotify();
   const [insurances, setInsurances] = useState<IInsurance[]>([]);
   const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false);
 
@@ -62,9 +64,16 @@ export const getInsuranceFunctions = () => {
   </div>
 
   const submitForm = useCallback(async (newInsuranceForm: IInsuranceCreate, resetForm: Dispatch<SetStateAction<IInsuranceCreate>>) => {
-    await instance.post('/insurance', newInsuranceForm);
-    resetForm(newInsuranceFormInitialState);
-    await cancelInsuranceModal();
+    try {
+      await instance.post('/insurance', newInsuranceForm);
+      resetForm(newInsuranceFormInitialState);
+      success('Insurance was successfully created!');
+      await fetchInsurances();
+    } catch (e) {
+      error('Oops... Seems we have problem with insurance creation. Try again.');
+    } finally {
+      await cancelInsuranceModal();
+    }
   }, []);
 
   const changeInsuranceFormData = useCallback((key: keyof IInsuranceCreate, callback: Dispatch<SetStateAction<IInsuranceCreate>>) => {

@@ -98,15 +98,15 @@ const PolicyCreateModal = ({
 
       installmentAmount = +premiumPrice / +installmentCount;
 
+      if (+monthlyPayment) {
+        if (index === +installmentCount - 1) installmentAmount = +premiumPrice - (+installmentCount - 1) * +monthlyPayment;
+        else installmentAmount = +monthlyPayment;
+      }
+
       if (+deposit) {
         if (index === 0) {
           installmentAmount = (+monthlyPayment ? +monthlyPayment : installmentAmount) - deposit;
         }
-      }
-
-      if (+monthlyPayment) {
-        if (index === +installmentCount - 1) installmentAmount = +premiumPrice - (+installmentCount - 1) * +monthlyPayment;
-        else installmentAmount = +monthlyPayment;
       }
 
       installmentArray[index] = {

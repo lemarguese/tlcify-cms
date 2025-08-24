@@ -1,0 +1,70 @@
+.toast {
+  &_success {
+    background-color: #E5FCF1 !important;
+    border: 1px solid #01E17B;
+  }
+
+  &_error {
+    background-color: #FDECEC !important;;
+    border: 1px solid #F04349;
+  }
+
+  &_pending {
+    background-color: #FFFFFF !important;;
+    border: 1px solid #FBFBFB;
+  }
+
+  &_info {
+    padding: 8px 12px;
+    min-width: 300px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    border: 1px solid #3b82f6;
+    border-radius: 12px;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    background-color: #eff6ff;
+
+    &_message {
+      font-size: 14px;
+      color: #111827;
+    }
+
+    &_icon {
+      width: 24px;
+      height: 24px;
+
+      border-radius: 10px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 14px;
+      font-weight: bold;
+
+      background-color: #3b82f6;
+      color: white;
+    }
+  }
+}
+
+/* Core animation classes from react-hot-toast */
+@keyframes enter {
+  0% { opacity: 0; transform: translateY(-10px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes leave {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-10px) scale(0.95); }
+}
+
+.animate-enter {
+  animation: enter 0.3s ease-out forwards;
+}
+.animate-leave {
+  animation: leave 0.2s ease-in forwards;
+}

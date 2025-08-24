@@ -11,6 +11,7 @@ import { instance } from "@/api/axios.ts";
 import type { ICustomerCreate } from "@/types/customer/main.ts";
 
 import Modal from '@/components/Modal/Modal.tsx';
+import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 interface CustomerCreateModalProps {
   cancel: () => void;
@@ -20,12 +21,19 @@ interface CustomerCreateModalProps {
 }
 
 const CustomerCreateModal = ({ cancel, open, formChange, dateChange }: CustomerCreateModalProps) => {
+  const { success, error } = useNotify()
   const [newCustomerForm, setNewCustomerForm] = useState<ICustomerCreate>(newCustomerFormInitialState)
 
   const submitForm = useCallback(async () => {
-    await instance.post('/customer', newCustomerForm);
-    setNewCustomerForm(newCustomerFormInitialState);
-    cancel();
+    try {
+      await instance.post('/customer', newCustomerForm);
+      setNewCustomerForm(newCustomerFormInitialState);
+      success('Successfully created new customer!');
+    } catch (e) {
+      error('There is something with creation. Try again.');
+    } finally {
+      cancel();
+    }
   }, [newCustomerForm]);
 
   const validForm = useMemo(() => {

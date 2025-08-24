@@ -12,11 +12,12 @@ import type { BaseSyntheticEvent } from 'react';
 import type { ILogin } from "@/types/auth/main.ts";
 import { instance } from "@/api/axios.ts";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
 import type { AxiosError } from "axios";
+import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 const AuthorizationPage = () => {
   const navigate = useNavigate();
+  const notify = useNotify();
 
   const [loginData, setLoginData] = useState<ILogin>({
     email: '',
@@ -26,11 +27,14 @@ const AuthorizationPage = () => {
   const onSubmit = async () => {
     try {
       const res = await instance.post('/auth/login', loginData);
-      if (res.status === 200) navigate('/customers');
+      if (res.status === 200) {
+        notify.success('Successfully authorized!');
+        navigate('/customers');
+      }
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
       const message = axiosError?.response?.data?.message || 'Login failed';
-      toast.error(message);
+      notify.error(message);
     }
   }
 

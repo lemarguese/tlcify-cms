@@ -21,12 +21,13 @@ import { SendOutlined, FieldNumberOutlined, ScheduleOutlined } from '@ant-design
 import type { TableRowSelection } from "antd/es/table/interface";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
 import type { ICustomerCreate } from "@/types/customer/main.ts";
-import type { IDocument, IDocumentCreate } from "@/types/document/main.ts";
+import type { IDocument, IDocumentCreate, IDocumentType } from "@/types/document/main.ts";
 import type { IPaymentCreate } from "@/types/transactions/main.ts";
 import type { IInvoiceCreate, IInvoicePolicyCreate } from "@/types/invoice/main.ts";
 import type { NavigateFunction } from "react-router";
 
 import utc from "dayjs/plugin/utc";
+import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 dayjs.extend(utc);
 
@@ -133,7 +134,7 @@ export const documentTableHeaders: ColumnsType = [
     key: "url",
     render: (text, item) => (
       <a href={text} target="_blank" rel="noopener noreferrer">
-        {item.type}
+        {documentTypeTitleOptions[item.type]}
       </a>
     ),
   },
@@ -146,10 +147,19 @@ export const documentTableHeaders: ColumnsType = [
     title: "Type",
     dataIndex: "type",
     key: "type",
+    render: (value) => documentTypeTitleOptions[value]
   },
 ];
 
+export const documentTypeTitleOptions: { [k in IDocumentType]: string  } = {
+  ddc_license: 'Driver Defensive Course License',
+  tlc_license: 'TLC License',
+  dl_license: 'Driver License',
+  other: 'Other'
+}
+
 export const getPolicyFunctions = (customerId?: string) => {
+  const { success, error } = useNotify();
   const [policies, setPolicies] = useState<IPolicyByCustomer[]>([]);
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
 
@@ -176,10 +186,17 @@ export const getPolicyFunctions = (customerId?: string) => {
   }, [customerId]);
 
   const createPolicy = useCallback(async (newPolicyForm: IPolicyCreate, resetForm: Dispatch<SetStateAction<IPolicyCreate>>) => {
-    const { _id, ...policyFormWithoutId } = newPolicyForm;
-    await instance.post('/policy', { ...policyFormWithoutId, customerId });
-    resetForm(newPolicyFormInitialState);
-    await cancelCreatePolicyModal();
+    try {
+      const { _id, ...policyFormWithoutId } = newPolicyForm;
+      await instance.post('/policy', { ...policyFormWithoutId, customerId });
+      resetForm(newPolicyFormInitialState);
+      success('Policy was created successfully!');
+      await fetchPolicies();
+    } catch (e) {
+      error('There is a problem with policy creation. Try again.');
+    } finally {
+      await cancelCreatePolicyModal();
+    }
   }, [customerId])
 
   const changePolicyFormData = useCallback((key: keyof Omit<IPolicyCreate, 'effectiveDate' | 'expirationDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
@@ -255,9 +272,16 @@ export const getPolicyFunctions = (customerId?: string) => {
   }, []);
 
   const updatePolicy = useCallback(async (newPolicyForm: Partial<IUpdatePolicy>, resetForm: Dispatch<SetStateAction<IUpdatePolicy>>) => {
-    await instance.patch(`/policy/${selectedPolicy!._id}`, newPolicyForm);
-    resetForm(newPolicyFormInitialState);
-    await cancelUpdatePolicyModal();
+    try {
+      await instance.patch(`/policy/${selectedPolicy!._id}`, newPolicyForm);
+      resetForm(newPolicyFormInitialState);
+      success('Policy was successfully updated!');
+      await fetchPolicies();
+    } catch (e) {
+      error('There is a problem with policy update. Try again.');
+    } finally {
+      await cancelUpdatePolicyModal();
+    }
   }, [selectedPolicy]);
 
   // Delete modal
@@ -269,7 +293,13 @@ export const getPolicyFunctions = (customerId?: string) => {
   }, []);
 
   const deletePolicy = useCallback(async () => {
-    await instance.delete(`/policy/${selectedPolicy!._id}`);
+    try {
+      await instance.delete(`/policy/${selectedPolicy!._id}`);
+      success('Policy was successfully deleted!');
+      await fetchPolicies();
+    } catch (e) {
+      error('There is a problem with policy delete. Try again.');
+    }
     await cancelDeletePolicyModal();
   }, [selectedPolicy]);
 
@@ -280,36 +310,46 @@ export const getPolicyFunctions = (customerId?: string) => {
   }, []);
 
   const createPayment = useCallback(async (paymentForm: IPaymentCreate) => {
-    await instance.post('/payment/application', {
-      ...paymentForm,
-      policyId: selectedPolicy!._id,
-      provider: paymentForm.method.toUpperCase(),
-    });
-
-    cancelPaymentCreateModal();
+    try {
+      await instance.post('/payment/application', {
+        ...paymentForm,
+        policyId: selectedPolicy!._id,
+        provider: paymentForm.method.toUpperCase(),
+      });
+      success('Payment successfully created!');
+      await fetchPolicies();
+    } catch (e) {
+      error('Oops... Problem with payment creation. Try again.');
+    } finally {
+      cancelPaymentCreateModal();
+    }
   }, [selectedPolicy]);
 
   // invoice
 
   const createInvoice = useCallback(async (navigate: NavigateFunction) => {
-    const invoiceBody: IInvoiceCreate = {
-      customer: customerId!,
-      policies: policies.map(p => (
-        {
-          policy: p._id,
-          number: p.policyNumber,
-          insuranceCarrierName: p.insurance.name,
-          dueDate: p.dueDate,
-          amount: p.amountDue,
-          totalDueDateFee: p.matchedFees.total
-        }
-      )) as IInvoicePolicyCreate[],
-      issuedAt: new Date(),
-    }
+    try {
+      const invoiceBody: IInvoiceCreate = {
+        customer: customerId!,
+        policies: policies.map(p => (
+          {
+            policy: p._id,
+            number: p.policyNumber,
+            insuranceCarrierName: p.insurance.name,
+            dueDate: p.dueDate,
+            amount: p.amountDue,
+            totalDueDateFee: p.matchedFees.total
+          }
+        )) as IInvoicePolicyCreate[],
+        issuedAt: new Date(),
+      }
 
-    const response = await instance.post('/invoice', invoiceBody);
-    setIsInvoiceConfirmModalOpen(false);
-    navigate(`/invoice/${response.data._id}`);
+      const response = await instance.post('/invoice', invoiceBody);
+      setIsInvoiceConfirmModalOpen(false);
+      navigate(`/invoice/${response.data._id}`);
+    } catch (e) {
+      error('Seems like we having problem with sending invoice. Try again.');
+    }
   }, [customerId, policies]);
 
   const cancelInvoiceCreateModal = useCallback(() => {
@@ -362,20 +402,29 @@ export const getPolicyFunctions = (customerId?: string) => {
 }
 
 export const getCustomerFunction = (customerId?: string) => {
+  const { error, success } = useNotify();
   const [isClientEmailModalOpen, setIsClientEmailModalOpen] = useState(false);
   const [isAutoPayEnabled, setIsAutoPayEnabled] = useState(false);
 
   const [customerById, setCustomerById] = useState<ICustomerCreate>(newCustomerFormInitialState);
 
   const contactSections = [
-    { title: 'TLC Expiration Date', content: dayjs(customerById.tlcExp).format('MM/DD/YYYY'), icon: <FieldNumberOutlined style={{ fontSize: 32 }} /> },
-    { title: 'TLC Number', content: customerById.tlcNumber, icon: <FieldNumberOutlined style={{ fontSize: 32 }} /> },
+    {
+      title: 'TLC Expiration Date',
+      content: dayjs(customerById.tlcExp).format('MM/DD/YYYY'),
+      icon: <FieldNumberOutlined style={{ fontSize: 32 }}/>
+    },
+    { title: 'TLC Number', content: customerById.tlcNumber, icon: <FieldNumberOutlined style={{ fontSize: 32 }}/> },
     {
       title: 'DDC Expiration Date',
       content: dayjs(customerById.defensiveDriverCourseExp).format('MM/DD/YYYY'),
-      icon: <ScheduleOutlined style={{ fontSize: 32 }} />
+      icon: <ScheduleOutlined style={{ fontSize: 32 }}/>
     },
-    { title: 'DL Number', content: dayjs(customerById.driverLicenseExp).format('MM/DD/YYYY'), icon: <ScheduleOutlined style={{ fontSize: 32 }} /> },
+    {
+      title: 'DL Number',
+      content: dayjs(customerById.driverLicenseExp).format('MM/DD/YYYY'),
+      icon: <ScheduleOutlined style={{ fontSize: 32 }}/>
+    },
   ];
 
   const fetchCustomerById = useCallback(async () => {
@@ -384,8 +433,14 @@ export const getCustomerFunction = (customerId?: string) => {
   }, [customerId]);
 
   const sendFormToClientEmail = useCallback(async (clientEmail: string) => {
-    await instance.post(`/email/payment-request/${customerId}`, { clientEmail });
-    cancelClientFormSend();
+    try {
+      await instance.post(`/email/payment-request/${customerId}`, { clientEmail });
+      success('Form was successfully sent to the client!');
+    } catch (e) {
+      error('Problem with sending form to the client. Try again.');
+    } finally {
+      cancelClientFormSend();
+    }
   }, [customerId]);
 
   const openClientFormEmail = () => {
@@ -427,6 +482,7 @@ export const paymentTypeRadioOptions = [
 ];
 
 export const newDocumentFormInitialState: IDocumentCreate = {
+  file: undefined,
   metaDescription: '',
   type: '',
 }
@@ -439,6 +495,7 @@ export const documentTypeSelectionOptions = [
 ]
 
 export const getDocumentFunction = (customerId?: string) => {
+  const { success, error } = useNotify();
   const [documents, setDocuments] = useState<IDocument[]>([]);
 
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
@@ -449,21 +506,26 @@ export const getDocumentFunction = (customerId?: string) => {
   }
 
   const uploadCustomerDocument = useCallback(async (form: IDocumentCreate) => {
-    const formData = new FormData();
-    formData.set('customer', customerId!);
+    try {
+      const formData = new FormData();
+      formData.set('customer', customerId!);
 
-    for (const [key, value] of Object.entries(form)) {
-      formData.set(key, value);
-    }
-
-    await instance.post('/document/customer', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+      for (const [key, value] of Object.entries(form)) {
+        formData.set(key, value);
       }
-    });
 
-    cancelDocumentModal();
-    await fetchDocumentsByCustomerId();
+      await instance.post('/document/customer', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      success('Document successfully uploaded!');
+      await fetchDocumentsByCustomerId();
+    } catch (e) {
+      error('Document upload request have problem. Try again.');
+    } finally {
+      cancelDocumentModal();
+    }
   }, [customerId]);
 
   const addNewDocumentButton =

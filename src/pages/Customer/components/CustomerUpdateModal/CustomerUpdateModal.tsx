@@ -13,6 +13,7 @@ import { instance } from "@/api/axios.ts";
 
 import './CustomerUpdateModal.scss';
 import type { ICustomerCreate } from "@/types/customer/main.ts";
+import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 interface CustomerUpdateModalProps {
   cancel: () => void;
@@ -23,6 +24,7 @@ interface CustomerUpdateModalProps {
 }
 
 const CustomerUpdateModal = ({ cancel, open, selectedCustomer, formChange, dateChange }: CustomerUpdateModalProps) => {
+  const { success, error } = useNotify()
   const [updateCustomerForm, setUpdateCustomerForm] = useState<ICustomerUpdate>(newCustomerFormInitialState);
 
   useEffect(() => {
@@ -33,19 +35,25 @@ const CustomerUpdateModal = ({ cancel, open, selectedCustomer, formChange, dateC
   }, [selectedCustomer]);
 
   const submitForm = useCallback(async () => {
-    const touchedFormFields: { [k: string]: unknown } = {};
+    try {
+      const touchedFormFields: { [k: string]: unknown } = {};
 
-    Object.entries(updateCustomerForm).forEach(([key, value]) => {
-      if (selectedCustomer) {
-        if (selectedCustomer[key as keyof ICustomer] !== updateCustomerForm[key as keyof ICustomerUpdate]) {
-          touchedFormFields[key] = value;
+      Object.entries(updateCustomerForm).forEach(([key, value]) => {
+        if (selectedCustomer) {
+          if (selectedCustomer[key as keyof ICustomer] !== updateCustomerForm[key as keyof ICustomerUpdate]) {
+            touchedFormFields[key] = value;
+          }
         }
-      }
-    });
+      });
 
-    await instance.put(`/customer/${selectedCustomer?._id}`, touchedFormFields);
-    setUpdateCustomerForm(newCustomerFormInitialState);
-    cancel();
+      await instance.put(`/customer/${selectedCustomer?._id}`, touchedFormFields);
+      setUpdateCustomerForm(newCustomerFormInitialState);
+      success('Customer successfully updated!');
+    } catch (e) {
+      error('There is something with update. Try again.');
+    } finally {
+      cancel();
+    }
   }, [selectedCustomer, updateCustomerForm]);
 
   const validForm = useMemo(() => {
