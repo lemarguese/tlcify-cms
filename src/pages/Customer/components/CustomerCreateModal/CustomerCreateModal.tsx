@@ -78,7 +78,7 @@ const CustomerCreateModal = ({ cancel, open, formChange, dateChange }: CustomerC
                     onChange={dateChange('dateOfBirth', setNewCustomerForm)}/>
       </div>
       <div className='customer_create_modal_tlc'>
-        <Input placeholder={'TLC Number'} value={newCustomerForm.tlcNumber} label={'TLC Number'} required
+        <Input placeholder={'TLC FHV'} value={newCustomerForm.tlcNumber} label={'TLC FHV'} required
                onChange={formChange('tlcNumber', setNewCustomerForm)}/>
         <DatePicker label={'TLC Expiration'} required
                     value={newCustomerForm.tlcExp ? dayjs(newCustomerForm.tlcExp) : undefined}

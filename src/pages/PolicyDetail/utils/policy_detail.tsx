@@ -129,6 +129,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     );
 
     const { deposit, premiumPrice, installmentCount, effectiveDate, monthlyPayment, fees } = policyById;
+    const premiumPriceNet = premiumPrice - deposit;
 
     const wrappedEffectiveDate = dayjs(effectiveDate).startOf('day');
     const rows: {
@@ -151,12 +152,10 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
       });
 
       const matchingFeeSum = matchingFees.reduce((acc, item) => acc + item.amount, 0);
-      scheduledAmount = premiumPrice / +installmentCount;
-
-      const hasDeposit = +deposit && index === 0;
+      scheduledAmount = premiumPriceNet / +installmentCount;
 
       if (monthlyPayment) {
-        if (index === +installmentCount - 1) scheduledAmount = premiumPrice - monthlyPayment * (+installmentCount - 1);
+        if (index === +installmentCount - 1) scheduledAmount = premiumPriceNet - monthlyPayment * (+installmentCount - 1);
         else scheduledAmount = monthlyPayment;
       }
 
@@ -165,15 +164,13 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
       rows.push({
         monthlyAmount: scheduledAmount,
         dueDate: dueDate.format('MM/DD/YYYY'),
-        dueAmount: (dueAmount ? scheduledAmount - dueAmount.totalPaid : scheduledAmount) - (hasDeposit ? +deposit : 0) + matchingFeeSum,
+        dueAmount: (dueAmount ? scheduledAmount - dueAmount.totalPaid : scheduledAmount) + matchingFeeSum,
         matchingFeeAmount: matchingFeeSum,
         type: 'Monthly'
       });
 
       totalDueNowAmount += scheduledAmount + matchingFeeSum - (dueAmount ? dueAmount.totalPaid : 0);
       totalScheduledAmount += scheduledAmount + matchingFeeSum;
-
-      if (hasDeposit) totalDueNowAmount -= deposit;
     }
 
     const descriptionItems = rows.map(({ dueDate, dueAmount, matchingFeeAmount, monthlyAmount, type }, index) => ({

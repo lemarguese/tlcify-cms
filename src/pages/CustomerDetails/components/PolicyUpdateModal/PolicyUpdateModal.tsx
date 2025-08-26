@@ -168,6 +168,7 @@ const PolicyUpdateModal = ({
 
   const timelineOptions = useMemo(() => {
     const { installmentCount, premiumPrice, deposit, fees, monthlyPayment, effectiveDate } = newPolicyForm;
+    const premiumPriceNet = premiumPrice - deposit;
 
     const effectiveDateWrapped = dayjs(effectiveDate).startOf('day');
     const installmentArray: { [k: number]: TimelineItemProps } = {};
@@ -184,17 +185,11 @@ const PolicyUpdateModal = ({
       const matchingFeesSum = matchingFees.reduce((acc, item) => acc + Number(item.amount), 0);
       const feesWarningText = matchingFees.length ? `(${matchingFees[0].type} fee: $ ${matchingFeesSum})` : ''
 
-      installmentAmount = +premiumPrice / +installmentCount;
+      installmentAmount = premiumPriceNet / +installmentCount;
 
       if (+monthlyPayment) {
-        if (index === +installmentCount - 1) installmentAmount = +premiumPrice - (+installmentCount - 1) * +monthlyPayment;
+        if (index === +installmentCount - 1) installmentAmount = premiumPriceNet - (+installmentCount - 1) * +monthlyPayment;
         else installmentAmount = monthlyPayment;
-      }
-
-      if (+deposit) {
-        if (index === 0) {
-          installmentAmount = (+monthlyPayment ? +monthlyPayment : (+premiumPrice / +installmentCount)) - deposit;
-        }
       }
 
       installmentArray[index] = {
