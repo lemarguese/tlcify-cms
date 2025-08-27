@@ -401,7 +401,7 @@ export const getPolicyFunctions = (customerId?: string) => {
   }
 }
 
-export const getCustomerFunction = (customerId?: string) => {
+export const getCustomerByIdFunction = (customerId?: string) => {
   const { error, success } = useNotify();
   const [isClientEmailModalOpen, setIsClientEmailModalOpen] = useState(false);
   const [isAutoPayEnabled, setIsAutoPayEnabled] = useState(false);

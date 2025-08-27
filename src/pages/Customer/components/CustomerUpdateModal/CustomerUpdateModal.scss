@@ -1,9 +1,4 @@
 .customer_update_modal {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-
   padding-top: 16px;
 
   &_container {
@@ -19,5 +14,17 @@
     gap: 12px;
 
     padding-top: 16px;
+  }
+
+  &_horizontal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &_vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 12;
   }
 }

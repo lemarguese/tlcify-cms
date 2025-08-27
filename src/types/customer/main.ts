@@ -6,13 +6,22 @@ export interface ICustomer {
   email: string,
   dateOfBirth: Date,
   address: string,
-  tlcNumber: string,
-  tlcExp: Date,
+  apartmentNumber?: string,
+  tlcFhvNumber: string,
+  tlcFhvExpiration: Date,
+  dmvPlaceNumber: string,
+  dmvExpiration: Date,
+  vehicleVIN: string,
   driverLicenseNumber: string,
-  driverLicenseExp: Date,
-  lastSSN: string,
-  defensiveDriverCourseExp: Date,
+  driverLicenseExpiration: Date,
+  lastSSN?: string,
+  defensiveDriverCourseExpiration?: Date,
+  isSmsSubscribed?: boolean,
+  isAutoPayEnabled?: boolean
 }
 
-export interface ICustomerCreate extends Omit<ICustomer, '_id'> {}
-export interface ICustomerUpdate extends Omit<ICustomer, '_id'> {}
+export interface ICustomerCreate extends Omit<ICustomer, '_id'> {
+}
+
+export interface ICustomerUpdate extends Omit<ICustomer, '_id'> {
+}

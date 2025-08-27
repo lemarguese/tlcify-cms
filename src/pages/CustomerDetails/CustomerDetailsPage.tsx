@@ -10,8 +10,8 @@ import CustomerDetailContactSection from "./components/CustomerDetailContactSect
 
 import CustomerDetailProfile from "./components/CustomerDetailsProfile/CustomerDetailsProfile.tsx";
 import {
-  documentTableHeaders,
-  getCustomerFunction, getDocumentFunction,
+  documentTableHeaders, getCustomerByIdFunction,
+  getDocumentFunction,
   getPolicyFunctions,
   policyTableHeaders
 } from "@/pages/CustomerDetails/utils/policy.tsx";
@@ -81,7 +81,7 @@ const CustomerDetailsPage = () => {
     openClientFormEmail, sendFormToClientEmail, isAutoPayEnabled,
     cancelClientFormSend,
     customerById, contactSections, fetchCustomerById,
-  } = getCustomerFunction(customerId);
+  } = getCustomerByIdFunction(customerId);
 
   const {
     fetchDocumentsByCustomerId,

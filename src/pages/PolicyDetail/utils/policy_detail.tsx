@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import { instance } from "@/api/axios.ts";
-import type { IPolicy, IPolicyFee, VehicleLicenseInfo } from "@/types/policy/main.ts";
+import type { IPolicy, IPolicyFee } from "@/types/policy/main.ts";
 import { policyInitialState } from "@/pages/CustomerDetails/utils/policy.tsx";
 import type { DescriptionsProps } from "antd";
 import dayjs from "dayjs";
@@ -80,7 +80,6 @@ const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'customer' | 'insurance'
 export const getPolicyDetailFunctions = (policyId?: string) => {
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
   const [paymentsByPolicy, setPaymentsByPolicy] = useState<IPayment[]>([]);
-  const [vehicles, setVehicles] = useState<VehicleLicenseInfo[]>([])
 
   const [isPolicyFeeDeleteModalOpen, setIsPolicyFeeDeleteModalOpen] = useState(false);
   const [selectedPolicyFee, setSelectedPolicyFee] = useState<IPolicyFee>();
@@ -249,13 +248,6 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     setIsPolicyFeeDeleteModalOpen(false);
   }, []);
 
-  // fhv
-
-  const fetchVehicleInformation = async () => {
-    const response = await instance.get('/for_hire_vehicle');
-    setVehicles(response.data);
-  }
-
   return {
     fetchPolicyById, policyById,
     policyDescriptionItems,
@@ -265,9 +257,6 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
     // payments
     fetchPaymentsByPolicy, paymentsByPolicy,
-
-    // fhv
-    fetchVehicleInformation, vehicles,
 
     // installments
 
