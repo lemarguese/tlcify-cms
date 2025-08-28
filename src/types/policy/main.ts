@@ -8,12 +8,14 @@ export interface IPolicy {
   policyNumber: string;
   type: string;
   status: string;
-  effectiveDate: Date | undefined;
-  expirationDate: Date | undefined;
+  effectiveDate?: Date;
+  expirationDate?: Date;
+  customEffectiveDate?: Date;
   policyTerm: string;
   premiumPrice: number;
   installmentCount: string;
   fees: IPolicyFee[];
+  cycles: IPolicyCycle[];
   matchedFees: {
     fees: IPolicyFee[];
     total: number;
@@ -40,6 +42,17 @@ export interface IPolicyFee {
   type: 'late' | 'cancellation' | 'return' | 'reinstatement';
   dueDate: Date | undefined;
   amount: number;
+}
+
+export interface IPolicyCycle {
+  cycle: number,
+  dueDate: Date,
+  baseAmount: number,
+  fees: number,
+  totalPaid: number,
+  carryOver: number,
+  totalDue: number,
+  amountRemaining: number
 }
 
 export interface IPolicyFeeCreate extends Omit<IPolicyFee, '_id'> {

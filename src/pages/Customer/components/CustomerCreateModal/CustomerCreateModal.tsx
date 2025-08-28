@@ -52,7 +52,7 @@ const CustomerCreateModal = ({ cancel, open, submit }: CustomerCreateModalProps)
     return Object.values(options).every(el => el);
   }, [newCustomerForm]);
 
-  return <Modal destroyOnClose open={open} width={800} okButtonProps={{ disabled: !validForm }}
+  return <Modal open={open} width={800} okButtonProps={{ disabled: !validForm }}
                 onOk={() => submit(newCustomerForm, setNewCustomerForm)} onCancel={cancel}>
     <div className='customer_create_modal_container'>
       <div className='customer_create_modal_horizontal'>

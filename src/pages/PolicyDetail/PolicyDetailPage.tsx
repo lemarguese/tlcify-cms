@@ -38,15 +38,12 @@ const PolicyDetailPage = () => {
 
     paymentsByPolicy, fetchPaymentsByPolicy,
 
-    fetchVehicleInformation, vehicles,
-
     installmentsDescriptionItems,
   } = getPolicyDetailFunctions(policyId);
 
   useEffect(() => {
     fetchPolicyById();
     fetchPaymentsByPolicy();
-    fetchVehicleInformation();
   }, []);
 
   const tabs: TabsProps['items'] = [
@@ -57,7 +54,7 @@ const PolicyDetailPage = () => {
         <div className='policy_detail_page_body_vertical'>
           <div className='policy_detail_page_body_left'>
             <div className='policy_detail_page_body_left_fhv'>
-              <Table actions={<></>} columns={vehicleLicenseColumns} dataSource={vehicles}/>
+              {/*<Table actions={<></>} columns={vehicleLicenseColumns} dataSource={vehicles}/>*/}
             </div>
           </div>
         </div>

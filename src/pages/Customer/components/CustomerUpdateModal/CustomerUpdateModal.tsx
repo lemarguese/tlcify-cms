@@ -60,7 +60,7 @@ const CustomerUpdateModal = ({ cancel, open, selectedCustomer, submit }: Custome
     return Object.values(options).every(el => el);
   }, [updateCustomerForm]);
 
-  return <Modal destroyOnClose open={open} width={800} onOk={() => submit(updateCustomerForm, setUpdateCustomerForm)}
+  return <Modal open={open} width={800} onOk={() => submit(updateCustomerForm, setUpdateCustomerForm)}
                 okButtonProps={{ disabled: !validForm }} onCancel={cancel}>
     <div className='customer_update_modal_container'>
       <div>

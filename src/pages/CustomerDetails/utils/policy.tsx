@@ -36,6 +36,8 @@ export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id' | 'cu
   monthlyPayment: 0,
   expirationDate: undefined,
   effectiveDate: undefined,
+  customEffectiveDate: undefined,
+  cycles: [],
   status: '',
   deposit: 0,
   type: '',
@@ -151,7 +153,7 @@ export const documentTableHeaders: ColumnsType = [
   },
 ];
 
-export const documentTypeTitleOptions: { [k in IDocumentType]: string  } = {
+export const documentTypeTitleOptions: { [k in IDocumentType]: string } = {
   ddc_license: 'Driver Defensive Course License',
   tlc_license: 'TLC License',
   dl_license: 'Driver License',
@@ -211,14 +213,13 @@ export const getPolicyFunctions = (customerId?: string) => {
     }
   }, []);
 
-  // TODO If there will be custom, need to rewrote
-  const changePolicyFormTime = useCallback((key: keyof Pick<IPolicyCreate, 'effectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
+  const changePolicyFormTime = useCallback((key: keyof Pick<IPolicyCreate, 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
     return (val: Dayjs) => {
       const date = val ? val.toDate() : undefined
       callback(prev => ({
         ...prev,
         [key]: date,
-        expirationDate: val.add(+prev.policyTerm, 'month').toDate()
+        expirationDate: key === 'effectiveDate' ? val.add(+prev.policyTerm, 'month').toDate() : prev.expirationDate
       }))
     }
   }, []);
@@ -411,18 +412,18 @@ export const getCustomerByIdFunction = (customerId?: string) => {
   const contactSections = [
     {
       title: 'TLC Expiration Date',
-      content: dayjs(customerById.tlcExp).format('MM/DD/YYYY'),
+      content: dayjs(customerById.tlcFhvExpiration).format('MM/DD/YYYY'),
       icon: <FieldNumberOutlined style={{ fontSize: 32 }}/>
     },
-    { title: 'TLC Number', content: customerById.tlcNumber, icon: <FieldNumberOutlined style={{ fontSize: 32 }}/> },
+    { title: 'TLC Number', content: customerById.tlcFhvNumber, icon: <FieldNumberOutlined style={{ fontSize: 32 }}/> },
     {
       title: 'DDC Expiration Date',
-      content: dayjs(customerById.defensiveDriverCourseExp).format('MM/DD/YYYY'),
+      content: dayjs(customerById.defensiveDriverCourseExpiration).format('MM/DD/YYYY'),
       icon: <ScheduleOutlined style={{ fontSize: 32 }}/>
     },
     {
       title: 'DL Number',
-      content: dayjs(customerById.driverLicenseExp).format('MM/DD/YYYY'),
+      content: dayjs(customerById.driverLicenseNumber).format('MM/DD/YYYY'),
       icon: <ScheduleOutlined style={{ fontSize: 32 }}/>
     },
   ];

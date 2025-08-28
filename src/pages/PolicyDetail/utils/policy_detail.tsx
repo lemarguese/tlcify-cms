@@ -64,7 +64,7 @@ export const calendarTileStatuses = [
   { color: '#ffff76', type: 'today' }
 ];
 
-const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees' | 'matchedFees'>]: string } = {
+const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'cycles' | 'customer' | 'insurance' | 'fees' | 'matchedFees'>]: string } = {
   policyNumber: 'Policy Number',
   type: 'Policy Type',
   status: 'Policy Status',
@@ -110,7 +110,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
   // TODO __v, createdAt, updatedAt needs to be removed
   const policyDescriptionItems: DescriptionsProps['items'] = Object.entries(policyById)
-    .filter(([k, _]) => !['_id', 'insurance', 'customer', 'fees', 'createdAt', 'updatedAt', '__v', 'type', 'status'].includes(k))
+    .filter(([k, _]) => !['_id', 'insurance', 'customer', 'matchedFees', 'cycles', 'amountDue', 'dueDate', 'fees', 'createdAt', 'updatedAt', '__v', 'type', 'status'].includes(k))
     .map(([policyKey, policyValue]) => {
       let children = policyValue;
       if (['effectiveDate', 'expirationDate'].includes(policyKey)) children = dayjs(policyValue).format('MM/DD/YYYY');
@@ -123,77 +123,46 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     });
 
   const installmentsDescriptionItems: DescriptionsProps['items'] = useMemo(() => {
-    const paymentsMap = new Map(
-      paymentsByPolicy.map(p => [p.cycle, p])
-    );
+    const asd = policyById.cycles || [];
 
-    const { deposit, premiumPrice, installmentCount, effectiveDate, monthlyPayment, fees } = policyById;
-    const premiumPriceNet = premiumPrice - deposit;
+    const { totalScheduledAmount, totalDueNowAmount } = asd.reduce((acc, item) => {
+      acc.totalScheduledAmount += item.baseAmount;
+      acc.totalDueNowAmount += item.amountRemaining;
 
-    const wrappedEffectiveDate = dayjs(effectiveDate).startOf('day');
-    const rows: {
-      dueDate: string,
-      monthlyAmount: number,
-      dueAmount: number,
-      matchingFeeAmount: number,
-      type: 'Monthly'
-    }[] = [];
+      return acc;
+    }, { totalScheduledAmount: 0, totalDueNowAmount: 0 })
 
-    let scheduledAmount = 0;
-    let totalScheduledAmount = 0;
-    let totalDueNowAmount = 0;
-
-    for (let index = 0; index < +installmentCount; index++) {
-      const dueDate = wrappedEffectiveDate.add(index, 'month');
-
-      const matchingFees = fees.filter(fee => {
-        return Math.abs(dayjs(fee.dueDate).diff(dueDate, 'day')) <= 14;
-      });
-
-      const matchingFeeSum = matchingFees.reduce((acc, item) => acc + item.amount, 0);
-      scheduledAmount = premiumPriceNet / +installmentCount;
-
-      if (monthlyPayment) {
-        if (index === +installmentCount - 1) scheduledAmount = premiumPriceNet - monthlyPayment * (+installmentCount - 1);
-        else scheduledAmount = monthlyPayment;
+    const descriptionItems = asd.map(({
+                                        dueDate,
+                                        baseAmount,
+                                        carryOver,
+                                        amountRemaining,
+                                        totalDue,
+                                        totalPaid
+                                      }, index) => {
+      return {
+        label: `Cycle ${index + 1}`,
+        key: `cycle_${index + 1}`,
+        children: <div className='policy_detail_page_body_left_installments_content'>
+          <div className='policy_detail_page_body_left_installments_content_item'>
+            <strong>Due Date:</strong>
+            <p>{dayjs(dueDate).format('MM/DD/YYYY')}</p>
+          </div>
+          <div className='policy_detail_page_body_left_installments_content_item'>
+            <strong>Monthly amount:</strong>
+            <p>{baseAmount.toFixed(2)}</p>
+          </div>
+          <div className='policy_detail_page_body_left_installments_content_item'>
+            <strong>Due amount:</strong>
+            <p>{amountRemaining}</p>
+          </div>
+          <div className='policy_detail_page_body_left_installments_content_item'>
+            <strong>Type:</strong>
+            <p>Monthly</p>
+          </div>
+        </div>
       }
-
-      const dueAmount = paymentsMap.get(index);
-
-      rows.push({
-        monthlyAmount: scheduledAmount,
-        dueDate: dueDate.format('MM/DD/YYYY'),
-        dueAmount: (dueAmount ? scheduledAmount - dueAmount.totalPaid : scheduledAmount) + matchingFeeSum,
-        matchingFeeAmount: matchingFeeSum,
-        type: 'Monthly'
-      });
-
-      totalDueNowAmount += scheduledAmount + matchingFeeSum - (dueAmount ? dueAmount.totalPaid : 0);
-      totalScheduledAmount += scheduledAmount + matchingFeeSum;
-    }
-
-    const descriptionItems = rows.map(({ dueDate, dueAmount, matchingFeeAmount, monthlyAmount, type }, index) => ({
-      label: `Cycle ${index + 1}`,
-      key: `cycle_${index + 1}`,
-      children: <div className='policy_detail_page_body_left_installments_content'>
-        <div className='policy_detail_page_body_left_installments_content_item'>
-          <strong>Due Date:</strong>
-          <p>{dueDate}</p>
-        </div>
-        <div className='policy_detail_page_body_left_installments_content_item'>
-          <strong>Monthly amount:</strong>
-          <p>{(monthlyAmount + matchingFeeAmount).toFixed(2)}</p>
-        </div>
-        <div className='policy_detail_page_body_left_installments_content_item'>
-          <strong>Due amount:</strong>
-          <p>{dueAmount}</p>
-        </div>
-        <div className='policy_detail_page_body_left_installments_content_item'>
-          <strong>Type:</strong>
-          <p>{type}</p>
-        </div>
-      </div>
-    }));
+    });
 
     descriptionItems.push({
       label: '',
@@ -211,7 +180,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     })
 
     return descriptionItems as DescriptionsProps['items'];
-  }, [policyById, paymentsByPolicy]);
+  }, [policyById.cycles]);
 
 
   const calendarTileTypes = (type: 'fee' | 'due') => ({ date, view }: TileArgs) => {

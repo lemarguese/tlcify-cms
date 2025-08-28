@@ -30,8 +30,8 @@ interface PolicyCreateModalProps {
   open: boolean;
   cancel: () => void;
   submit: (value: IPolicyCreate, resetForm: Dispatch<SetStateAction<IPolicyCreate>>) => void;
-  changePolicyFormTime: (val: keyof Pick<IPolicyCreate, 'effectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => (val: Dayjs) => void;
-  changePolicyFormData: (val: keyof Omit<IPolicyCreate, 'expirationDate' | 'effectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string) => void;
+  changePolicyFormTime: (val: keyof Pick<IPolicyCreate, 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => (val: Dayjs) => void;
+  changePolicyFormData: (val: keyof Omit<IPolicyCreate, 'expirationDate' | 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string) => void;
   addPolicyFee: (value: IPolicyFeeCreate, callback: Dispatch<SetStateAction<IPolicyCreate>>) => void;
   removePolicyFee: (value: number, callback: Dispatch<SetStateAction<IPolicyCreate>>) => void;
 }
@@ -79,16 +79,26 @@ const PolicyCreateModal = ({
   }, [newPolicyForm.fees, insurances, newPolicyForm.insuranceId, newPolicyForm.premiumPrice]);
 
   const timelineOptions = useMemo(() => {
-    const { installmentCount, premiumPrice, deposit, fees, monthlyPayment, effectiveDate } = newPolicyForm;
+    const {
+      installmentCount,
+      customEffectiveDate,
+      premiumPrice,
+      deposit,
+      fees,
+      monthlyPayment,
+      effectiveDate
+    } = newPolicyForm;
     const premiumPriceNet = premiumPrice - deposit;
 
     const effectiveDateWrapped = dayjs(effectiveDate).startOf('day');
+    const customEffectiveDateWrapper = dayjs(customEffectiveDate).startOf('day');
     const installmentArray: { [k: number]: TimelineItemProps } = {};
 
     let installmentAmount = 0;
 
     for (let index = 0; index < +installmentCount; index++) {
-      const dueDate = effectiveDateWrapped.add(index, 'month');
+      const date = (index === 0 ? effectiveDateWrapped : customEffectiveDateWrapper);
+      const dueDate = date.add(index, 'month');
 
       const matchingFees = fees.filter(fee => {
         return Math.abs(dayjs(fee.dueDate).diff(dueDate, 'day')) <= 14;
@@ -105,7 +115,7 @@ const PolicyCreateModal = ({
       }
 
       installmentArray[index] = {
-        label: effectiveDateWrapped.set('month', effectiveDateWrapped.get('month') + index).format('Do MMMM, YYYY'),
+        label: date.set('month', date.get('month') + index).format('Do MMMM, YYYY'),
         children: `$ ${installmentAmount.toFixed(2)} ${feesWarningText}`
       }
 
@@ -195,16 +205,22 @@ const PolicyCreateModal = ({
               <Date label='Expiration date' disabled
                     value={newPolicyForm.expirationDate ? dayjs(newPolicyForm.expirationDate) : null}/>
             </div>
-            <div className='policy_create_modal_information_vertical'>
+            <div className='policy_create_modal_information_horizontal'>
               <Input label='Policy number' placeholder='Ex. C813P05' required value={newPolicyForm.policyNumber}
                      onChange={changePolicyFormData('policyNumber', setNewPolicyForm)}/>
+              <Date label='Custom Effective date'
+                    onChange={changePolicyFormTime('customEffectiveDate', setNewPolicyForm)}
+                    value={newPolicyForm.customEffectiveDate ? dayjs(newPolicyForm.customEffectiveDate) : null}/>
+            </div>
+            <div className='policy_create_modal_information_vertical'>
               <Input label='Premium' addonBefore='$' required value={newPolicyForm.premiumPrice}
                      onChange={changePolicyFormData('premiumPrice', setNewPolicyForm)}/>
             </div>
             <div className='policy_create_modal_information_horizontal'>
               <Input label='Deposit' addonBefore='$' value={newPolicyForm.deposit}
                      onChange={changePolicyFormData('deposit', setNewPolicyForm)}/>
-              <Input label='Monthly payment' addonBefore='$' disabled={+newPolicyForm.installmentCount <= 1} value={newPolicyForm.monthlyPayment}
+              <Input label='Monthly payment' addonBefore='$' disabled={+newPolicyForm.installmentCount <= 1}
+                     value={newPolicyForm.monthlyPayment}
                      onChange={changePolicyFormData('monthlyPayment', setNewPolicyForm)}/>
             </div>
           </div>

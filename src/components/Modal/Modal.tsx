@@ -8,7 +8,7 @@ interface CustomModalProps extends ModalProps {
 }
 
 const Modal: FC<CustomModalProps> = ({ ...props }) => {
-  return <AntModal centered {...props} />
+  return <AntModal destroyOnHidden centered {...props} />
 }
 
 export default Modal;

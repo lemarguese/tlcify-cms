@@ -104,7 +104,7 @@ const PolicyUpdateModal = ({
       policyStatusTouched: newPolicyForm.status.localeCompare(policyById.status) !== 0,
       policyTermsTouched: newPolicyForm.policyTerm.localeCompare(policyById.policyTerm) !== 0,
       policyInstallmentCountTouched: newPolicyForm.installmentCount !== policyById.installmentCount,
-      effectiveDateTouched: (newPolicyForm.effectiveDate ?? '').valueOf === (policyById.effectiveDate ?? '').valueOf,
+      effectiveDateTouched: (newPolicyForm.effectiveDate ?? '').valueOf() !== (policyById.effectiveDate ?? '').valueOf(),
       policyNumberTouched: newPolicyForm.policyNumber.localeCompare(policyById.policyNumber) !== 0,
       policyPremiumDepositTouched: newPolicyForm.deposit !== policyById.deposit,
       policyFeesTouched: (() => {
