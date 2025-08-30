@@ -41,8 +41,6 @@ const CustomerDetailsPage = () => {
     cancelDriverModal,
     createDriver,
     isDriverCreateModalOpen,
-    changeDriverFormData,
-    changeDriverFormTime
   } = getDriverFunctions(customerId);
 
   const {
@@ -110,10 +108,7 @@ const CustomerDetailsPage = () => {
         <div className='customer_details_page_autopay'>
           <label className='customer_details_page_autopay_title'>Autopay options</label>
           <div className='customer_details_page_autopay_container'>
-            <div className='customer_details_page_autopay_switch'>
-              <p className='customer_details_page_autopay_switch_text'>Setup Autopay</p>
-              <Switch onChange={changeAutoPay} value={isAutoPayEnabled}/>
-            </div>
+            <Switch label='Setup AutoPay' onChange={changeAutoPay} value={isAutoPayEnabled}/>
             <div className='customer_details_page_autopay_actions'>
               <Button variant='solid' disabled={!isAutoPayEnabled} onClick={openClientFormEmail}
                       className='customer_details_page_autopay_actions_button'>Send form to a client</Button>
@@ -150,7 +145,7 @@ const CustomerDetailsPage = () => {
       <Table label='Drivers' rowKey='_id' actions={addNewDriverButton} columns={customerTableHeaders}
              dataSource={drivers}/>
     </div>
-    <DriverCreateModal formChange={changeDriverFormData} dateChange={changeDriverFormTime} cancel={cancelDriverModal}
+    <DriverCreateModal cancel={cancelDriverModal}
                        open={isDriverCreateModalOpen} submit={createDriver}/>
     <PolicyCreateModal open={isPolicyCreateModalOpen} cancel={cancelCreatePolicyModal}
                        submit={createPolicy} {...commonPolicyFunctions} />

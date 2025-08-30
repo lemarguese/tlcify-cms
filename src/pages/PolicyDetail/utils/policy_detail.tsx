@@ -110,7 +110,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
   // TODO __v, createdAt, updatedAt needs to be removed
   const policyDescriptionItems: DescriptionsProps['items'] = Object.entries(policyById)
-    .filter(([k, _]) => !['_id', 'insurance', 'customer', 'matchedFees', 'cycles', 'amountDue', 'dueDate', 'fees', 'createdAt', 'updatedAt', '__v', 'type', 'status'].includes(k))
+    .filter(([k, _]) => !['_id', 'insurance', 'customer', 'customEffectiveDate', 'matchedFees', 'cycles', 'amountDue', 'dueDate', 'fees', 'createdAt', 'updatedAt', 'type', 'status'].includes(k))
     .map(([policyKey, policyValue]) => {
       let children = policyValue;
       if (['effectiveDate', 'expirationDate'].includes(policyKey)) children = dayjs(policyValue).format('MM/DD/YYYY');
@@ -123,23 +123,23 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     });
 
   const installmentsDescriptionItems: DescriptionsProps['items'] = useMemo(() => {
-    const asd = policyById.cycles || [];
+    const policyCycles = policyById.cycles;
 
-    const { totalScheduledAmount, totalDueNowAmount } = asd.reduce((acc, item) => {
+    const { totalScheduledAmount, totalDueNowAmount } = policyCycles.reduce((acc, item) => {
       acc.totalScheduledAmount += item.baseAmount;
-      acc.totalDueNowAmount += item.amountRemaining;
+      acc.totalDueNowAmount += item.amountRemaining - item.carryOver;
 
       return acc;
     }, { totalScheduledAmount: 0, totalDueNowAmount: 0 })
 
-    const descriptionItems = asd.map(({
-                                        dueDate,
-                                        baseAmount,
-                                        carryOver,
-                                        amountRemaining,
-                                        totalDue,
-                                        totalPaid
-                                      }, index) => {
+    const descriptionItems = policyCycles.map(({
+                                                 dueDate,
+                                                 baseAmount,
+                                                 carryOver,
+                                                 amountRemaining,
+                                                 totalDue,
+                                                 totalPaid
+                                               }, index) => {
       return {
         label: `Cycle ${index + 1}`,
         key: `cycle_${index + 1}`,
@@ -154,7 +154,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
           </div>
           <div className='policy_detail_page_body_left_installments_content_item'>
             <strong>Due amount:</strong>
-            <p>{amountRemaining}</p>
+            <p>{amountRemaining - carryOver}</p>
           </div>
           <div className='policy_detail_page_body_left_installments_content_item'>
             <strong>Type:</strong>

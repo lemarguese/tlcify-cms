@@ -1,13 +1,12 @@
 import { Button, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import type { ICustomerCreate, ICustomer, ICustomerUpdate } from "@/types/customer/main.ts";
+import type { ICustomerCreate, ICustomer, ICustomerUpdate, CustomerVehicleLicenseInfo } from "@/types/customer/main.ts";
 import dayjs, { Dayjs } from "dayjs";
 import { useNavigate } from "react-router";
 import { useCallback, useState } from "react";
 import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 import type { TableRowSelection } from "antd/es/table/interface";
 import { instance } from "@/api/axios.ts";
-import type { VehicleLicenseInfo } from "@/types/policy/main.ts";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 export const customerTableHeaders: ColumnsType = [
@@ -170,9 +169,9 @@ export const getCustomerFunctions = () => {
 }
 
 export const getCustomerUpdateAndCreateFunctions = () => {
-  const [vehicleInformation, setVehicleInformation] = useState<VehicleLicenseInfo[]>([]);
+  const [vehicleInformation, setVehicleInformation] = useState<CustomerVehicleLicenseInfo[]>([]);
   const fetchVehicleInformation = async () => {
-    const response = await instance.get('/for_hire_vehicle');
+    const response = await instance.get('/for_hire_vehicle/customer');
     setVehicleInformation(response.data);
   }
 

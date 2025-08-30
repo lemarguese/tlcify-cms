@@ -57,26 +57,3 @@ export interface IPolicyCycle {
 
 export interface IPolicyFeeCreate extends Omit<IPolicyFee, '_id'> {
 }
-
-export interface VehicleLicenseInfo {
-  active: string;
-  vehicle_license_number: string;
-  name: string;
-  license_type: string;
-  expiration_date: string;
-  permit_license_number: string;
-  dmv_license_plate_number: string;
-  vehicle_vin_number: string;
-  certification_date: string;
-  hack_up_date: string;
-  vehicle_year: string;
-  base_number: string;
-  base_name: string;
-  base_type: string;
-  veh: string;
-  base_telephone_number: string;
-  base_address: string;
-  reason: string;
-  last_date_updated: string;
-  last_time_updated: string;
-}

@@ -6,70 +6,97 @@ import DatePicker from "@/components/Date/Date.tsx";
 import Modal from '@/components/Modal/Modal.tsx';
 
 import dayjs, { Dayjs } from "dayjs";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 
-import { newDriverFormInitialState } from "@/pages/CustomerDetails/utils/driver.tsx";
+import {
+  getDriversUpdateAndCreateFunctions,
+  newDriverFormInitialState
+} from "@/pages/CustomerDetails/utils/driver.tsx";
 import type { IDriverCreate } from "@/types/driver/main.ts";
 
 interface DriverCreateModalProps {
   open: boolean;
   cancel: () => void;
   submit: (value: IDriverCreate, resetForm: Dispatch<SetStateAction<IDriverCreate>>) => void;
-  dateChange: (val: keyof Pick<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => (val: Dayjs) => void;
-  formChange: (val: keyof Omit<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => (val: BaseSyntheticEvent) => void;
 }
 
-const DriverCreateModal = ({ open, cancel, formChange, dateChange, submit }: DriverCreateModalProps) => {
+const DriverCreateModal = ({ open, cancel, submit }: DriverCreateModalProps) => {
   const [newDriverForm, setNewDriverForm] = useState<IDriverCreate>(newDriverFormInitialState);
 
+  const { changeDriverFormData, changeDriverFormTime, fetchVehicleInformation } = getDriversUpdateAndCreateFunctions();
 
-  // TODO What fields are required ?
-  return <Modal open={open} onOk={() => submit(newDriverForm, setNewDriverForm)} onCancel={cancel}>
+  useEffect(() => {
+    if (open) fetchVehicleInformation();
+  }, [open]);
+
+  const validForm = useMemo(() => {
+    const options = {
+      firstNameValid: !!newDriverForm.firstName.trim(),
+      lastNameValid: !!newDriverForm.lastName.trim(),
+      phoneNumberValid: !!newDriverForm.phoneNumber.trim(),
+      addressValid: !!newDriverForm.address.trim(),
+      emailValid: !!newDriverForm.email.trim(),
+      dateOfBirthValid: !!newDriverForm.dateOfBirth,
+      tlcNumberValid: !!newDriverForm.tlcNumber.trim(),
+      tlcFhvExpirationValid: !!newDriverForm.tlcExp,
+      driverLicenseNumberValid: !!newDriverForm.driverLicenseNumber.trim(),
+      driverLicenseExpirationValid: !!newDriverForm.driverLicenseExp,
+    };
+
+    return Object.values(options).every(el => el);
+  }, [newDriverForm]);
+
+  return <Modal open={open} onOk={() => submit(newDriverForm, setNewDriverForm)}
+                okButtonProps={{ disabled: !validForm }} onCancel={cancel}>
     <div className='driver_create_modal_container'>
-      <div className='driver_create_modal'>
+      <div className='driver_create_modal_horizontal'>
+        <Input placeholder={'TLC Number'} value={newDriverForm.tlcNumber} label={'TLC Number'}
+               onChange={changeDriverFormData('tlcNumber', setNewDriverForm)}/>
+      </div>
+      <div className='driver_create_modal_horizontal'>
         <Input placeholder={'First name'} value={newDriverForm.firstName} required
-               onChange={formChange('firstName', setNewDriverForm)} label={'First Name'}/>
+               onChange={changeDriverFormData('firstName', setNewDriverForm)} label={'First Name'}/>
         <Input placeholder={'Last name'} value={newDriverForm.lastName} required
-               onChange={formChange('lastName', setNewDriverForm)} label={'Last Name'}/>
-      </div>
-      <div>
-        <Input placeholder={'Phone number'} value={newDriverForm.phoneNumber} required
-               onChange={formChange('phoneNumber', setNewDriverForm)}
-               label={'Phone number'}/>
-        <GoogleAutocompleteInput placeholder={'Address'} value={newDriverForm.address} required
-                                 onChange={formChange('address', setNewDriverForm)}
-                                 label={'Address'}/>
-        <Input placeholder={'Email'} value={newDriverForm.email} onChange={formChange('email', setNewDriverForm)}
-               label={'Email'}/>
-      </div>
-      <div>
+               onChange={changeDriverFormData('lastName', setNewDriverForm)} label={'Last Name'}/>
         <DatePicker label='Date of birth' required
                     value={newDriverForm.dateOfBirth ? dayjs(newDriverForm.dateOfBirth) : undefined}
-                    onChange={dateChange('dateOfBirth', setNewDriverForm)}/>
+                    onChange={changeDriverFormTime('dateOfBirth', setNewDriverForm)}/>
       </div>
-      <div className='driver_create_modal_tlc'>
-        <Input placeholder={'TLC Number'} value={newDriverForm.tlcNumber} label={'TLC Number'}
-               onChange={formChange('tlcNumber', setNewDriverForm)}/>
+      <div className='driver_create_modal_horizontal'>
+        <Input placeholder={'Phone number'} value={newDriverForm.phoneNumber} required
+               onChange={changeDriverFormData('phoneNumber', setNewDriverForm)}
+               label={'Phone number'}/>
+        <Input placeholder={'Email'} value={newDriverForm.email}
+               onChange={changeDriverFormData('email', setNewDriverForm)}
+               label={'Email'}/>
+      </div>
+      <div className='driver_create_modal_horizontal'>
+        <GoogleAutocompleteInput placeholder={'Address'} value={newDriverForm.address} required
+                                 onChange={changeDriverFormData('address', setNewDriverForm)}
+                                 label={'Address'}/>
+        <Input placeholder={'Apartment / Suite number'} value={newDriverForm.apartmentNumber} required
+               onChange={changeDriverFormData('apartmentNumber', setNewDriverForm)}
+               label={'Apartment / Suite number'}/>
+      </div>
+      <div className='driver_create_modal_horizontal'>
         <DatePicker label={'TLC Expiration'}
                     value={newDriverForm.tlcExp ? dayjs(newDriverForm.tlcExp) : undefined}
-                    onChange={dateChange('tlcExp', setNewDriverForm)}/>
+                    onChange={changeDriverFormTime('tlcExp', setNewDriverForm)}/>
       </div>
-      <div className='driver_create_modal_tlc'>
+      <div className='driver_create_modal_horizontal'>
         <Input placeholder={'DL Number'} label={'DL Number'} value={newDriverForm.driverLicenseNumber}
-               onChange={formChange('driverLicenseNumber', setNewDriverForm)}/>
+               onChange={changeDriverFormData('driverLicenseNumber', setNewDriverForm)}/>
         <DatePicker label={'DL Expiration'}
                     value={newDriverForm.driverLicenseExp ? dayjs(newDriverForm.driverLicenseExp) : undefined}
-                    onChange={dateChange('driverLicenseExp', setNewDriverForm)}/>
+                    onChange={changeDriverFormTime('driverLicenseExp', setNewDriverForm)}/>
       </div>
-      <div>
+      <div className='driver_create_modal_horizontal'>
         <Input placeholder={'Last 5 Digits of SSN'} value={newDriverForm.lastSSN} label={'Last 5 Digits of SSN'}
-               onChange={formChange('lastSSN', setNewDriverForm)}/>
-      </div>
-      <div>
+               onChange={changeDriverFormData('lastSSN', setNewDriverForm)}/>
         <DatePicker label={'Defensive Driver Course expiration'}
                     value={newDriverForm.defensiveDriverCourseExp ? dayjs(newDriverForm.defensiveDriverCourseExp) : undefined}
-                    onChange={dateChange('defensiveDriverCourseExp', setNewDriverForm)}/>
+                    onChange={changeDriverFormTime('defensiveDriverCourseExp', setNewDriverForm)}/>
       </div>
     </div>
   </Modal>

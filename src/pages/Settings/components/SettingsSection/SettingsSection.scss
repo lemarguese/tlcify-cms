@@ -1,0 +1,21 @@
+.settings_section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  border: 1px solid #1A1D29;
+
+  &_header {
+    background-color: #1A1D29;
+    border-radius: 4px 4px 0 0;
+
+    padding: 8px 16px;
+
+    &_label {
+      color: #FFF;
+      font-size: 16px;
+    }
+  }
+}

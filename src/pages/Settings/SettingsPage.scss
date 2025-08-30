@@ -1,0 +1,76 @@
+.settings_page {
+  padding: 16px 400px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  &_submit {
+    align-self: end;
+  }
+
+  &_profile {
+    padding: 8px;
+    display: flex;
+    //align-items: center;
+    gap: 16px;
+
+    &_info {
+      flex: 1;
+
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  &_company {
+    padding: 8px;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    &_info {
+      flex: 1;
+
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  &_fees_and_payments {
+    padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &_fees {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  }
+
+  &_notifications {
+    padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &_theme {
+    padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &_roles {
+  }
+
+}

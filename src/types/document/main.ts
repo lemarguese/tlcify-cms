@@ -11,5 +11,5 @@ export interface IDocument {
 }
 
 export interface IDocumentCreate extends Omit<IDocument, 'customer' | 'url'> {
-  file?: UploadFile
+  files?: UploadFile
 }

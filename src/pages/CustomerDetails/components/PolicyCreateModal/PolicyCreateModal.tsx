@@ -115,7 +115,7 @@ const PolicyCreateModal = ({
       }
 
       installmentArray[index] = {
-        label: date.set('month', date.get('month') + index).format('Do MMMM, YYYY'),
+        label: date.add(index, 'month').format('Do MMMM, YYYY'),
         children: `$ ${installmentAmount.toFixed(2)} ${feesWarningText}`
       }
 

@@ -25,7 +25,7 @@ const DocumentCreateModal = ({ open, cancel, submit }: DocumentCreateModalProps)
                 required/>
       <FileDragger multiple={false} beforeUpload={() => false} onChange={(value) => setNewDocumentForm(prev => ({
         ...prev,
-        file: value.file
+        files: value.file
       }))}/>
       <Input label='Description'/>
     </div>

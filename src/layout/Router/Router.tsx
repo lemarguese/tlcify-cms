@@ -11,6 +11,7 @@ import PolicyDetailPage from "@/pages/PolicyDetail/PolicyDetailPage.tsx";
 import PaymentPage from "@/pages/Payment/PaymentPage.tsx";
 import RenewalPage from "@/pages/Renewal/RenewalPage.tsx";
 import AnalyticsPage from "@/pages/Analytics/AnalyticsPage.tsx";
+import SettingsPage from "@/pages/Settings/SettingsPage.tsx";
 
 const Router = () => {
   return <BrowserRouter>
@@ -56,6 +57,11 @@ const Router = () => {
       <Route element={<ProtectedRoute/>}>
         <Route path='/invoice'>
           <Route path=':invoiceId' element={<InvoiceDetailsPage/>}/>
+        </Route>
+      </Route>
+      <Route element={<ProtectedRoute/>}>
+        <Route path='/settings'>
+          <Route index element={<SettingsPage/>}/>
         </Route>
       </Route>
     </Routes>

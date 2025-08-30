@@ -56,6 +56,7 @@ export const newPolicyFormInitialState: IPolicyCreate = {
 export const policyInitialState: IPolicy = {
   ...policyInitialStateTemplate,
   _id: '',
+  cycles: [],
   matchedFees: {
     fees: [],
     total: 0
@@ -229,7 +230,6 @@ export const getPolicyFunctions = (customerId?: string) => {
       ...prev,
 
       // @ts-config
-
       // TODO value is new one, without _id and casted to IPolicyFee
       fees: prev.fees.concat(value as IPolicyFee)
     }))
@@ -423,7 +423,7 @@ export const getCustomerByIdFunction = (customerId?: string) => {
     },
     {
       title: 'DL Number',
-      content: dayjs(customerById.driverLicenseNumber).format('MM/DD/YYYY'),
+      content: customerById.driverLicenseNumber,
       icon: <ScheduleOutlined style={{ fontSize: 32 }}/>
     },
   ];
@@ -483,7 +483,6 @@ export const paymentTypeRadioOptions = [
 ];
 
 export const newDocumentFormInitialState: IDocumentCreate = {
-  file: undefined,
   metaDescription: '',
   type: 'other',
 }
@@ -515,7 +514,7 @@ export const getDocumentFunction = (customerId?: string) => {
         formData.set(key, value);
       }
 
-      await instance.post('/document/customer', formData, {
+      await instance.post('/document', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

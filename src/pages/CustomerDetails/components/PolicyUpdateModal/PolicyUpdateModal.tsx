@@ -32,8 +32,8 @@ interface PolicyCreateModalProps {
   open: boolean;
   cancel: () => void;
   submit: (value: Partial<IUpdatePolicy>, resetForm: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
-  changePolicyFormTime: (val: keyof Pick<IUpdatePolicy, 'effectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: Dayjs) => void;
-  changePolicyFormData: (val: keyof Omit<IUpdatePolicy, 'expirationDate' | 'effectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string) => void;
+  changePolicyFormTime: (val: keyof Pick<IUpdatePolicy, 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: Dayjs) => void;
+  changePolicyFormData: (val: keyof Omit<IUpdatePolicy, 'expirationDate' | 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string) => void;
   addPolicyFee: (value: IPolicyFeeCreate, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
   removePolicyFee: (value: number, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
 
@@ -103,10 +103,12 @@ const PolicyUpdateModal = ({
       policyTypeTouched: newPolicyForm.type.localeCompare(policyById.type) !== 0,
       policyStatusTouched: newPolicyForm.status.localeCompare(policyById.status) !== 0,
       policyTermsTouched: newPolicyForm.policyTerm.localeCompare(policyById.policyTerm) !== 0,
-      policyInstallmentCountTouched: newPolicyForm.installmentCount !== policyById.installmentCount,
+      policyInstallmentCountTouched: Number(newPolicyForm.installmentCount) !== policyById.installmentCount,
       effectiveDateTouched: (newPolicyForm.effectiveDate ?? '').valueOf() !== (policyById.effectiveDate ?? '').valueOf(),
+      customEffectiveDateTouched: (newPolicyForm.customEffectiveDate ?? '').valueOf() !== (policyById.customEffectiveDate ?? '').valueOf(),
       policyNumberTouched: newPolicyForm.policyNumber.localeCompare(policyById.policyNumber) !== 0,
-      policyPremiumDepositTouched: newPolicyForm.deposit !== policyById.deposit,
+      policyPremiumDepositTouched: Number(newPolicyForm.deposit) !== policyById.deposit,
+      policyPremiumPriceTouched: Number(newPolicyForm.premiumPrice) !== policyById.premiumPrice,
       policyFeesTouched: (() => {
         if (newPolicyForm.fees.length !== policyById.fees.length) return true;
 
@@ -167,16 +169,28 @@ const PolicyUpdateModal = ({
   }, [newPolicyForm.fees, insurances, newPolicyForm.insuranceId, newPolicyForm.premiumPrice]);
 
   const timelineOptions = useMemo(() => {
-    const { installmentCount, premiumPrice, deposit, fees, monthlyPayment, effectiveDate } = newPolicyForm;
+    const {
+      installmentCount,
+      premiumPrice,
+      customEffectiveDate,
+      deposit,
+      fees,
+      monthlyPayment,
+      effectiveDate
+    } = newPolicyForm;
+
     const premiumPriceNet = premiumPrice - deposit;
 
     const effectiveDateWrapped = dayjs(effectiveDate).startOf('day');
+    const customEffectiveDateWrapper = dayjs(customEffectiveDate).startOf('day');
+
     const installmentArray: { [k: number]: TimelineItemProps } = {};
 
     let installmentAmount = 0;
 
     for (let index = 0; index < +installmentCount; index++) {
-      const dueDate = effectiveDateWrapped.add(index, 'month');
+      const date = (index === 0 ? effectiveDateWrapped : customEffectiveDateWrapper);
+      const dueDate = date.add(index, 'month');
 
       const matchingFees = fees.filter(fee => {
         return Math.abs(dayjs(fee.dueDate).diff(dueDate, 'day')) <= 14;
@@ -193,7 +207,7 @@ const PolicyUpdateModal = ({
       }
 
       installmentArray[index] = {
-        label: effectiveDateWrapped.set('month', effectiveDateWrapped.get('month') + index).format('Do MMMM, YYYY'),
+        label: date.add(index, 'month').format('Do MMMM, YYYY'),
         children: `$ ${installmentAmount} ${feesWarningText}`
       }
 
@@ -204,7 +218,7 @@ const PolicyUpdateModal = ({
     }
 
     return Object.values(installmentArray)
-  }, [newPolicyForm.installmentCount, newPolicyForm.premiumPrice, newPolicyForm.deposit, newPolicyForm.monthlyPayment, newPolicyForm.fees, newPolicyForm.effectiveDate])
+  }, [newPolicyForm])
 
   return <>
     <Modal width={800} footer={openPolicyFeeModalButton} onCancel={cancel} open={open}>
@@ -254,9 +268,14 @@ const PolicyUpdateModal = ({
               <Date label='Expiration date' disabled
                     value={newPolicyForm.expirationDate ? dayjs(newPolicyForm.expirationDate) : undefined}/>
             </div>
-            <div className='policy_update_modal_information_vertical'>
+            <div className='policy_update_modal_information_horizontal'>
               <Input label='Policy number' placeholder='Ex. C813P05' required value={newPolicyForm.policyNumber}
                      onChange={changePolicyFormData('policyNumber', setNewPolicyForm)}/>
+              <Date label='Custom Effective date'
+                    onChange={changePolicyFormTime('customEffectiveDate', setNewPolicyForm)}
+                    value={newPolicyForm.customEffectiveDate ? dayjs(newPolicyForm.customEffectiveDate) : null}/>
+            </div>
+            <div className='policy_update_modal_information_horizontal'>
               <Input label='Premium' addonBefore='$' required value={newPolicyForm.premiumPrice}
                      onChange={changePolicyFormData('premiumPrice', setNewPolicyForm)}/>
             </div>

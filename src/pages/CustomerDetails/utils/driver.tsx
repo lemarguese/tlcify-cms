@@ -1,19 +1,20 @@
 import { useCallback, useState } from "react";
 import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 
-import type { IDriver, IDriverCreate } from "@/types/driver/main.ts";
+import type { DriverVehicleLicenseInfo, IDriver, IDriverCreate } from "@/types/driver/main.ts";
 import { instance } from "@/api/axios.ts";
 import { Dayjs } from "dayjs";
 import { Button } from "antd";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 export const newDriverFormInitialState: IDriverCreate = {
-  customerId: '',
+  customer: '',
   firstName: '',
   lastName: '',
   phoneNumber: '',
   email: '',
   dateOfBirth: new Date(Date.now()).toLocaleDateString(),
+  apartmentNumber: '',
   address: '',
   tlcNumber: '',
   tlcExp: new Date(Date.now()).toLocaleDateString(),
@@ -37,7 +38,7 @@ export const getDriverFunctions = (customerId?: string) => {
 
   const createDriver = useCallback(async (newDriverForm: IDriverCreate, resetForm: Dispatch<SetStateAction<IDriverCreate>>) => {
     try {
-      await instance.post('/driver', { ...newDriverForm, customerId });
+      await instance.post('/driver', { ...newDriverForm, customer: customerId });
       resetForm(newDriverFormInitialState);
       success('Driver was successfully created!');
     } catch (e) {
@@ -46,25 +47,6 @@ export const getDriverFunctions = (customerId?: string) => {
       await cancelDriverModal();
     }
   }, [customerId]);
-
-  const changeDriverFormData = useCallback((key: keyof Omit<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => {
-    return (val: BaseSyntheticEvent) => {
-      callback(prev => ({
-        ...prev,
-        [key]: val.target.value
-      }))
-    }
-  }, []);
-
-  const changeDriverFormTime = useCallback((key: keyof Pick<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => {
-    return (val: Dayjs) => {
-      const date = val ? val.toDate() : null
-      callback(prev => ({
-        ...prev,
-        [key]: date
-      }))
-    }
-  }, []);
 
   const cancelDriverModal = useCallback(async () => {
     setIsDriverCreateModalOpen(false);
@@ -75,7 +57,55 @@ export const getDriverFunctions = (customerId?: string) => {
     isDriverCreateModalOpen,
     drivers, fetchDrivers,
     addNewDriverButton,
-    changeDriverFormData, changeDriverFormTime,
     cancelDriverModal, createDriver
+  }
+}
+
+export const getDriversUpdateAndCreateFunctions = () => {
+  const [vehicleInformation, setVehicleInformation] = useState<DriverVehicleLicenseInfo[]>([]);
+  const fetchVehicleInformation = async () => {
+    const response = await instance.get('/for_hire_vehicle/driver');
+    setVehicleInformation(response.data);
+  }
+
+  const changeDriverFormData = useCallback((key: keyof Omit<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => {
+    return (val: BaseSyntheticEvent) => {
+      if (key === 'tlcNumber') {
+        const vehicleDriver = vehicleInformation.find(vi => vi.license_number === val.target.value);
+        if (vehicleDriver) {
+          const [firstName, lastName] = vehicleDriver.name.split(',');
+          const vehicleFetchedInformation = {
+            tlcNumber: vehicleDriver.license_number,
+            firstName,
+            lastName,
+            tlcExp: new Date(vehicleDriver.expiration_date),
+          }
+
+          return callback(prev => ({
+            ...prev,
+            ...vehicleFetchedInformation
+          }))
+        }
+      }
+
+      callback(prev => ({
+        ...prev,
+        [key]: val.target.value
+      }))
+    }
+  }, [vehicleInformation]);
+
+  const changeDriverFormTime = useCallback((key: keyof Pick<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => {
+    return (val: Dayjs) => {
+      const date = val ? val.toDate() : undefined
+      callback(prev => ({
+        ...prev,
+        [key]: date
+      }))
+    }
+  }, []);
+
+  return {
+    changeDriverFormTime, changeDriverFormData, fetchVehicleInformation
   }
 }

@@ -1,23 +1,21 @@
 .driver_create_modal {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-
   padding-top: 16px;
 
   &_container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 18px;
   }
 
-  &_tlc {
+  &_horizontal {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    gap: 16px;
+  }
 
-    padding-top: 16px;
+  &_vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 }

@@ -4,8 +4,9 @@ import './Header.scss';
 import { LeftOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import type { FC, BaseSyntheticEvent } from "react";
 import Button from "@/components/Button/Button.tsx";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router";
+import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
 
 const { Header: AntHeader } = Layout;
 
@@ -30,11 +31,7 @@ const Header: FC<HeaderProps> = ({
                                  }) => {
   const navigate = useNavigate();
 
-  // todo more independent
-  const logOut = useCallback(() => {
-    localStorage.removeItem('tlcify_access_token');
-    navigate('/login');
-  }, []);
+  const { logOut, user, fetchMyself } = getAuthFunctions();
 
   const profileTools = useMemo(() => <div>
     <Button onClick={logOut}>Log out</Button>
@@ -72,7 +69,8 @@ const Header: FC<HeaderProps> = ({
         <NotificationOutlined className='header_end_notification'/>
         <Tooltip title={profileTools} color={'#FFF'}>
           <div className='header_end_avatar'>
-            <UserOutlined className='header_end_avatar_icon'/>
+            {user.avatarUrl ? <img src={user.avatarUrl} className='header_end_avatar_icon'/> :
+              <UserOutlined/>}
           </div>
         </Tooltip>
       </div>
