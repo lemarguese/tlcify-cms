@@ -9,24 +9,24 @@ import dayjs from "dayjs";
 export const renewalTableHeaders: ColumnsType = [
   { title: "First Name", dataIndex: "firstName", key: "firstName" },
   { title: "Last Name", dataIndex: "lastName", key: "lastName" },
-  { title: "TLC Number", dataIndex: "tlcNumber", key: "tlcNumber" },
+  { title: "TLC Number", dataIndex: "tlcFhvNumber", key: "tlcFhvNumber" },
   {
     title: "TLC Exp. Date",
-    dataIndex: "tlcExp",
-    key: "tlcExp",
+    dataIndex: "tlcFhvExpiration",
+    key: "tlcFhvExpiration",
     render: (value) => dayjs(value).format('MM/DD/YYYY')
   },
   {
     title: "DDC Exp. Date",
-    dataIndex: "defensiveDriverCourseExp",
-    key: "defensiveDriverCourseExp",
+    dataIndex: "defensiveDriverCourseExpiration",
+    key: "defensiveDriverCourseExpiration",
     render: (value) => dayjs(value).format('MM/DD/YYYY')
   },
 ];
 
 const renewalFilterInitialState: IRenewalFilter = {
-  tlcExp: undefined,
-  defensiveDriverCourseExp: undefined
+  tlcFhvExpiration: undefined,
+  defensiveDriverCourseExpiration: undefined
 }
 
 export const getRenewalsFunction = () => {
@@ -52,11 +52,11 @@ export const getRenewalsFunction = () => {
   const actions = <div className='renewals_page_actions'>
     <label className='renewals_page_actions_label'>Filters</label>
     <div className='renewals_page_actions_filters'>
-      <Date label='TLC Expiration' value={renewalsFilters.tlcExp ? dayjs(renewalsFilters.tlcExp) : null}
-            onChange={changeFilters('tlcExp')}/>
+      <Date label='TLC Expiration' value={renewalsFilters.tlcFhvExpiration ? dayjs(renewalsFilters.tlcFhvExpiration) : null}
+            onChange={changeFilters('tlcFhvExpiration')}/>
       <Date label='DDC Expiration'
-            value={renewalsFilters.defensiveDriverCourseExp ? dayjs(renewalsFilters.defensiveDriverCourseExp) : null}
-            onChange={changeFilters('defensiveDriverCourseExp')}/>
+            value={renewalsFilters.defensiveDriverCourseExpiration ? dayjs(renewalsFilters.defensiveDriverCourseExpiration) : null}
+            onChange={changeFilters('defensiveDriverCourseExpiration')}/>
     </div>
   </div>
 

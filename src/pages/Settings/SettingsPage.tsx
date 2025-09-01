@@ -18,7 +18,6 @@ const SettingsPage = () => {
   const {
     settings,
     fetchSettings,
-    navigateBack,
     settingsForm,
     updateSettings,
     changeSettingsFile,
@@ -29,7 +28,7 @@ const SettingsPage = () => {
     rolesSelection, actionsButtons,
 
     isUpdateRolesModalOpen, cancelUpdateRolesModal, updateRoles,
-    isCreateRolesModalOpen, addRole, cancelCreateRolesModal, openCreateRolesModal
+    isCreateRolesModalOpen, addRole, cancelCreateRolesModal
   } = getSettingsFunctions();
   const { user, fetchMyself } = getAuthFunctions();
 
@@ -38,7 +37,7 @@ const SettingsPage = () => {
     fetchMyself();
   }, []);
 
-  return <Page title='Settings' showSearch={false} back={navigateBack}>
+  return <Page title='Settings' showSearch={false}>
     <div className='settings_page'>
       <div className='settings_page_container'>
         <div className='settings_page_submit'>
@@ -106,7 +105,7 @@ const SettingsPage = () => {
         </SettingsSection>
       </div>
       <SettingsSection label='Roles'>
-        <Table actions={actionsButtons} rowKey='name' rowSelection={rolesSelection} dataSource={settingsForm.roles}
+        <Table actions={actionsButtons} rowKey='name' rowSelection={rolesSelection} dataSource={settings.roles}
                columns={settingsRolesTableHeaders}/>
       </SettingsSection>
     </div>

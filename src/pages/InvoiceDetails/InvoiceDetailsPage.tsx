@@ -11,7 +11,7 @@ import TransactionDetailTotalTableFooter
 import { SendOutlined } from '@ant-design/icons'
 import TransactionsDetailsPaymentStepper
   from "@/pages/InvoiceDetails/components/PaymentStepper/PaymentStepper.tsx";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import {
   getInvoiceDetailFunctions, invoiceDetailTableHeaders,
 } from "@/pages/InvoiceDetails/utils/invoice_details.tsx";
@@ -22,7 +22,6 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 dayjs.extend(advancedFormat);
 
 const InvoiceDetailsPage = () => {
-  const navigate = useNavigate();
   const { invoiceId } = useParams();
 
   const {
@@ -38,7 +37,7 @@ const InvoiceDetailsPage = () => {
     fetchInvoiceById();
   }, [])
 
-  return <Page showSearch={false} back={() => navigate(-1)}>
+  return <Page showSearch={false}>
     <div className='transactions_details_page_container'>
       <div className='transactions_details_page_header'>
         <div className='transactions_details_page_header_description'>

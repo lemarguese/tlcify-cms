@@ -1,5 +1,4 @@
 import type { ColumnsType } from "antd/es/table";
-import { Button } from "antd";
 import type { RadioChangeEvent } from 'antd'
 
 import { useCallback, useMemo, useState } from "react";
@@ -16,7 +15,7 @@ import type {
   IUpdatePolicy
 } from "@/types/policy/main.ts";
 
-import { SendOutlined, FieldNumberOutlined, ScheduleOutlined } from '@ant-design/icons'
+import { FieldNumberOutlined, ScheduleOutlined } from '@ant-design/icons'
 
 import type { TableRowSelection } from "antd/es/table/interface";
 import { newCustomerFormInitialState } from "@/pages/Customer/utils/customer.tsx";
@@ -32,7 +31,7 @@ import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 dayjs.extend(utc);
 
 export const policyInitialStateTemplate: Omit<IPolicy, 'insurance' | '_id' | 'customer' | 'matchedFees'> = {
-  installmentCount: '',
+  installmentCount: 0,
   monthlyPayment: 0,
   expirationDate: undefined,
   effectiveDate: undefined,

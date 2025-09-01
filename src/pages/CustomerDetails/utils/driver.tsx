@@ -4,7 +4,6 @@ import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 import type { DriverVehicleLicenseInfo, IDriver, IDriverCreate } from "@/types/driver/main.ts";
 import { instance } from "@/api/axios.ts";
 import { Dayjs } from "dayjs";
-import { Button } from "antd";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 export const newDriverFormInitialState: IDriverCreate = {
@@ -13,15 +12,15 @@ export const newDriverFormInitialState: IDriverCreate = {
   lastName: '',
   phoneNumber: '',
   email: '',
-  dateOfBirth: new Date(Date.now()).toLocaleDateString(),
+  dateOfBirth: new Date(Date.now()),
   apartmentNumber: '',
   address: '',
   tlcNumber: '',
-  tlcExp: new Date(Date.now()).toLocaleDateString(),
+  tlcExp: new Date(Date.now()),
   driverLicenseNumber: '',
-  driverLicenseExp: new Date(Date.now()).toLocaleDateString(),
+  driverLicenseExp: new Date(Date.now()),
   lastSSN: '',
-  defensiveDriverCourseExp: new Date(Date.now()).toLocaleDateString(),
+  defensiveDriverCourseExp: new Date(Date.now()),
 }
 
 export const getDriverFunctions = (customerId?: string) => {
@@ -85,7 +84,7 @@ export const getDriversUpdateAndCreateFunctions = () => {
 
           return callback(prev => ({
             ...prev,
-            ...vehicleFetchedInformation
+            ...vehicleFetchedInformation,
           }))
         }
       }

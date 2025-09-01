@@ -35,7 +35,7 @@ const getNavigationOptions = (location: string) => {
     '/policy': 'sidebar-customer'
   };
 
-  const [[_, key]] = Object.entries(options).filter(([k, _]) => {
+  const [key] = Object.entries(options).filter(([k, _]) => {
     return location.includes(k)
   });
 

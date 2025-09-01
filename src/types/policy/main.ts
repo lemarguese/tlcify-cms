@@ -13,7 +13,7 @@ export interface IPolicy {
   customEffectiveDate?: Date;
   policyTerm: string;
   premiumPrice: number;
-  installmentCount: string;
+  installmentCount: number;
   fees: IPolicyFee[];
   cycles: IPolicyCycle[];
   matchedFees: {

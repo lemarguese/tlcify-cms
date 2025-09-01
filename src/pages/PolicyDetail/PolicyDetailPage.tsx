@@ -6,12 +6,12 @@ import { ClockCircleOutlined } from "@ant-design/icons";
 
 import Description from "@/components/Description/Description.tsx";
 import type { TabsProps } from "antd";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import Table from "@/components/Table/Table.tsx";
 import {
   calendarTileStatuses,
   getPolicyDetailFunctions,
-  policyFeesTableHeaders, vehicleLicenseColumns
+  policyFeesTableHeaders,
 } from "@/pages/PolicyDetail/utils/policy_detail.tsx";
 import Tabs from "@/components/Tabs/Tabs.tsx";
 
@@ -21,8 +21,6 @@ import PolicyFeeDeleteModal from "@/pages/PolicyDetail/components/PolicyFeeDelet
 import { transactionsTableHeaders } from "@/pages/Transactions/utils/transactions.tsx";
 
 const PolicyDetailPage = () => {
-  const navigate = useNavigate();
-
   const { policyId } = useParams();
 
   const {
@@ -139,7 +137,7 @@ const PolicyDetailPage = () => {
     }
   ]
 
-  return <Page showSearch={false} fixedHeader back={() => navigate(-1)}>
+  return <Page showSearch={false} fixedHeader>
     <div className='policy_detail_page'>
       <div className='policy_detail_page_top'>
         <h4>Detail information of Policy No. {policyById.policyNumber}</h4>

@@ -4,7 +4,7 @@ import Page from '../../layout/Page/Page.tsx';
 import Table from "../../components/Table/Table.tsx";
 import { customerTableHeaders } from "../Customer/utils/customer.tsx";
 import { useEffect } from "react";
-import { Outlet, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 import CustomerDetailContactSection from "./components/CustomerDetailContactSection/CustomerDetailContactSection.tsx";
 
@@ -135,7 +135,7 @@ const CustomerDetailsPage = () => {
     </Permission>
   </div>
 
-  return <Page back={() => navigate(-1)} showSearch={false}>
+  return <Page showSearch={false}>
     <div className='customer_details_page'>
       <div className='customer_details_page_container'>
         <div className='customer_details_page_contacts'>

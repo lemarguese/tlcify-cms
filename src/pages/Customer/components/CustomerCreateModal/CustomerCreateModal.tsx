@@ -4,7 +4,7 @@ import Input from "@/components/Input/Input.tsx";
 import GoogleAutocompleteInput from "@/components/GoogleAutocompleteInput/GoogleAutocompleteInput.tsx";
 import DatePicker from "@/components/Date/Date.tsx";
 import dayjs from "dayjs";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   getCustomerUpdateAndCreateFunctions,
   newCustomerFormInitialState

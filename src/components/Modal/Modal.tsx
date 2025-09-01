@@ -1,7 +1,6 @@
 import type { ModalProps } from "antd";
 import { Modal as AntModal } from 'antd';
 import type { FC } from "react";
-import { useEffect } from "react";
 
 interface CustomModalProps extends ModalProps {
 

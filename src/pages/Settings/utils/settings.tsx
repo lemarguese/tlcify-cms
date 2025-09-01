@@ -1,6 +1,7 @@
 import type { ColumnsType } from "antd/es/table";
 import type { IRole, ISettings, ISettingsCreate } from "@/types/settings/main.ts";
-import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react'
 import { instance } from "@/api/axios.ts";
 import type { IUser } from "@/types/user/main.ts";
 import { useNavigate } from "react-router";
@@ -10,7 +11,7 @@ import { Button } from "antd";
 import type { TableRowSelection } from "antd/es/table/interface";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
-export const settingsRolesTableHeaders: ColumnsType<IRole> = [
+export const settingsRolesTableHeaders: ColumnsType = [
   {
     title: "Role",
     dataIndex: "name",
@@ -73,10 +74,10 @@ export const getSettingsFunctions = () => {
   }, [])
 
   const changeSettingsInput = useCallback((key: keyof ISettingsCreate) => {
-    return (val: string | RadioChangeEvent) => {
+    return (val: BaseSyntheticEvent | RadioChangeEvent) => {
       setSettingsForm(prev => ({
         ...prev,
-        [key]: typeof val === 'string' ? val : val.target.value
+        [key]: typeof val.target.value
       }))
     }
   }, []);
@@ -100,11 +101,12 @@ export const getSettingsFunctions = () => {
         const oldVal = settings[k as keyof typeof settings];
         const newVal = settingsForm[k as keyof typeof settingsForm];
         if (oldVal !== newVal) {
-          touchedFields[k as keyof ISettingsCreate] = newVal as any;
+          touchedFields[k as keyof ISettings] = newVal as any;
         }
       }
     }
 
+    // @ts-ignore
     if (settingsForm.companyPhoto) touchedFields.company = { ...touchedFields.company, logoUrl: 'touched' }
 
     return touchedFields;
@@ -139,8 +141,8 @@ export const getSettingsFunctions = () => {
       await instance.patch("/settings", patchData);
       success('Settings successfully updated!');
       await fetchSettings();
-    } catch (e) {
-      error(e);
+    } catch (e: any) {
+      error(e.message);
     }
   }, [settingsForm, touchedSettingsFields]);
 
@@ -166,7 +168,7 @@ export const getSettingsFunctions = () => {
       success('Roles successfully updated!');
       await cancelUpdateRolesModal();
       await fetchSettings();
-    } catch (e) {
+    } catch (e: any) {
       error(e.message);
     }
   }, []);
@@ -185,8 +187,7 @@ export const getSettingsFunctions = () => {
       success('Role successfully created!');
       await cancelCreateRolesModal();
       await fetchSettings();
-    } catch (e) {
-      console.log(e)
+    } catch (e: any) {
       error(e.message);
     }
   }, [settings]);
@@ -343,7 +344,7 @@ export const permissions = [
   'read_renewals'
 ];
 
-export const permissionsTypeTexts = {
+export const permissionsTypeTexts: { [k: string]: string } = {
   "read_policy": "View Policies",
   "create_policy": "Create Policy",
   "update_policy": "Edit Policy",

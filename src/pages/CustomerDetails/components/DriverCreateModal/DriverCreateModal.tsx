@@ -5,9 +5,8 @@ import GoogleAutocompleteInput from "@/components/GoogleAutocompleteInput/Google
 import DatePicker from "@/components/Date/Date.tsx";
 import Modal from '@/components/Modal/Modal.tsx';
 
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
-import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 
 import {
   getDriversUpdateAndCreateFunctions,

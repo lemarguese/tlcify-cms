@@ -116,7 +116,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
       if (['effectiveDate', 'expirationDate'].includes(policyKey)) children = dayjs(policyValue).format('MM/DD/YYYY');
 
       return {
-        label: policyTitles[policyKey as keyof Omit<IPolicy, '_id' | 'customer' | 'insurance' | 'fees' | 'matchedFees'>],
+        label: policyTitles[policyKey as keyof Omit<IPolicy, '_id' | 'cycles' | 'customer' | 'insurance' | 'fees' | 'matchedFees'>],
         key: policyKey,
         children
       }
@@ -137,8 +137,6 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
                                                  baseAmount,
                                                  carryOver,
                                                  amountRemaining,
-                                                 totalDue,
-                                                 totalPaid
                                                }, index) => {
       return {
         label: `Cycle ${index + 1}`,

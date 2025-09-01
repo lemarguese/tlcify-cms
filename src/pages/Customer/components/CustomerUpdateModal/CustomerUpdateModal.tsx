@@ -5,7 +5,7 @@ import Modal from '@/components/Modal/Modal.tsx';
 
 import dayjs from "dayjs";
 import type { ICustomer, ICustomerUpdate } from "@/types/customer/main.ts";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   getCustomerUpdateAndCreateFunctions,
   newCustomerFormInitialState

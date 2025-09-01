@@ -1,12 +1,10 @@
 import { Select, Layout, Input, Tooltip } from 'antd';
 import './Header.scss';
 
-import { LeftOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
+import { NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import type { FC, BaseSyntheticEvent } from "react";
 import Button from "@/components/Button/Button.tsx";
 import { useMemo } from "react";
-import { useNavigate } from "react-router";
-import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs.tsx";
 
 const { Header: AntHeader } = Layout;
@@ -29,8 +27,6 @@ const Header: FC<HeaderProps> = ({
                                    searchQuery,
                                    logOut
                                  }) => {
-  const navigate = useNavigate();
-
   const profileTools = useMemo(() => <div>
     <Button onClick={logOut}>Log out</Button>
   </div>, [logOut])

@@ -1,4 +1,4 @@
-import { Button, Tag } from "antd";
+import { Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { ICustomerCreate, ICustomer, ICustomerUpdate, CustomerVehicleLicenseInfo } from "@/types/customer/main.ts";
 import dayjs, { Dayjs } from "dayjs";
@@ -8,8 +8,6 @@ import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 import type { TableRowSelection } from "antd/es/table/interface";
 import { instance } from "@/api/axios.ts";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
-import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
-import Permission from "@/layout/Permission/Permission.tsx";
 
 export const customerTableHeaders: ColumnsType = [
   {

@@ -6,15 +6,15 @@ export interface IDriver {
   lastName: string,
   phoneNumber: string,
   email: string,
-  dateOfBirth: string,
+  dateOfBirth: Date,
   address: string,
   apartmentNumber: string
   tlcNumber: string,
-  tlcExp: string,
+  tlcExp: Date,
   driverLicenseNumber: string,
-  driverLicenseExp: string,
+  driverLicenseExp: Date,
   lastSSN: string,
-  defensiveDriverCourseExp: string,
+  defensiveDriverCourseExp: Date,
 }
 
 export interface IDriverCreate extends Omit<IDriver, 'customer'> {
