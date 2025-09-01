@@ -10,6 +10,12 @@ let activeRequests = 0;
 instance.interceptors.request.use(config => {
   activeRequests++;
 
+  const hostname = window.location.hostname;
+  const parts = hostname.split(".");
+  const tenant = parts.length > 2 ? parts[0] : null; // "samkara"
+
+  if (tenant) config.headers["X-Tenant-Id"] = tenant;
+
   if (!pendingToastId) pendingToastId = toast.loading('Working on it...');
 
   config = {
