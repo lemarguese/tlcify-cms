@@ -12,6 +12,8 @@ import PaymentPage from "@/pages/Payment/PaymentPage.tsx";
 import RenewalPage from "@/pages/Renewal/RenewalPage.tsx";
 import AnalyticsPage from "@/pages/Analytics/AnalyticsPage.tsx";
 import SettingsPage from "@/pages/Settings/SettingsPage.tsx";
+import ForbiddenPage from "@/pages/Forbidden/ForbiddenPage.tsx";
+import { permissions } from "@/pages/Settings/utils/settings.tsx";
 
 const Router = () => {
   return (
@@ -66,10 +68,15 @@ const Router = () => {
         <Route element={<ProtectedRoute requiredPermissions={["update_settings"]}/>}>
           <Route path="/settings" element={<SettingsPage/>}/>
         </Route>
+
+        <Route element={<ProtectedRoute requiredPermissions={permissions}/>}>
+          <Route path="/forbidden" element={<ForbiddenPage/>}/>
+        </Route>
+
+        <Route path="*" element={<Navigate to='/forbidden'/>}/>
       </Routes>
     </BrowserRouter>
   )
-    ;
 };
 
 export default Router;

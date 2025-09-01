@@ -24,7 +24,7 @@ const ProtectedRoute = ({ requiredPermissions }: ProtectedRouteProps) => {
     requiredPermissions &&
     !requiredPermissions.some((p) => user.permissions?.includes(p))
   ) {
-    return <Navigate to="/login"/>;
+    return <Navigate to="/forbidden"/>;
   }
 
   return <Outlet/>; // 👈 render children directly

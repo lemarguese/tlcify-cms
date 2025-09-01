@@ -103,15 +103,18 @@ const CustomerDetailsPage = () => {
     fetchMyself();
   }, []);
 
-  const addNewDriverButton = <Permission permission='create_driver' user_permission={user.permissions}>
-    <Button onClick={openDriverModal}>Create Driver</Button>
-  </Permission>
+  const addNewDriverButton = <div>
+    <Permission permission='create_driver' user_permission={user.permissions}>
+      <Button onClick={openDriverModal}>Create Driver</Button>
+    </Permission>
+  </div>
 
-  const addNewDocumentButton =
+  const addNewDocumentButton = <div>
     <Permission permission='create_document' user_permission={user.permissions}>
       <Button variant='outlined' onClick={openDocumentModal}>Add
         Document</Button>
     </Permission>
+  </div>
 
   const policiesActionButton = <div className='customer_details_page_actions'>
     <Permission permission='delete_policy' user_permission={user.permissions}>
