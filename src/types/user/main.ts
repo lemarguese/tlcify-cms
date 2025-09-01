@@ -1,5 +1,6 @@
 export interface IUser {
   email: string,
   avatarUrl: string,
-  privilege: string
+  privilege: string,
+  permissions: string[];
 }

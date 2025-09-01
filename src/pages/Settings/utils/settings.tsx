@@ -1,11 +1,14 @@
 import type { ColumnsType } from "antd/es/table";
 import type { IRole, ISettings, ISettingsCreate } from "@/types/settings/main.ts";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { BaseSyntheticEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { instance } from "@/api/axios.ts";
 import type { IUser } from "@/types/user/main.ts";
 import { useNavigate } from "react-router";
-import type { RadioChangeEvent } from "antd";
+import type { CheckboxChangeEvent, RadioChangeEvent } from "antd";
 import type { RcFile } from "antd/es/upload";
+import { Button } from "antd";
+import type { TableRowSelection } from "antd/es/table/interface";
+import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 export const settingsRolesTableHeaders: ColumnsType<IRole> = [
   {
@@ -18,70 +21,34 @@ export const settingsRolesTableHeaders: ColumnsType<IRole> = [
     title: "Permissions",
     dataIndex: "permissions",
     key: "permissions",
-    render: (perms: string[]) =>
-      perms && perms.length > 0 ? perms.join(", ") : "—",
-  },
-  {
-    title: "Actions",
-    key: "actions",
-    render: (_, record) => (
-      <div>
-        <a onClick={() => console.log("Edit", record)}>Edit</a>
-        {" | "}
-        <a onClick={() => console.log("Delete", record)}>Delete</a>
-      </div>
-    ),
+    render: (perms: string[]) => <div className='settings_page_roles_chips'>
+      {perms.map(p => <div className='settings_page_roles_chips_item'>
+        {permissionsTypeTexts[p]}
+      </div>)}
+    </div>
   },
 ];
 
-const settingsInitialStateTemplate: Omit<ISettings, 'company'> = {
-  roles: [],
-
-  // Fees & payments
-  lateFeeAmount: 0,
-  lateFeeGraceDays: 0,
-  autopayEnabledByDefault: true,
-
-  // Notifications
-  sendSms: true,
-  sendEmail: true,
-
-  // UI / Customization
-  theme: 'light',
-  currency: 'usd',
-  // timezone: string;
-  language: 'en',
-
-  createdAt: new Date(),
-  updatedAt: new Date()
-}
-
-export const settingsInitialState: ISettings = {
-  ...settingsInitialStateTemplate,
-  company: {
-    logoUrl: '',
-    name: '',
-    description: ''
-  },
-}
-
-export const userInitialState: IUser = {
-  email: '',
-  privilege: 'manager',
-  avatarUrl: ''
-}
-
-export const newSettingsFormInitialState: ISettingsCreate = {
-  ...settingsInitialStateTemplate,
-  companyName: '',
-  companyDescription: ''
-}
-
 export const getSettingsFunctions = () => {
   const navigate = useNavigate();
+  const { success, error } = useNotify();
 
   const [settingsForm, setSettingsForm] = useState<ISettingsCreate>(newSettingsFormInitialState);
   const [settings, setSettings] = useState<ISettings>(settingsInitialState);
+
+  const [isUpdateRolesModalOpen, setIsUpdateRolesModalOpen] = useState(false);
+  const [isCreateRolesModalOpen, setIsCreateRolesModalOpen] = useState(false);
+
+  const [selectedRole, setSelectedRole] = useState<IRole>();
+
+  const [rolesSelection] = useState<TableRowSelection>({
+    onSelect: (_, _s, multipleRows) => {
+      const isMultipleSelected = multipleRows.length > 1;
+      const [selectedRole] = multipleRows as IRole[];
+
+      setSelectedRole(!isMultipleSelected ? selectedRole : undefined);
+    },
+  });
 
   useEffect(() => {
     const { company, ...data } = settings;
@@ -129,8 +96,6 @@ export const getSettingsFunctions = () => {
     for (const [k] of Object.entries(settings)) {
       if (k === "company") {
         touchedFields = { ...touchedFields, ...companyChanges(settings, settingsForm) };
-      } else if (k === "roles") {
-        touchedFields = { ...touchedFields, ...rolesChanges(settings, settingsForm) };
       } else {
         const oldVal = settings[k as keyof typeof settings];
         const newVal = settingsForm[k as keyof typeof settingsForm];
@@ -146,33 +111,90 @@ export const getSettingsFunctions = () => {
   }, [settings, settingsForm]);
 
   const updateSettings = useCallback(async () => {
-    let patchData = { ...touchedSettingsFields };
+    try {
+      let patchData = { ...touchedSettingsFields };
 
-    if (settingsForm.companyPhoto) {
-      const formData = new FormData();
-      formData.set("files", settingsForm.companyPhoto);
-      formData.set("type", "companyName");
-      formData.set("metaDescription", "company-name-logo-url");
+      if (settingsForm.companyPhoto) {
+        const formData = new FormData();
+        formData.set("files", settingsForm.companyPhoto);
+        formData.set("type", "companyName");
+        formData.set("metaDescription", "company-name-logo-url");
 
-      const response = await instance.post("/document", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+        const response = await instance.post("/document", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
-      const companyUrl = response.data ? response.data[0].url : response.data;
+        const companyUrl = response.data ? response.data[0].url : response.data;
 
-      patchData = {
-        ...patchData,
-        company: {
-          ...settings.company,
-          ...touchedSettingsFields.company,
-          logoUrl: companyUrl,
-        },
-      };
+        patchData = {
+          ...patchData,
+          company: {
+            ...settings.company,
+            ...touchedSettingsFields.company,
+            logoUrl: companyUrl,
+          },
+        };
+      }
+
+      await instance.patch("/settings", patchData);
+      success('Settings successfully updated!');
+      await fetchSettings();
+    } catch (e) {
+      error(e);
     }
-
-    await instance.patch("/settings", patchData);
-    await fetchSettings();
   }, [settingsForm, touchedSettingsFields]);
+
+  const openUpdateRolesModal = () => {
+    setIsUpdateRolesModalOpen(true)
+  }
+
+  const cancelUpdateRolesModal = useCallback(() => {
+    setIsUpdateRolesModalOpen(false);
+  }, []);
+
+  const cancelCreateRolesModal = useCallback(() => {
+    setIsCreateRolesModalOpen(false);
+  }, [])
+
+  const openCreateRolesModal = () => {
+    setIsCreateRolesModalOpen(true)
+  }
+
+  const updateRoles = useCallback(async (roles: IRole[]) => {
+    try {
+      await instance.patch('/settings', { roles });
+      success('Roles successfully updated!');
+      await cancelUpdateRolesModal();
+      await fetchSettings();
+    } catch (e) {
+      error(e.message);
+    }
+  }, []);
+
+  const addRole = useCallback(async (role: IRole) => {
+    try {
+      await instance.patch('/settings', {
+        roles: [
+          ...settings.roles,
+          {
+            name: role.name.toLowerCase(),
+            permissions: role.permissions
+          }
+        ]
+      });
+      success('Role successfully created!');
+      await cancelCreateRolesModal();
+      await fetchSettings();
+    } catch (e) {
+      console.log(e)
+      error(e.message);
+    }
+  }, [settings]);
+
+  const actionsButtons = <div className='settings_page_roles_actions'>
+    {selectedRole && <Button onClick={openUpdateRolesModal} type='primary' variant='solid'>Update roles</Button>}
+    <Button onClick={openCreateRolesModal} type='primary' variant='solid'>Create role</Button>
+  </div>
 
   const navigateBack = useCallback(() => {
     navigate(-1);
@@ -181,7 +203,12 @@ export const getSettingsFunctions = () => {
   return {
     fetchSettings, settings, navigateBack,
 
+    rolesSelection, selectedRole, actionsButtons,
+
     changeSettingsInput, changeSettingsFile, changeSettingsSwitch,
+
+    cancelUpdateRolesModal, isUpdateRolesModalOpen, updateRoles,
+    cancelCreateRolesModal, isCreateRolesModalOpen, addRole,
 
     settingsForm,
 
@@ -211,23 +238,173 @@ function companyChanges (settings: ISettings, form: ISettingsCreate) {
   return touched;
 }
 
-function rolesAreEqual (a: IRole[], b: IRole[]): boolean {
-  if (a.length !== b.length) return false;
+export const getUpdateRolesModalFunction = () => {
+  const changeCheckboxes = useCallback(
+    (roleName: string, key: string, callback: Dispatch<SetStateAction<IRole[]>>) => {
+      return (val: CheckboxChangeEvent) => {
+        callback(prev =>
+          prev.map(role =>
+            role.name === roleName
+              ? {
+                ...role,
+                permissions: val.target.checked
+                  ? Array.from(new Set([...(role.permissions || []), key])) // add if not exists
+                  : role.permissions.filter(p => p !== key)                  // remove
+              }
+              : role
+          )
+        );
+      };
+    },
+    []
+  );
 
-  return a.every((role, i) => {
-    const other = b[i];
-    if (!other) return false;
-    if (role.name !== other.name) return false;
-
-    const permsA = [...role.permissions].sort();
-    const permsB = [...other.permissions].sort();
-
-    return permsA.length === permsB.length && permsA.every((p, idx) => p === permsB[idx]);
-  });
+  return { changeCheckboxes }
 }
 
-function rolesChanges (settings: ISettings, form: ISettingsCreate) {
-  return rolesAreEqual(settings.roles, form.roles) ? {} : { roles: form.roles };
+export const getCreateRolesFunction = () => {
+  const changeRoleName = useCallback((callback: Dispatch<SetStateAction<IRole>>) => {
+    return (val: BaseSyntheticEvent) => {
+      callback(prev => ({
+        ...prev,
+        name: val.target.value
+      }))
+    }
+  }, [])
+
+  const togglePermission = useCallback((permission: string, callback: Dispatch<SetStateAction<IRole>>) => {
+    return (val: CheckboxChangeEvent) => {
+      callback(prev => ({
+        ...prev,
+        permissions: val.target.checked
+          ? Array.from(new Set([...prev.permissions, permission])) // add
+          : prev.permissions.filter(p => p !== permission)         // remove
+      }));
+    }
+  }, []);
+
+  return { togglePermission, changeRoleName }
 }
 
+const settingsInitialStateTemplate: Omit<ISettings, 'company' | 'roles'> = {
+  // Fees & payments
+  lateFeeAmount: 0,
+  lateFeeGraceDays: 0,
+  autopayEnabledByDefault: true,
+
+  // Notifications
+  sendSms: true,
+  sendEmail: true,
+
+  // UI / Customization
+  theme: 'light',
+  currency: 'usd',
+  // timezone: string;
+  language: 'en',
+
+  createdAt: new Date(),
+  updatedAt: new Date()
+}
+
+export const permissions = [
+  'read_policy',
+  'update_policy',
+  'create_policy',
+  'delete_policy',
+
+  'read_customers',
+  'create_customers',
+  'update_customers',
+  'delete_customers',
+
+  'read_customer_details',
+
+  'update_driver',
+  'create_driver',
+  'delete_driver',
+
+  'update_settings',
+
+  'read_analytics',
+
+  'create_insurances',
+
+  'read_payments',
+  'create_payments',
+
+  'send_invoices',
+  'read_invoices',
+
+  'read_users',
+  'update_users',
+
+  'create_document',
+
+  'read_renewals'
+];
+
+export const permissionsTypeTexts = {
+  "read_policy": "View Policies",
+  "create_policy": "Create Policy",
+  "update_policy": "Edit Policy",
+  "delete_policy": "Delete Policy",
+
+  "read_customers": "View Customers",
+  "create_customers": "Create Customer",
+  "update_customers": "Edit Customer",
+  "delete_customers": "Delete Customer",
+  "read_customer_details": "View Customer Details",
+
+  "create_driver": "Create Driver",
+  "update_driver": "Edit Driver",
+  "delete_driver": "Delete Driver",
+
+  "update_settings": "Manage Settings",
+
+  "read_analytics": "View Analytics",
+
+  "create_insurances": "Create Insurance",
+
+  "read_payments": "View Payments",
+  "create_payments": "Create Payment",
+
+  "send_invoices": "Send Invoices",
+  "read_invoices": "View Invoices",
+
+  "read_users": "View Users",
+  "update_users": "Manage Users",
+
+  "create_document": "Upload Document",
+
+  "read_renewals": "View Renewals"
+}
+
+
+export const settingsInitialState: ISettings = {
+  ...settingsInitialStateTemplate,
+  roles: [],
+  company: {
+    logoUrl: '',
+    name: '',
+    description: ''
+  },
+}
+
+export const userInitialState: IUser = {
+  email: '',
+  privilege: 'manager',
+  avatarUrl: '',
+  permissions: []
+}
+
+export const newRoleInitialState: IRole = {
+  name: '',
+  permissions: []
+}
+
+export const newSettingsFormInitialState: ISettingsCreate = {
+  ...settingsInitialStateTemplate,
+  companyName: '',
+  companyDescription: ''
+}
 

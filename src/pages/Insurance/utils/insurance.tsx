@@ -63,10 +63,9 @@ export const getInsuranceFunctions = () => {
     <Button onClick={() => setIsInsuranceModalOpen(true)}>Add insurance carrier</Button>
   </div>
 
-  const submitForm = useCallback(async (newInsuranceForm: IInsuranceCreate, resetForm: Dispatch<SetStateAction<IInsuranceCreate>>) => {
+  const submitForm = useCallback(async (newInsuranceForm: IInsuranceCreate) => {
     try {
       await instance.post('/insurance', newInsuranceForm);
-      resetForm(newInsuranceFormInitialState);
       success('Insurance was successfully created!');
       await fetchInsurances();
     } catch (e) {

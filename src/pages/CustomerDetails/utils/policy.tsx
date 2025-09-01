@@ -188,11 +188,10 @@ export const getPolicyFunctions = (customerId?: string) => {
     setPolicies(policiesByCustomer.data);
   }, [customerId]);
 
-  const createPolicy = useCallback(async (newPolicyForm: IPolicyCreate, resetForm: Dispatch<SetStateAction<IPolicyCreate>>) => {
+  const createPolicy = useCallback(async (newPolicyForm: IPolicyCreate) => {
     try {
       const { _id, ...policyFormWithoutId } = newPolicyForm;
       await instance.post('/policy', { ...policyFormWithoutId, customerId });
-      resetForm(newPolicyFormInitialState);
       success('Policy was created successfully!');
       await fetchPolicies();
     } catch (e) {
@@ -247,17 +246,9 @@ export const getPolicyFunctions = (customerId?: string) => {
     await fetchPolicies();
   }, []);
 
-  const policiesActionButton = <div className='customer_details_page_actions'>
-    {selectedPolicy &&
-        <Button variant='outlined' color={'danger'} onClick={() => setIsPolicyDeleteModalOpen(true)}>Delete the
-            policy</Button>}
-    {selectedPolicy && <Button onClick={() => setIsPolicyUpdateModalOpen(true)}>Update the policy</Button>}
-    {selectedPolicy && <Button color={'magenta'} variant='solid' onClick={() => setIsPaymentCreateModalOpen(true)}>Create
-        payment</Button>}
-    <Button variant='outlined' color={'geekblue'} onClick={() => setIsPolicyCreateModalOpen(true)}>Add policy</Button>
-    <Button variant='solid' color='green' icon={<SendOutlined/>} onClick={() => setIsInvoiceConfirmModalOpen(true)}>Send
-      invoice</Button>
-  </div>
+  const openCreatePolicyModal = () => {
+    setIsPolicyCreateModalOpen(true)
+  }
 
   // Get One
 
@@ -272,10 +263,13 @@ export const getPolicyFunctions = (customerId?: string) => {
     await fetchPolicies();
   }, []);
 
-  const updatePolicy = useCallback(async (newPolicyForm: Partial<IUpdatePolicy>, resetForm: Dispatch<SetStateAction<IUpdatePolicy>>) => {
+  const openUpdatePolicyModal = () => {
+    setIsPolicyUpdateModalOpen(true)
+  }
+
+  const updatePolicy = useCallback(async (newPolicyForm: Partial<IUpdatePolicy>) => {
     try {
       await instance.patch(`/policy/${selectedPolicy!._id}`, newPolicyForm);
-      resetForm(newPolicyFormInitialState);
       success('Policy was successfully updated!');
       await fetchPolicies();
     } catch (e) {
@@ -293,6 +287,10 @@ export const getPolicyFunctions = (customerId?: string) => {
     await fetchPolicies();
   }, []);
 
+  const openDeletePolicyModal = () => {
+    setIsPolicyDeleteModalOpen(true)
+  }
+
   const deletePolicy = useCallback(async () => {
     try {
       await instance.delete(`/policy/${selectedPolicy!._id}`);
@@ -306,9 +304,13 @@ export const getPolicyFunctions = (customerId?: string) => {
 
   // payment
 
-  const cancelPaymentCreateModal = useCallback(() => {
+  const cancelPaymentCreateModal = () => {
     setIsPaymentCreateModalOpen(false);
-  }, []);
+  }
+
+  const openPaymentCreateModal = () => {
+    setIsPaymentCreateModalOpen(true)
+  }
 
   const createPayment = useCallback(async (paymentForm: IPaymentCreate) => {
     try {
@@ -353,9 +355,13 @@ export const getPolicyFunctions = (customerId?: string) => {
     }
   }, [customerId, policies]);
 
-  const cancelInvoiceCreateModal = useCallback(() => {
+  const cancelInvoiceCreateModal = () => {
     setIsInvoiceConfirmModalOpen(false)
-  }, []);
+  }
+
+  const openInvoiceCreateModal = () => {
+    setIsInvoiceConfirmModalOpen(true)
+  }
 
   // statistics
 
@@ -371,28 +377,34 @@ export const getPolicyFunctions = (customerId?: string) => {
   return {
     // all policies
     policies,
-    policiesActionButton,
+    selectedPolicy,
     changePolicyFormData, changePolicyFormTime,
+
     addPolicyFee, removePolicyFee,
     isPolicyCreateModalOpen,
     fetchPolicies,
     cancelCreatePolicyModal,
     createPolicy,
     policiesSelection,
+    openCreatePolicyModal,
 
     // get one
     updatePolicy,
     fetchPolicyById, policyById,
     isPolicyUpdateModalOpen, cancelUpdatePolicyModal,
+    openUpdatePolicyModal,
 
     // delete
     cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen,
+    openDeletePolicyModal,
 
     // payment
     cancelPaymentCreateModal, isPaymentCreateModalOpen, createPayment,
+    openPaymentCreateModal,
 
     // invoice
     createInvoice, isInvoiceConfirmModalOpen, cancelInvoiceCreateModal,
+    openInvoiceCreateModal,
 
     // statistics
 
@@ -528,19 +540,19 @@ export const getDocumentFunction = (customerId?: string) => {
     }
   }, [customerId]);
 
-  const addNewDocumentButton =
-    <Button variant='outlined' onClick={() => setIsDocumentModalOpen(true)}>Add
-      Document</Button>
-
   const cancelDocumentModal = useCallback(() => {
     setIsDocumentModalOpen(false);
-  }, [])
+  }, []);
+
+  const openDocumentModal = () => {
+    setIsDocumentModalOpen(true)
+  }
 
   return {
     fetchDocumentsByCustomerId, documents,
     uploadCustomerDocument,
 
-    cancelDocumentModal, isDocumentModalOpen, addNewDocumentButton
+    cancelDocumentModal, isDocumentModalOpen, openDocumentModal
   }
 }
 

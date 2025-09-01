@@ -11,6 +11,8 @@ import SettingsSection from "@/pages/Settings/components/SettingsSection/Setting
 import { useEffect } from "react";
 import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
 import { Button } from "antd";
+import UpdateRolesModal from "@/pages/Settings/components/UpdateRolesModal/UpdateRolesModal.tsx";
+import CreateRolesModal from "@/pages/Settings/components/CreateRolesModal/CreateRolesModal.tsx";
 
 const SettingsPage = () => {
   const {
@@ -22,7 +24,12 @@ const SettingsPage = () => {
     changeSettingsFile,
     changeSettingsInput,
     changeSettingsSwitch,
-    fieldsTouched
+    fieldsTouched,
+
+    rolesSelection, actionsButtons,
+
+    isUpdateRolesModalOpen, cancelUpdateRolesModal, updateRoles,
+    isCreateRolesModalOpen, addRole, cancelCreateRolesModal, openCreateRolesModal
   } = getSettingsFunctions();
   const { user, fetchMyself } = getAuthFunctions();
 
@@ -33,74 +40,79 @@ const SettingsPage = () => {
 
   return <Page title='Settings' showSearch={false} back={navigateBack}>
     <div className='settings_page'>
-      <div className='settings_page_submit'>
-        <Button onClick={updateSettings} disabled={!fieldsTouched}>Save changes</Button>
+      <div className='settings_page_container'>
+        <div className='settings_page_submit'>
+          <Button onClick={updateSettings} disabled={!fieldsTouched}>Save changes</Button>
+        </div>
+        <SettingsSection label='Profile'>
+          <div className='settings_page_profile'>
+            {/*<AvatarUpload url={user.avatarUrl}/>*/}
+            <div className='settings_page_profile_info'>
+              <Input label='E-mail' value={user.email} disabled/>
+            </div>
+          </div>
+        </SettingsSection>
+        <SettingsSection label='Company'>
+          <div className='settings_page_company'>
+            <AvatarUpload url={settings.company.logoUrl} beforeUpload={() => false} multiple={false}
+                          onChange={changeSettingsFile}/>
+            <div className='settings_page_company_info'>
+              <Input label='Company name' onChange={changeSettingsInput('companyName')}
+                     value={settingsForm.companyName}/>
+              <Input label='Company Description' onChange={changeSettingsInput('companyDescription')}
+                     value={settingsForm.companyDescription}/>
+            </div>
+          </div>
+        </SettingsSection>
+        <SettingsSection label='Fees & payments'>
+          <div className='settings_page_fees_and_payments'>
+            <div className='settings_page_fees_and_payments_fees'>
+              <Input label='Late fee amount' addonBefore={'$'} onChange={changeSettingsInput('lateFeeAmount')}
+                     value={settingsForm.lateFeeAmount}/>
+              <Input label='Late fee grace days' addonBefore={'$'} onChange={changeSettingsInput('lateFeeGraceDays')}
+                     value={settingsForm.lateFeeGraceDays}/>
+            </div>
+            <Switch label='Autopay enabled' onChange={changeSettingsSwitch('autopayEnabledByDefault')}
+                    value={settingsForm.autopayEnabledByDefault}/>
+          </div>
+        </SettingsSection>
+        <SettingsSection label='Notifications'>
+          <div className='settings_page_notifications'>
+            <Switch label='Sms notifications enabled' onChange={changeSettingsSwitch('sendSms')}
+                    value={settingsForm.sendSms}/>
+            <Switch label='E-mail notifications enabled' onChange={changeSettingsSwitch('sendEmail')}
+                    value={settingsForm.sendEmail}/>
+          </div>
+        </SettingsSection>
+        <SettingsSection label='Theme'>
+          <div className='settings_page_theme'>
+            <Radio label='UI Theme' block optionType='button' onChange={changeSettingsInput('theme')}
+                   value={settingsForm.theme} defaultValue='light' options={[
+              { label: 'Dark', value: 'dark' },
+              { label: 'Light', value: 'light' },
+            ]}/>
+            <Radio label='Currency' block optionType='button' onChange={changeSettingsInput('currency')}
+                   value={settingsForm.currency} defaultValue='usd' options={[
+              { label: 'USD', value: 'usd' },
+              { label: 'EUR', value: 'eur' },
+            ]}/>
+            <Radio label='Current Language' block optionType='button' onChange={changeSettingsInput('language')}
+                   value={settingsForm.language} defaultValue='en'
+                   options={[
+                     { label: 'English', value: 'en' },
+                     { label: 'Espanol', value: 'es' },
+                   ]}/>
+          </div>
+        </SettingsSection>
       </div>
-      <SettingsSection label='Profile'>
-        <div className='settings_page_profile'>
-          {/*<AvatarUpload url={user.avatarUrl}/>*/}
-          <div className='settings_page_profile_info'>
-            <Input label='E-mail' value={user.email} disabled/>
-          </div>
-        </div>
-      </SettingsSection>
-      <SettingsSection label='Company'>
-        <div className='settings_page_company'>
-          <AvatarUpload url={settings.company.logoUrl} beforeUpload={() => false} multiple={false}
-                        onChange={changeSettingsFile}/>
-          <div className='settings_page_company_info'>
-            <Input label='Company name' onChange={changeSettingsInput('companyName')} value={settingsForm.companyName}/>
-            <Input label='Company Description' onChange={changeSettingsInput('companyDescription')}
-                   value={settingsForm.companyDescription}/>
-          </div>
-        </div>
-      </SettingsSection>
-      <SettingsSection label='Fees & payments'>
-        <div className='settings_page_fees_and_payments'>
-          <div className='settings_page_fees_and_payments_fees'>
-            <Input label='Late fee amount' addonBefore={'$'} onChange={changeSettingsInput('lateFeeAmount')}
-                   value={settingsForm.lateFeeAmount}/>
-            <Input label='Late fee grace days' addonBefore={'$'} onChange={changeSettingsInput('lateFeeGraceDays')}
-                   value={settingsForm.lateFeeGraceDays}/>
-          </div>
-          <Switch label='Autopay enabled' onChange={changeSettingsSwitch('autopayEnabledByDefault')}
-                  value={settingsForm.autopayEnabledByDefault}/>
-        </div>
-      </SettingsSection>
-      <SettingsSection label='Notifications'>
-        <div className='settings_page_notifications'>
-          <Switch label='Sms notifications enabled' onChange={changeSettingsSwitch('sendSms')}
-                  value={settingsForm.sendSms}/>
-          <Switch label='E-mail notifications enabled' onChange={changeSettingsSwitch('sendEmail')}
-                  value={settingsForm.sendEmail}/>
-        </div>
-      </SettingsSection>
-      <SettingsSection label='Theme'>
-        <div className='settings_page_theme'>
-          <Radio label='UI Theme' block optionType='button' onChange={changeSettingsInput('theme')}
-                 value={settingsForm.theme} defaultValue='light' options={[
-            { label: 'Dark', value: 'dark' },
-            { label: 'Light', value: 'light' },
-          ]}/>
-          <Radio label='Currency' block optionType='button' onChange={changeSettingsInput('currency')}
-                 value={settingsForm.currency} defaultValue='usd' options={[
-            { label: 'USD', value: 'usd' },
-            { label: 'EUR', value: 'eur' },
-          ]}/>
-          <Radio label='Current Language' block optionType='button' onChange={changeSettingsInput('language')}
-                 value={settingsForm.language} defaultValue='en'
-                 options={[
-                   { label: 'English', value: 'en' },
-                   { label: 'Espanol', value: 'es' },
-                 ]}/>
-        </div>
-      </SettingsSection>
       <SettingsSection label='Roles'>
-        <div className='settings_page_roles'>
-          <Table actions={<></>} dataSource={settingsForm.roles} columns={settingsRolesTableHeaders}/>
-        </div>
+        <Table actions={actionsButtons} rowKey='name' rowSelection={rolesSelection} dataSource={settingsForm.roles}
+               columns={settingsRolesTableHeaders}/>
       </SettingsSection>
     </div>
+    <UpdateRolesModal open={isUpdateRolesModalOpen} submit={updateRoles} cancel={cancelUpdateRolesModal}
+                      roles={settings.roles}/>
+    <CreateRolesModal open={isCreateRolesModalOpen} submit={addRole} cancel={cancelCreateRolesModal}/>
   </Page>
 }
 

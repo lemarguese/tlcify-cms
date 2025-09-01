@@ -7,6 +7,7 @@ import Button from "@/components/Button/Button.tsx";
 import { useMemo } from "react";
 import { useNavigate } from "react-router";
 import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs.tsx";
 
 const { Header: AntHeader } = Layout;
 
@@ -16,9 +17,8 @@ interface HeaderProps {
   searchQuery?: string;
   showSearch?: boolean;
 
-  back?: () => void;
-
   fixed?: boolean;
+  logOut: () => void;
 }
 
 const Header: FC<HeaderProps> = ({
@@ -26,12 +26,10 @@ const Header: FC<HeaderProps> = ({
                                    fixed = false,
                                    onSearchChange,
                                    onSearchPress,
-                                   back,
-                                   searchQuery
+                                   searchQuery,
+                                   logOut
                                  }) => {
   const navigate = useNavigate();
-
-  const { logOut, user, fetchMyself } = getAuthFunctions();
 
   const profileTools = useMemo(() => <div>
     <Button onClick={logOut}>Log out</Button>
@@ -39,9 +37,7 @@ const Header: FC<HeaderProps> = ({
 
   return <div className='header' style={{ position: fixed ? 'absolute' : 'fixed' }}>
     <AntHeader className='header_container'>
-      {back && <Button onClick={back} className='header_back'>
-          <LeftOutlined className='header_back_icon'/>
-      </Button>}
+      <Breadcrumbs/>
       {showSearch &&
           <Input.Search value={searchQuery} allowClear={false} onSearch={onSearchPress} onChange={onSearchChange}
                         rootClassName='header_center_search'
@@ -69,8 +65,9 @@ const Header: FC<HeaderProps> = ({
         <NotificationOutlined className='header_end_notification'/>
         <Tooltip title={profileTools} color={'#FFF'}>
           <div className='header_end_avatar'>
-            {user.avatarUrl ? <img src={user.avatarUrl} className='header_end_avatar_icon'/> :
-              <UserOutlined/>}
+            <UserOutlined/>
+            {/*{user.avatarUrl ? <img src={user.avatarUrl} className='header_end_avatar_icon'/> :*/}
+            {/*  <UserOutlined/>}*/}
           </div>
         </Tooltip>
       </div>

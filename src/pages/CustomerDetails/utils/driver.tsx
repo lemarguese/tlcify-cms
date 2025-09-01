@@ -29,17 +29,14 @@ export const getDriverFunctions = (customerId?: string) => {
   const [isDriverCreateModalOpen, setIsDriverCreateModalOpen] = useState(false);
   const [drivers, setDrivers] = useState<IDriver[]>([]);
 
-  const addNewDriverButton = <Button onClick={() => setIsDriverCreateModalOpen(true)}>Create Driver</Button>
-
   const fetchDrivers = useCallback(async () => {
     const driversByCustomer = await instance.get('/driver/byCustomer', { params: { id: customerId } });
     setDrivers(driversByCustomer.data);
   }, [customerId]);
 
-  const createDriver = useCallback(async (newDriverForm: IDriverCreate, resetForm: Dispatch<SetStateAction<IDriverCreate>>) => {
+  const createDriver = useCallback(async (newDriverForm: IDriverCreate) => {
     try {
       await instance.post('/driver', { ...newDriverForm, customer: customerId });
-      resetForm(newDriverFormInitialState);
       success('Driver was successfully created!');
     } catch (e) {
       error('There is a problem with driver creation. Try again.');
@@ -53,11 +50,16 @@ export const getDriverFunctions = (customerId?: string) => {
     await fetchDrivers();
   }, []);
 
+  const openDriverModal = useCallback(() => {
+    setIsDriverCreateModalOpen(true);
+  }, [])
+
   return {
     isDriverCreateModalOpen,
     drivers, fetchDrivers,
-    addNewDriverButton,
-    cancelDriverModal, createDriver
+    cancelDriverModal, createDriver,
+
+    openDriverModal
   }
 }
 

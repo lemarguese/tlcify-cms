@@ -17,7 +17,7 @@ interface CustomerUpdateModalProps {
   cancel: () => void;
   open: boolean;
   selectedCustomer?: ICustomer;
-  submit: (value: ICustomerUpdate, resetForm: Dispatch<SetStateAction<ICustomerUpdate>>) => void;
+  submit: (value: ICustomerUpdate) => void;
 }
 
 const CustomerUpdateModal = ({ cancel, open, selectedCustomer, submit }: CustomerUpdateModalProps) => {
@@ -60,7 +60,7 @@ const CustomerUpdateModal = ({ cancel, open, selectedCustomer, submit }: Custome
     return Object.values(options).every(el => el);
   }, [updateCustomerForm]);
 
-  return <Modal open={open} width={800} onOk={() => submit(updateCustomerForm, setUpdateCustomerForm)}
+  return <Modal open={open} width={800} onOk={() => submit(updateCustomerForm)}
                 okButtonProps={{ disabled: !validForm }} onCancel={cancel}>
     <div className='customer_update_modal_container'>
       <div>

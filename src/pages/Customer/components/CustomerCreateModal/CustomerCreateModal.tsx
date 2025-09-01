@@ -16,7 +16,7 @@ import Modal from '@/components/Modal/Modal.tsx';
 interface CustomerCreateModalProps {
   cancel: () => void;
   open: boolean;
-  submit: (value: ICustomerCreate, resetForm: Dispatch<SetStateAction<ICustomerCreate>>) => void;
+  submit: (value: ICustomerCreate) => void;
 }
 
 const CustomerCreateModal = ({ cancel, open, submit }: CustomerCreateModalProps) => {
@@ -53,7 +53,7 @@ const CustomerCreateModal = ({ cancel, open, submit }: CustomerCreateModalProps)
   }, [newCustomerForm]);
 
   return <Modal open={open} width={800} okButtonProps={{ disabled: !validForm }}
-                onOk={() => submit(newCustomerForm, setNewCustomerForm)} onCancel={cancel}>
+                onOk={() => submit(newCustomerForm)} onCancel={cancel}>
     <div className='customer_create_modal_container'>
       <div className='customer_create_modal_horizontal'>
         <Input placeholder={'TLC FHV'} value={newCustomerForm.tlcFhvNumber} label={'TLC FHV'} required

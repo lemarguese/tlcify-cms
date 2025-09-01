@@ -31,7 +31,7 @@ import { ClockCircleOutlined } from "@ant-design/icons";
 interface PolicyCreateModalProps {
   open: boolean;
   cancel: () => void;
-  submit: (value: Partial<IUpdatePolicy>, resetForm: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
+  submit: (value: Partial<IUpdatePolicy>) => void;
   changePolicyFormTime: (val: keyof Pick<IUpdatePolicy, 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: Dayjs) => void;
   changePolicyFormData: (val: keyof Omit<IUpdatePolicy, 'expirationDate' | 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string) => void;
   addPolicyFee: (value: IPolicyFeeCreate, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
@@ -82,7 +82,7 @@ const PolicyUpdateModal = ({
       }
     }
 
-    submit(touchedFields, setNewPolicyForm);
+    submit(touchedFields);
   }
 
   const validAndTouchedForm = useMemo(() => {

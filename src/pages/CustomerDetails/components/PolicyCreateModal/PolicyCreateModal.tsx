@@ -29,7 +29,7 @@ import { ClockCircleOutlined } from "@ant-design/icons";
 interface PolicyCreateModalProps {
   open: boolean;
   cancel: () => void;
-  submit: (value: IPolicyCreate, resetForm: Dispatch<SetStateAction<IPolicyCreate>>) => void;
+  submit: (value: IPolicyCreate) => void;
   changePolicyFormTime: (val: keyof Pick<IPolicyCreate, 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => (val: Dayjs) => void;
   changePolicyFormData: (val: keyof Omit<IPolicyCreate, 'expirationDate' | 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string) => void;
   addPolicyFee: (value: IPolicyFeeCreate, callback: Dispatch<SetStateAction<IPolicyCreate>>) => void;
@@ -150,7 +150,7 @@ const PolicyCreateModal = ({
       policy</Button>
     <Button className='policy_create_modal_footer_cancel' onClick={cancel}>Cancel</Button>
     <Button className='policy_create_modal_footer_submit' disabled={!validForm}
-            onClick={() => submit(newPolicyForm, setNewPolicyForm)}>Create
+            onClick={() => submit(newPolicyForm)}>Create
       policy</Button>
   </div>
 

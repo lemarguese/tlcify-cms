@@ -14,58 +14,62 @@ import AnalyticsPage from "@/pages/Analytics/AnalyticsPage.tsx";
 import SettingsPage from "@/pages/Settings/SettingsPage.tsx";
 
 const Router = () => {
-  return <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<Navigate to='/customers'/>}/>
-      <Route path='/login' element={<AuthorizationPage/>}/>
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/customers'>
-          <Route index element={<CustomerPage/>}/>
-          <Route path=':id' element={<CustomerDetailsPage/>}/>
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Navigate to="/customers"/>}/>
+        <Route path="/login" element={<AuthorizationPage/>}/>
+
+        {/* Protected routes */}
+        <Route
+          element={<ProtectedRoute requiredPermissions={["read_customers", 'read_customer_details']}/>}>
+          <Route path="/customers">
+            <Route index element={<CustomerPage/>}/>
+            <Route path=":customerId" element={<CustomerDetailsPage/>}/>
+          </Route>
         </Route>
-      </Route>
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/payments'>
-          <Route index element={<TransactionsPage/>}/>
+
+        <Route
+          element={<ProtectedRoute requiredPermissions={["read_customers", 'read_customer_details', 'read_policy']}/>}>
+          <Route path="/customers/:customerId/policy/:policyId" element={<PolicyDetailPage/>}/>
         </Route>
-      </Route>
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/insurances'>
-          <Route index element={<InsurancePage/>}/>
+
+        <Route element={<ProtectedRoute requiredPermissions={["read_payments"]}/>}>
+          <Route path="/payments" element={<TransactionsPage/>}/>
         </Route>
-      </Route>
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/policy/:policyId'>
-          <Route index element={<PolicyDetailPage/>}/>
+
+        <Route element={<ProtectedRoute requiredPermissions={["create_insurances"]}/>}>
+          <Route path="/insurances" element={<InsurancePage/>}/>
         </Route>
-      </Route>
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/billing/:customerId'>
-          <Route index element={<PaymentPage/>}/>
+
+        <Route element={<ProtectedRoute requiredPermissions={["read_policy"]}/>}>
+          <Route path="/policy/:policyId" element={<PolicyDetailPage/>}/>
         </Route>
-      </Route>
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/renewals'>
-          <Route index element={<RenewalPage/>}/>
+
+        <Route element={<ProtectedRoute/>}>
+          <Route path="/billing/:customerId" element={<PaymentPage/>}/>
         </Route>
-      </Route>
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/analytics'>
-          <Route index element={<AnalyticsPage/>}/>
+
+        <Route element={<ProtectedRoute requiredPermissions={["read_renewals"]}/>}>
+          <Route path="/renewals" element={<RenewalPage/>}/>
         </Route>
-      </Route>
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/invoice'>
-          <Route path=':invoiceId' element={<InvoiceDetailsPage/>}/>
+
+        <Route element={<ProtectedRoute requiredPermissions={["read_analytics"]}/>}>
+          <Route path="/analytics" element={<AnalyticsPage/>}/>
         </Route>
-      </Route>
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/settings'>
-          <Route index element={<SettingsPage/>}/>
+
+        <Route element={<ProtectedRoute requiredPermissions={["read_invoices"]}/>}>
+          <Route path="/invoice/:invoiceId" element={<InvoiceDetailsPage/>}/>
         </Route>
-      </Route>
-    </Routes>
-  </BrowserRouter>
-}
+
+        <Route element={<ProtectedRoute requiredPermissions={["update_settings"]}/>}>
+          <Route path="/settings" element={<SettingsPage/>}/>
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
+    ;
+};
 
 export default Router;

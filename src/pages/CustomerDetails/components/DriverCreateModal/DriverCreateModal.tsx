@@ -18,7 +18,7 @@ import type { IDriverCreate } from "@/types/driver/main.ts";
 interface DriverCreateModalProps {
   open: boolean;
   cancel: () => void;
-  submit: (value: IDriverCreate, resetForm: Dispatch<SetStateAction<IDriverCreate>>) => void;
+  submit: (value: IDriverCreate) => void;
 }
 
 const DriverCreateModal = ({ open, cancel, submit }: DriverCreateModalProps) => {
@@ -47,7 +47,7 @@ const DriverCreateModal = ({ open, cancel, submit }: DriverCreateModalProps) => 
     return Object.values(options).every(el => el);
   }, [newDriverForm]);
 
-  return <Modal open={open} onOk={() => submit(newDriverForm, setNewDriverForm)}
+  return <Modal open={open} onOk={() => submit(newDriverForm)}
                 okButtonProps={{ disabled: !validForm }} onCancel={cancel}>
     <div className='driver_create_modal_container'>
       <div className='driver_create_modal_horizontal'>

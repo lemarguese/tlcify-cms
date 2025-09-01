@@ -1,0 +1,21 @@
+.settings_update_roles_modal {
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &_section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &_item {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+
+  }
+}

@@ -1,11 +1,18 @@
 import './Sidebar.scss';
 import { Layout, Menu } from 'antd';
-import { UserOutlined, MoneyCollectOutlined, SettingOutlined, BarChartOutlined, ContainerOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  MoneyCollectOutlined,
+  SettingOutlined,
+  BarChartOutlined,
+  ContainerOutlined
+} from '@ant-design/icons';
 import { useLocation, useNavigate } from "react-router";
 
 const { Sider } = Layout;
 
 interface SidebarProps {
+  user_permissions: string[];
 }
 
 const sidebarOptions: { [k: string]: string } = {
@@ -17,17 +24,68 @@ const sidebarOptions: { [k: string]: string } = {
   'sidebar-settings': '/settings'
 }
 
-const navigateOptions: { [k: string]: string } = {
-  '/customers': 'sidebar-customer',
-  '/payments': 'sidebar-payment',
-  '/insurances': 'sidebar-insurance',
-  '/analytics': 'sidebar-analytics',
-  '/renewals': 'sidebar-renewal',
-  '/settings': 'sidebar-settings'
+const getNavigationOptions = (location: string) => {
+  const options = {
+    '/customers': 'sidebar-customer',
+    '/payments': 'sidebar-payment',
+    '/insurances': 'sidebar-insurance',
+    '/analytics': 'sidebar-analytics',
+    '/renewals': 'sidebar-renewal',
+    '/settings': 'sidebar-settings',
+    '/policy': 'sidebar-customer'
+  };
+
+  const [[_, key]] = Object.entries(options).filter(([k, _]) => {
+    return location.includes(k)
+  });
+
+  return key;
 }
 
-const Sidebar = ({}: SidebarProps) => {
-  // const [isCollapsed, setIsCollapsed] = useState(false);
+const sidebars = [
+  {
+    key: 'sidebar-customer',
+    icon: <UserOutlined/>,
+    label: 'Customer',
+    permissions: ['read_customers']
+  },
+  {
+    key: 'sidebar-payment',
+    icon: <MoneyCollectOutlined/>,
+    label: 'Payment',
+    permissions: ['read_payments']
+  },
+  {
+    key: 'sidebar-insurance',
+    icon: <MoneyCollectOutlined/>,
+    label: 'Insurance',
+    permissions: ['create_insurances']
+  },
+  {
+    key: 'sidebar-analytics',
+    icon: <BarChartOutlined/>,
+    label: 'Analytics',
+    permissions: ['read_analytics']
+  },
+  {
+    key: 'sidebar-renewal',
+    icon: <ContainerOutlined/>,
+    label: 'Renewal',
+    permissions: ['read_renewals']
+  },
+  {
+    key: 'sidebar-settings',
+    icon: <SettingOutlined/>,
+    label: 'Settings',
+    permissions: ['update_settings']
+  },
+]
+
+const Sidebar = ({ user_permissions }: SidebarProps) => {
+  const allowedItems = sidebars.filter(item =>
+    !item.permissions || item.permissions.some(p => user_permissions.includes(p))
+  );
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,46 +93,15 @@ const Sidebar = ({}: SidebarProps) => {
     <aside className='sidebar'>
       <Sider trigger={null} className='sidebar_container'>
         <div className='sidebar_logo'>
-          <h2 className='sidebar_logo_text'>TLCify</h2>
+          <h2 className='sidebar_logo_text'>TLCify.com</h2>
         </div>
         <Menu
           onSelect={(item) => { navigate(sidebarOptions[item.key]) }}
           style={{ border: 'none' }}
           // theme="dark"
           mode="inline"
-          defaultSelectedKeys={[navigateOptions[location.pathname]]}
-          items={[
-            {
-              key: 'sidebar-customer',
-              icon: <UserOutlined/>,
-              label: 'Customer',
-            },
-            {
-              key: 'sidebar-payment',
-              icon: <MoneyCollectOutlined/>,
-              label: 'Payment',
-            },
-            {
-              key: 'sidebar-insurance',
-              icon: <MoneyCollectOutlined/>,
-              label: 'Insurance',
-            },
-            {
-              key: 'sidebar-analytics',
-              icon: <BarChartOutlined/>,
-              label: 'Analytics',
-            },
-            {
-              key: 'sidebar-renewal',
-              icon: <ContainerOutlined/>,
-              label: 'Renewal',
-            },
-            {
-              key: 'sidebar-settings',
-              icon: <SettingOutlined/>,
-              label: 'Settings',
-            },
-          ]}
+          defaultSelectedKeys={getNavigationOptions(location.pathname)}
+          items={allowedItems}
         />
       </Sider>
     </aside>

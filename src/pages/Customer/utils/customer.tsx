@@ -8,6 +8,8 @@ import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 import type { TableRowSelection } from "antd/es/table/interface";
 import { instance } from "@/api/axios.ts";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
+import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
+import Permission from "@/layout/Permission/Permission.tsx";
 
 export const customerTableHeaders: ColumnsType = [
   {
@@ -95,10 +97,9 @@ export const getCustomerFunctions = () => {
     fetchCustomers(searchQuery);
   }, [searchQuery]);
 
-  const createCustomer = useCallback(async (newCustomerForm: ICustomerCreate, resetForm: Dispatch<SetStateAction<ICustomerCreate>>) => {
+  const createCustomer = useCallback(async (newCustomerForm: ICustomerCreate) => {
     try {
       await instance.post('/customer', newCustomerForm);
-      resetForm(newCustomerFormInitialState);
       success('Successfully created new customer!');
     } catch (e) {
       error('There is something with creation. Try again.');
@@ -108,7 +109,7 @@ export const getCustomerFunctions = () => {
     }
   }, []);
 
-  const updateCustomer = useCallback(async (updateCustomerForm: ICustomerUpdate, resetForm: Dispatch<SetStateAction<ICustomerUpdate>>) => {
+  const updateCustomer = useCallback(async (updateCustomerForm: ICustomerUpdate) => {
     try {
       const touchedFormFields: { [k: string]: unknown } = {};
 
@@ -121,7 +122,6 @@ export const getCustomerFunctions = () => {
       });
 
       await instance.put(`/customer/${selectedCustomer?._id}`, touchedFormFields);
-      resetForm(newCustomerFormInitialState);
       success('Customer successfully updated!');
     } catch (e) {
       error('There is something with update. Try again.');
@@ -136,10 +136,6 @@ export const getCustomerFunctions = () => {
     setCustomers(all.data);
   }
 
-  const addButton = <div>
-    {selectedCustomer && <Button onClick={() => setIsUpdateModalOpen(true)}>Update the customer</Button>}
-    <Button onClick={() => setIsCreateModalOpen(true)}>Create customer</Button>
-  </div>
 
   const handleSearchQuery = useCallback((value: BaseSyntheticEvent) => {
     setSearchQuery(value ? value.target.value : undefined);
@@ -148,6 +144,14 @@ export const getCustomerFunctions = () => {
   const navigateToCustomerDetail = useCallback((customer: ICustomer) => {
     navigate(`${customer._id}`)
   }, []);
+
+  const openCreateCustomerModal = () => {
+    setIsCreateModalOpen(true)
+  }
+
+  const openUpdateCustomerModal = () => {
+    setIsUpdateModalOpen(true)
+  }
 
   const cancelCreateCustomerModal = () => {
     setIsCreateModalOpen(false)
@@ -160,11 +164,13 @@ export const getCustomerFunctions = () => {
   return {
     isCreateModalOpen, isUpdateModalOpen, customers, fetchCustomers,
     handleSearchQuery,
-    addButton, onSearch, customersSelection, navigateToCustomerDetail,
+    onSearch, customersSelection, navigateToCustomerDetail,
     searchQuery,
 
     createCustomer, updateCustomer,
-    cancelCreateCustomerModal, cancelUpdateCustomerModal, selectedCustomer
+    cancelCreateCustomerModal, cancelUpdateCustomerModal, selectedCustomer,
+
+    openCreateCustomerModal, openUpdateCustomerModal
   }
 }
 

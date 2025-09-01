@@ -13,14 +13,14 @@ import Input from "@/components/Input/Input.tsx";
 interface InsuranceCreateModalProps {
   open: boolean;
   cancel: () => void;
-  submit: (value: IInsuranceCreate, resetForm: Dispatch<SetStateAction<IInsuranceCreate>>) => void;
+  submit: (value: IInsuranceCreate) => void;
   formChange: (val: keyof IInsuranceCreate, callback: Dispatch<SetStateAction<IInsuranceCreate>>) => (val: BaseSyntheticEvent) => void;
 }
 
 const InsuranceCreateModal = ({ open, cancel, submit, formChange }: InsuranceCreateModalProps) => {
   const [newInsuranceForm, setNewInsuranceForm] = useState<IInsuranceCreate>(newInsuranceFormInitialState)
 
-  return <Modal open={open} onCancel={cancel} onOk={() => submit(newInsuranceForm, setNewInsuranceForm)}>
+  return <Modal open={open} onCancel={cancel} onOk={() => submit(newInsuranceForm)}>
     <div className='insurance_create_modal'>
       <Input label='Carrier name' placeholder='Ex. American Express Company' onChange={formChange('name', setNewInsuranceForm)}/>
       <div className='insurance_create_modal_horizontal'>

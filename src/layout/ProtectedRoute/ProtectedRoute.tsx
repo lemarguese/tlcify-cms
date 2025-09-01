@@ -1,9 +1,33 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
+import { Outlet } from "react-router";
 
-const ProtectedRoute = () => {
+interface ProtectedRouteProps {
+  requiredPermissions?: string[];
+}
+
+const ProtectedRoute = ({ requiredPermissions }: ProtectedRouteProps) => {
   const token = localStorage.getItem("tlcify_access_token");
+  const { user, fetchMyself } = getAuthFunctions();
+  const [loading, setLoading] = useState(true);
 
-  return token ? <Outlet /> : <Navigate to="/login" />;
+  useEffect(() => {
+    fetchMyself().finally(() => setLoading(false));
+  }, []);
+
+  if (!token) return <Navigate to="/login"/>;
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <Navigate to="/login"/>;
+
+  if (
+    requiredPermissions &&
+    !requiredPermissions.some((p) => user.permissions?.includes(p))
+  ) {
+    return <Navigate to="/login"/>;
+  }
+
+  return <Outlet/>; // 👈 render children directly
 };
 
 export default ProtectedRoute;

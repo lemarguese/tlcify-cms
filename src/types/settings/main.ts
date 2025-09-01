@@ -1,3 +1,5 @@
+import type { RcFile } from "antd/es/upload";
+
 /** Role & Permission type */
 export interface IRole {
   name: string;                  // e.g. "admin", "broker", "customer"
@@ -34,8 +36,8 @@ export interface ISettings {
   updatedAt: Date;
 }
 
-export interface ISettingsCreate extends Omit<ISettings, 'company'> {
+export interface ISettingsCreate extends Omit<ISettings, 'company' | 'roles'> {
   companyName: string;
   companyDescription: string;
-  companyPhoto?: FileType
+  companyPhoto?: RcFile
 }

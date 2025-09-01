@@ -1,9 +1,13 @@
 .settings_page {
-  padding: 16px 400px;
+  padding: 16px;
 
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
+  &_container {
+    padding: 16px 400px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
 
   &_submit {
     align-self: end;
@@ -71,6 +75,27 @@
   }
 
   &_roles {
+    &_actions {
+      padding: 0 8px;
+      flex: 1;
+
+      display: flex;
+      justify-content: end;
+    }
+
+    &_chips {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      &_item {
+        padding: 4px 8px;
+
+        border-radius: 8px;
+        border: 1px solid #151D48;
+      }
+    }
   }
 
 }
