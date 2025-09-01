@@ -77,7 +77,7 @@ export const getSettingsFunctions = () => {
     return (val: BaseSyntheticEvent | RadioChangeEvent) => {
       setSettingsForm(prev => ({
         ...prev,
-        [key]: typeof val.target.value
+        [key]: val.target.value
       }))
     }
   }, []);
