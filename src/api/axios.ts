@@ -14,8 +14,7 @@ instance.interceptors.request.use(config => {
   const parts = hostname.split(".");
   const tenant = parts.length > 2 ? parts[0] : null; // "samkara"
 
-  config.headers["X-Tenant-Id"] = 'localhost';
-  // if (tenant) config.headers["X-Tenant-Id"] = 'localhost';
+  if (tenant) config.headers["X-Tenant-Id"] = tenant;
 
   if (!pendingToastId) pendingToastId = toast.loading('Working on it...');
 
