@@ -13,6 +13,6 @@ export default defineConfig({
   },
   server: {
     host: true,
-    allowedHosts: ['admin.tlcify.com', 'www.admin.tlcify.com'],
+    allowedHosts: ['.tlcify.com']
   }
 })
