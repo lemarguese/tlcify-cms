@@ -96,14 +96,14 @@ const CustomerUpdateModal = ({ cancel, open, selectedCustomer, submit }: Custome
                label={'Apartment / Suite number'}/>
       </div>
       <div className='customer_update_modal_horizontal'>
-        <DatePicker label={'TLC Expiration'} required
+        <DatePicker label={'TLC FHV Expiration'} required
                     value={updateCustomerForm.tlcFhvExpiration ? dayjs(updateCustomerForm.tlcFhvExpiration) : undefined}
                     onChange={changeCustomerFormTime('tlcFhvExpiration', setUpdateCustomerForm)}/>
-        <Input placeholder={'DMV Number'} label={'DMV Number'} required value={updateCustomerForm.dmvPlaceNumber}
+        <Input placeholder={'Plate Number'} label={'Plate Number'} required value={updateCustomerForm.dmvPlaceNumber}
                onChange={changeCustomerFormData('dmvPlaceNumber', setUpdateCustomerForm)}/>
         <Input placeholder={'VIN Number'} label={'VIN Number'} required value={updateCustomerForm.vehicleVIN}
                onChange={changeCustomerFormData('vehicleVIN', setUpdateCustomerForm)}/>
-        <DatePicker label={'DMV Expiration'} required
+        <DatePicker label={'Registration Expiration'} required
                     value={updateCustomerForm.dmvExpiration ? dayjs(updateCustomerForm.dmvExpiration) : undefined}
                     onChange={changeCustomerFormTime('dmvExpiration', setUpdateCustomerForm)}/>
       </div>

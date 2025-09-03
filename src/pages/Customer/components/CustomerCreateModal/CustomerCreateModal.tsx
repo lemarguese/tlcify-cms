@@ -88,14 +88,14 @@ const CustomerCreateModal = ({ cancel, open, submit }: CustomerCreateModalProps)
                label={'Apartment / Suite number'}/>
       </div>
       <div className='customer_create_modal_horizontal'>
-        <DatePicker label={'TLC Expiration'} required
+        <DatePicker label={'TLC FHV Expiration'} required
                     value={newCustomerForm.tlcFhvExpiration ? dayjs(newCustomerForm.tlcFhvExpiration) : undefined}
                     onChange={changeCustomerFormTime('tlcFhvExpiration', setNewCustomerForm)}/>
-        <Input placeholder={'DMV Number'} label={'DMV Number'} required value={newCustomerForm.dmvPlaceNumber}
+        <Input placeholder={'Plate Number'} label={'Plate Number'} required value={newCustomerForm.dmvPlaceNumber}
                onChange={changeCustomerFormData('dmvPlaceNumber', setNewCustomerForm)}/>
         <Input placeholder={'VIN Number'} label={'VIN Number'} required value={newCustomerForm.vehicleVIN}
                onChange={changeCustomerFormData('vehicleVIN', setNewCustomerForm)}/>
-        <DatePicker label={'DMV Expiration'} required
+        <DatePicker label={'Registration Expiration'} required
                     value={newCustomerForm.dmvExpiration ? dayjs(newCustomerForm.dmvExpiration) : undefined}
                     onChange={changeCustomerFormTime('dmvExpiration', setNewCustomerForm)}/>
       </div>
