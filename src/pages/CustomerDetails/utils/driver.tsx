@@ -5,6 +5,8 @@ import type { DriverVehicleLicenseInfo, IDriver, IDriverCreate } from "@/types/d
 import { instance } from "@/api/axios.ts";
 import { Dayjs } from "dayjs";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
+import lodash from "lodash";
+import type { AxiosResponse } from "axios";
 
 export const newDriverFormInitialState: IDriverCreate = {
   customer: '',
@@ -63,38 +65,39 @@ export const getDriverFunctions = (customerId?: string) => {
 }
 
 export const getDriversUpdateAndCreateFunctions = () => {
-  const [vehicleInformation, setVehicleInformation] = useState<DriverVehicleLicenseInfo[]>([]);
-  const fetchVehicleInformation = async () => {
-    const response = await instance.get('/for_hire_vehicle/driver');
-    setVehicleInformation(response.data);
-  }
-
   const changeDriverFormData = useCallback((key: keyof Omit<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => {
     return (val: BaseSyntheticEvent) => {
-      if (key === 'tlcNumber') {
-        const vehicleDriver = vehicleInformation.find(vi => vi.license_number === val.target.value);
-        if (vehicleDriver) {
-          const [firstName, lastName] = vehicleDriver.name.split(',');
-          const vehicleFetchedInformation = {
-            tlcNumber: vehicleDriver.license_number,
-            firstName,
-            lastName,
-            tlcExp: new Date(vehicleDriver.expiration_date),
-          }
-
-          return callback(prev => ({
-            ...prev,
-            ...vehicleFetchedInformation,
-          }))
-        }
-      }
-
       callback(prev => ({
         ...prev,
         [key]: val.target.value
       }))
     }
-  }, [vehicleInformation]);
+  }, []);
+
+  const changeDriverTLCNumber = lodash.debounce(async (val: BaseSyntheticEvent, callback: Dispatch<SetStateAction<IDriverCreate>>) => {
+    const driverVehicleInformation: AxiosResponse<DriverVehicleLicenseInfo[]> = await instance.get('/for_hire_vehicle/driver', {
+      params: {
+        license_number: val.target.value
+      }
+    });
+
+    if (driverVehicleInformation.data.length) {
+      const [vehicleDriver] = driverVehicleInformation.data;
+
+      const [firstName, lastName] = vehicleDriver.name.split(',');
+      const vehicleFetchedInformation = {
+        tlcNumber: vehicleDriver.license_number,
+        firstName,
+        lastName: lastName ? lastName : 'COMPANY',
+        tlcExp: new Date(vehicleDriver.expiration_date),
+      }
+
+      return callback(prev => ({
+        ...prev,
+        ...vehicleFetchedInformation
+      }))
+    }
+  }, 750)
 
   const changeDriverFormTime = useCallback((key: keyof Pick<IDriverCreate, 'dateOfBirth' | 'tlcExp' | 'defensiveDriverCourseExp' | 'driverLicenseExp'>, callback: Dispatch<SetStateAction<IDriverCreate>>) => {
     return (val: Dayjs) => {
@@ -107,6 +110,6 @@ export const getDriversUpdateAndCreateFunctions = () => {
   }, []);
 
   return {
-    changeDriverFormTime, changeDriverFormData, fetchVehicleInformation
+    changeDriverFormTime, changeDriverFormData, changeDriverTLCNumber
   }
 }

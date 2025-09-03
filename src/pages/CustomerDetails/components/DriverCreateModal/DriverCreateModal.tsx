@@ -23,11 +23,7 @@ interface DriverCreateModalProps {
 const DriverCreateModal = ({ open, cancel, submit }: DriverCreateModalProps) => {
   const [newDriverForm, setNewDriverForm] = useState<IDriverCreate>(newDriverFormInitialState);
 
-  const { changeDriverFormData, changeDriverFormTime, fetchVehicleInformation } = getDriversUpdateAndCreateFunctions();
-
-  useEffect(() => {
-    if (open) fetchVehicleInformation();
-  }, [open]);
+  const { changeDriverFormData, changeDriverFormTime, changeDriverTLCNumber } = getDriversUpdateAndCreateFunctions();
 
   const validForm = useMemo(() => {
     const options = {
@@ -51,7 +47,14 @@ const DriverCreateModal = ({ open, cancel, submit }: DriverCreateModalProps) => 
     <div className='driver_create_modal_container'>
       <div className='driver_create_modal_horizontal'>
         <Input placeholder={'TLC Number'} value={newDriverForm.tlcNumber} label={'TLC Number'}
-               onChange={changeDriverFormData('tlcNumber', setNewDriverForm)}/>
+               onChange={(e) => {
+                 setNewDriverForm(prev => ({
+                   ...prev,
+                   tlcNumber: e.target.value
+                 }));
+
+                 changeDriverTLCNumber(e, setNewDriverForm)
+               }}/>
       </div>
       <div className='driver_create_modal_horizontal'>
         <Input placeholder={'First name'} value={newDriverForm.firstName} required

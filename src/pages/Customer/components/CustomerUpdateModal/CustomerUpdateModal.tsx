@@ -26,12 +26,8 @@ const CustomerUpdateModal = ({ cancel, open, selectedCustomer, submit }: Custome
   const {
     changeCustomerFormData,
     changeCustomerFormTime,
-    fetchVehicleInformation
+    changeCustomerTlcFhvNumber
   } = getCustomerUpdateAndCreateFunctions();
-
-  useEffect(() => {
-    if (open) fetchVehicleInformation();
-  }, [open]);
 
   useEffect(() => {
     if (selectedCustomer) {
@@ -65,7 +61,14 @@ const CustomerUpdateModal = ({ cancel, open, selectedCustomer, submit }: Custome
     <div className='customer_update_modal_container'>
       <div>
         <Input placeholder={'TLC FHV'} value={updateCustomerForm.tlcFhvNumber} label={'TLC FHV'} required
-               onChange={changeCustomerFormData('tlcFhvNumber', setUpdateCustomerForm)}/>
+               onChange={(e) => {
+                 setUpdateCustomerForm(prev => ({
+                   ...prev,
+                   tlcFhvNumber: e.target.value
+                 }));
+
+                 changeCustomerTlcFhvNumber(e, setUpdateCustomerForm)
+               }}/>
       </div>
       <div className='customer_update_modal_horizontal'>
         <Input placeholder={'First name'} value={updateCustomerForm.firstName} required

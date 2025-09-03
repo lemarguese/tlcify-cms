@@ -23,12 +23,8 @@ const CustomerCreateModal = ({ cancel, open, submit }: CustomerCreateModalProps)
   const {
     changeCustomerFormData,
     changeCustomerFormTime,
-    fetchVehicleInformation
+    changeCustomerTlcFhvNumber
   } = getCustomerUpdateAndCreateFunctions();
-
-  useEffect(() => {
-    if (open) fetchVehicleInformation();
-  }, [open])
 
   const [newCustomerForm, setNewCustomerForm] = useState<ICustomerCreate>(newCustomerFormInitialState)
 
@@ -57,7 +53,14 @@ const CustomerCreateModal = ({ cancel, open, submit }: CustomerCreateModalProps)
     <div className='customer_create_modal_container'>
       <div className='customer_create_modal_horizontal'>
         <Input placeholder={'TLC FHV'} value={newCustomerForm.tlcFhvNumber} label={'TLC FHV'} required
-               onChange={changeCustomerFormData('tlcFhvNumber', setNewCustomerForm)}/>
+               onChange={(e) => {
+                 setNewCustomerForm(prev => ({
+                   ...prev,
+                   tlcFhvNumber: e.target.value
+                 }));
+
+                 changeCustomerTlcFhvNumber(e, setNewCustomerForm)
+               }}/>
       </div>
       <div className='customer_create_modal_horizontal'>
         <Input placeholder={'First name'} value={newCustomerForm.firstName} required

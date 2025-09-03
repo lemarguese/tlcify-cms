@@ -9,6 +9,9 @@ import type { TableRowSelection } from "antd/es/table/interface";
 import { instance } from "@/api/axios.ts";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
+import lodash from 'lodash';
+import type { AxiosResponse } from "axios";
+
 export const customerTableHeaders: ColumnsType = [
   {
     title: "First Name",
@@ -173,40 +176,41 @@ export const getCustomerFunctions = () => {
 }
 
 export const getCustomerUpdateAndCreateFunctions = () => {
-  const [vehicleInformation, setVehicleInformation] = useState<CustomerVehicleLicenseInfo[]>([]);
-  const fetchVehicleInformation = async () => {
-    const response = await instance.get('/for_hire_vehicle/customer');
-    setVehicleInformation(response.data);
-  }
-
-  const changeCustomerFormData = useCallback((key: keyof Omit<ICustomer, 'dateOfBirth' | 'dmvExpiration' | 'tlcFhvExpiration' | 'defensiveDriverCourseExpiration' | 'driverLicenseExpiration'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => {
+  const changeCustomerFormData = useCallback((key: keyof Omit<ICustomer, 'tlcFhvNumber' | 'dateOfBirth' | 'dmvExpiration' | 'tlcFhvExpiration' | 'defensiveDriverCourseExpiration' | 'driverLicenseExpiration'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => {
     return (val: BaseSyntheticEvent) => {
-      if (key === 'tlcFhvNumber') {
-        const vehicleCustomer = vehicleInformation.find(vi => vi.vehicle_license_number === val.target.value);
-        if (vehicleCustomer) {
-          const [firstName, lastName] = vehicleCustomer.name.split(',');
-          const vehicleFetchedInformation = {
-            tlcFhvNumber: vehicleCustomer.vehicle_license_number,
-            firstName,
-            lastName,
-            tlcFhvExpiration: new Date(vehicleCustomer.expiration_date),
-            dmvPlaceNumber: vehicleCustomer.dmv_license_plate_number,
-            vehicleVIN: vehicleCustomer.vehicle_vin_number,
-          }
-
-          return callback(prev => ({
-            ...prev,
-            ...vehicleFetchedInformation
-          }))
-        }
-      }
-
       callback(prev => ({
         ...prev,
         [key]: val.target.value
       }))
     }
-  }, [vehicleInformation]);
+  }, []);
+
+  const changeCustomerTlcFhvNumber = lodash.debounce(async (val: BaseSyntheticEvent, callback: Dispatch<SetStateAction<ICustomerCreate>>) => {
+    const customerVehicleInformation: AxiosResponse<CustomerVehicleLicenseInfo[]> = await instance.get('/for_hire_vehicle/customer', {
+      params: {
+        vehicle_license_number: val.target.value
+      }
+    });
+
+    if (customerVehicleInformation.data.length) {
+      const [vehicleCustomer] = customerVehicleInformation.data;
+
+      const [firstName, lastName] = vehicleCustomer.name.split(',');
+      const vehicleFetchedInformation = {
+        tlcFhvNumber: vehicleCustomer.vehicle_license_number,
+        firstName,
+        lastName: lastName ? lastName : 'COMPANY',
+        tlcFhvExpiration: new Date(vehicleCustomer.expiration_date),
+        dmvPlaceNumber: vehicleCustomer.dmv_license_plate_number,
+        vehicleVIN: vehicleCustomer.vehicle_vin_number,
+      }
+
+      return callback(prev => ({
+        ...prev,
+        ...vehicleFetchedInformation
+      }))
+    }
+  }, 750)
 
   const changeCustomerFormTime = useCallback((key: keyof Pick<ICustomer, 'dateOfBirth' | 'tlcFhvExpiration' | 'dmvExpiration' | 'defensiveDriverCourseExpiration' | 'driverLicenseExpiration'>, callback: Dispatch<SetStateAction<ICustomerCreate>>) => {
     return (val: Dayjs) => {
@@ -219,6 +223,6 @@ export const getCustomerUpdateAndCreateFunctions = () => {
   }, []);
 
   return {
-    changeCustomerFormData, changeCustomerFormTime, fetchVehicleInformation
+    changeCustomerFormData, changeCustomerFormTime, changeCustomerTlcFhvNumber
   }
 }
