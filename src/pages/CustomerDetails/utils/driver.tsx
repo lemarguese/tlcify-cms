@@ -88,7 +88,7 @@ export const getDriversUpdateAndCreateFunctions = () => {
       const vehicleFetchedInformation = {
         tlcNumber: vehicleDriver.license_number,
         firstName,
-        lastName: lastName ? lastName : 'COMPANY',
+        lastName: lastName ? lastName : '',
         tlcExp: new Date(vehicleDriver.expiration_date),
       }
 

@@ -31,7 +31,6 @@ const CustomerCreateModal = ({ cancel, open, submit }: CustomerCreateModalProps)
   const validForm = useMemo(() => {
     const options = {
       firstNameValid: !!newCustomerForm.firstName.trim(),
-      lastNameValid: !!newCustomerForm.lastName.trim(),
       phoneNumberValid: !!newCustomerForm.phoneNumber.trim(),
       addressValid: !!newCustomerForm.address.trim(),
       emailValid: !!newCustomerForm.email.trim(),
@@ -65,7 +64,7 @@ const CustomerCreateModal = ({ cancel, open, submit }: CustomerCreateModalProps)
       <div className='customer_create_modal_horizontal'>
         <Input placeholder={'First name'} value={newCustomerForm.firstName} required
                onChange={changeCustomerFormData('firstName', setNewCustomerForm)} label={'First Name'}/>
-        <Input placeholder={'Last name'} value={newCustomerForm.lastName} required
+        <Input placeholder={'Last name'} value={newCustomerForm.lastName}
                onChange={changeCustomerFormData('lastName', setNewCustomerForm)} label={'Last Name'}/>
         <DatePicker label='Date of birth' required
                     value={newCustomerForm.dateOfBirth ? dayjs(newCustomerForm.dateOfBirth) : undefined}

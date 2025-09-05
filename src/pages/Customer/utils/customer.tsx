@@ -199,7 +199,7 @@ export const getCustomerUpdateAndCreateFunctions = () => {
       const vehicleFetchedInformation = {
         tlcFhvNumber: vehicleCustomer.vehicle_license_number,
         firstName,
-        lastName: lastName ? lastName : 'COMPANY',
+        lastName: lastName ? lastName : '',
         tlcFhvExpiration: new Date(vehicleCustomer.expiration_date),
         dmvPlaceNumber: vehicleCustomer.dmv_license_plate_number,
         vehicleVIN: vehicleCustomer.vehicle_vin_number,

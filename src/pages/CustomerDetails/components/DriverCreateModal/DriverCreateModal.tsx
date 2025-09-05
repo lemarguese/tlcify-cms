@@ -28,7 +28,6 @@ const DriverCreateModal = ({ open, cancel, submit }: DriverCreateModalProps) => 
   const validForm = useMemo(() => {
     const options = {
       firstNameValid: !!newDriverForm.firstName.trim(),
-      lastNameValid: !!newDriverForm.lastName.trim(),
       phoneNumberValid: !!newDriverForm.phoneNumber.trim(),
       addressValid: !!newDriverForm.address.trim(),
       emailValid: !!newDriverForm.email.trim(),
@@ -59,7 +58,7 @@ const DriverCreateModal = ({ open, cancel, submit }: DriverCreateModalProps) => 
       <div className='driver_create_modal_horizontal'>
         <Input placeholder={'First name'} value={newDriverForm.firstName} required
                onChange={changeDriverFormData('firstName', setNewDriverForm)} label={'First Name'}/>
-        <Input placeholder={'Last name'} value={newDriverForm.lastName} required
+        <Input placeholder={'Last name'} value={newDriverForm.lastName}
                onChange={changeDriverFormData('lastName', setNewDriverForm)} label={'Last Name'}/>
         <DatePicker label='Date of birth' required
                     value={newDriverForm.dateOfBirth ? dayjs(newDriverForm.dateOfBirth) : undefined}
