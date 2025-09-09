@@ -97,7 +97,7 @@ const PolicyCreateModal = ({
     let installmentAmount = 0;
 
     for (let index = 0; index < +installmentCount; index++) {
-      const date = (index === 0 ? effectiveDateWrapped : customEffectiveDateWrapper);
+      const date = (customEffectiveDate ? customEffectiveDateWrapper : index === 0 ? effectiveDateWrapped : effectiveDateWrapped);
       const dueDate = date.add(index, 'month');
 
       const matchingFees = fees.filter(fee => {
@@ -113,6 +113,8 @@ const PolicyCreateModal = ({
         if (index === +installmentCount - 1) installmentAmount = premiumPriceNet - (+installmentCount - 1) * +monthlyPayment;
         else installmentAmount = +monthlyPayment;
       }
+
+      if (Boolean(deposit) && index === 0) installmentAmount += +deposit;
 
       installmentArray[index] = {
         label: date.add(index, 'month').format('Do MMMM, YYYY'),
