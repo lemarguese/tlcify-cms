@@ -11,6 +11,12 @@ RUN yarn install --frozen-lockfile
 # Copy rest of the source code
 COPY . .
 
+ARG VITE_BASE_URL
+ENV VITE_BASE_URL=$VITE_BASE_URL
+
+ARG VITE_GOOGLE_API_KEY
+ENV VITE_GOOGLE_API_KEY=$VITE_GOOGLE_API_KEY
+
 # Build for production
 RUN yarn build
 
