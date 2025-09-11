@@ -64,7 +64,7 @@ const sidebars = [
   {
     key: 'sidebar-analytics',
     icon: <BarChartOutlined/>,
-    label: 'Analytics',
+    label: 'Reports',
     permissions: ['read_analytics']
   },
   {

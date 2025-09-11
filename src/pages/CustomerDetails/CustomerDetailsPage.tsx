@@ -31,6 +31,8 @@ import InvoiceCreateModal from "@/pages/CustomerDetails/components/InvoiceCreate
 import { SendOutlined } from "@ant-design/icons";
 import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
 import Permission from "@/layout/Permission/Permission.tsx";
+import ActivityLogModal from "@/pages/CustomerDetails/components/ActivityLogModal/ActivityLogModal.tsx";
+import { getAuditLogsFunction } from "@/pages/CustomerDetails/utils/audit_log.tsx";
 
 const CustomerDetailsPage = () => {
 
@@ -84,6 +86,8 @@ const CustomerDetailsPage = () => {
     openClientFormEmail, sendFormToClientEmail, isAutoPayEnabled,
     cancelClientFormSend,
     customerById, contactSections, fetchCustomerById,
+
+    cancelActivityModal, isActivityLogsOpen, openActivityModal
   } = getCustomerByIdFunction(customerId);
 
   const {
@@ -168,9 +172,10 @@ const CustomerDetailsPage = () => {
                                         title='Total amount of fees' description={totalFeesAmount}/>
         </div>
         <CustomerDetailProfile
-          firstName={customerById.firstName}
+          name={customerById.firstName && customerById.lastName ? `${customerById.firstName} ${customerById.lastName}` : `${customerById.corporationName}`}
           dateOfBirth={customerById.dateOfBirth}
-          lastName={customerById.lastName}
+          user_permission={user.permissions}
+          showActivity={openActivityModal}
           phoneNumber={customerById.phoneNumber}
         />
       </div>
@@ -199,6 +204,7 @@ const CustomerDetailsPage = () => {
     <InvoiceCreateModal open={isInvoiceConfirmModalOpen} cancel={cancelInvoiceCreateModal}
                         submit={() => createInvoice(navigate)}
     />
+    <ActivityLogModal open={isActivityLogsOpen} cancel={cancelActivityModal} customerId={customerId}/>
   </Page>
 }
 

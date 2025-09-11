@@ -417,6 +417,7 @@ export const getCustomerByIdFunction = (customerId?: string) => {
   const { error, success } = useNotify();
   const [isClientEmailModalOpen, setIsClientEmailModalOpen] = useState(false);
   const [isAutoPayEnabled, setIsAutoPayEnabled] = useState(false);
+  const [isActivityLogsOpen, setIsActivityLogsOpen] = useState(false);
 
   const [customerById, setCustomerById] = useState<ICustomerCreate>(newCustomerFormInitialState);
 
@@ -467,13 +468,23 @@ export const getCustomerByIdFunction = (customerId?: string) => {
     setIsAutoPayEnabled(value);
   }, []);
 
+  const openActivityModal = useCallback(() => {
+    setIsActivityLogsOpen(true)
+  }, []);
+
+  const cancelActivityModal = useCallback(() => {
+    setIsActivityLogsOpen(false);
+  }, [])
+
   return {
     customerById, fetchCustomerById,
 
     sendFormToClientEmail, openClientFormEmail, cancelClientFormSend,
     changeAutoPay, isAutoPayEnabled, isClientEmailModalOpen,
 
-    contactSections
+    contactSections,
+
+    openActivityModal, cancelActivityModal, isActivityLogsOpen
   }
 }
 

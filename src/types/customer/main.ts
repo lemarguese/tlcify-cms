@@ -1,7 +1,8 @@
 export interface ICustomer {
   _id: string;
-  firstName: string,
-  lastName: string,
+  firstName: string | null,
+  lastName: string | null,
+  corporationName: string | null,
   phoneNumber: string,
   email: string,
   dateOfBirth: Date,

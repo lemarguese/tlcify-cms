@@ -14,16 +14,10 @@ import type { AxiosResponse } from "axios";
 
 export const customerTableHeaders: ColumnsType = [
   {
-    title: "First Name",
-    dataIndex: "firstName",
-    key: "firstName",
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
-  },
-  {
-    title: "Last Name",
-    dataIndex: "lastName",
-    key: "lastName",
-    sorter: (a, b) => a.lastName.localeCompare(b.lastName)
+    title: "Name",
+    dataIndex: "fullName",
+    key: "fullName",
+    render: (_, record) => record.firstName && record.lastName ? `${record.firstName} ${record.lastName}` : record.corporationName,
   },
   { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
   { title: "Address", dataIndex: "address", key: "address" },
@@ -60,6 +54,7 @@ export const customerTableHeaders: ColumnsType = [
 export const newCustomerFormInitialState: ICustomerCreate = {
   firstName: '',
   lastName: '',
+  corporationName: '',
   phoneNumber: '',
   email: '',
   dateOfBirth: new Date(Date.now()),
@@ -195,11 +190,11 @@ export const getCustomerUpdateAndCreateFunctions = () => {
     if (customerVehicleInformation.data.length) {
       const [vehicleCustomer] = customerVehicleInformation.data;
 
-      const [firstName, lastName] = vehicleCustomer.name.split(',');
+      const { firstName, corporationName, lastName } = normalizeFHVNames(vehicleCustomer.name);
+
       const vehicleFetchedInformation = {
         tlcFhvNumber: vehicleCustomer.vehicle_license_number,
-        firstName,
-        lastName: lastName ? lastName : '',
+        firstName, lastName, corporationName,
         tlcFhvExpiration: new Date(vehicleCustomer.expiration_date),
         dmvPlaceNumber: vehicleCustomer.dmv_license_plate_number,
         vehicleVIN: vehicleCustomer.vehicle_vin_number,
@@ -226,3 +221,30 @@ export const getCustomerUpdateAndCreateFunctions = () => {
     changeCustomerFormData, changeCustomerFormTime, changeCustomerTlcFhvNumber
   }
 }
+
+const normalizeFHVNames = (raw: string) => {
+  if (!raw) return { corporationName: null, firstName: null, lastName: null };
+
+  const upper = raw.toUpperCase();
+
+  const corpRegex = /\b(LLC|INC|CORP)\b/;
+  if (corpRegex.test(upper.replace(/,/g, " "))) {
+    return {
+      corporationName: raw.replace(/,/g, " ").replace(/\s+/g, " ").trim(),
+      firstName: null,
+      lastName: null
+    };
+  }
+
+  const parts = raw
+    .split(",")
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  return {
+    corporationName: null,
+    firstName: parts[0] || null,
+    lastName: parts[1] || null
+  };
+}
+
