@@ -501,6 +501,7 @@ export const paymentTypeRadioOptions = [
   { label: 'Card', value: 'card' },
   { label: 'Cash', value: 'cash' },
   { label: 'Zelle', value: 'zelle' },
+  { label: 'Venmo', value: 'venmo' },
   { label: 'Other', value: 'other' },
 ];
 

@@ -15,7 +15,7 @@ import Range from "@/components/Range/Range.tsx";
 import { getInsuranceFunctions } from "@/pages/Insurance/utils/insurance.tsx";
 import { formatCurrency } from "@/utils/payment.ts";
 
-const TransactionsPage = ({}) => {
+const TransactionsPage = () => {
   const navigate = useNavigate();
 
   const {
@@ -65,9 +65,9 @@ const TransactionsPage = ({}) => {
             (_) => <div className='transactions_page_header_reports_footer'>
               <label>GRAND TOTAL: </label>
               <div className='transactions_page_header_reports_footer_list'>
-                <p>{formatCurrency(grandTotal.totalPrice)}</p>
-                <p>{formatCurrency(grandTotal.totalPremiumFee)}</p>
                 <p>{formatCurrency(grandTotal.totalPremiumPrice)}</p>
+                <p>{formatCurrency(grandTotal.totalPremiumFee)}</p>
+                <p>{formatCurrency(grandTotal.totalPrice)}</p>
               </div>
             </div>
           }/>

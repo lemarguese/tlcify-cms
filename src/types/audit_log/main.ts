@@ -7,4 +7,6 @@ export interface IAuditLog {
   model: string;
   documentId: string;
   message?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

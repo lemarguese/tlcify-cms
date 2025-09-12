@@ -132,8 +132,12 @@ export const getTransactionFunctions = () => {
   }, []);
 
   const resetQuery = useCallback(async () => {
-    setQuery(undefined)
-    await fetchAllPayments()
+    setQuery(prev => {
+      if (prev) {
+        fetchAllPayments()
+        return undefined;
+      }
+    })
   }, []);
 
   const { reportsData, grandTotal } = useMemo(() => {

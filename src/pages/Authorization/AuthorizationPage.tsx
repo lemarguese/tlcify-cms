@@ -59,7 +59,9 @@ const AuthorizationPage = () => {
       <div className='authorization_page_body'>
         <div className='authorization_page_inputs'>
           <Input label='Email' placeholder='leslie@pixsellz.io' onChange={onChange('email')}/>
-          <PasswordInput label='Password' onChange={onChange('password')}/>
+          <PasswordInput label='Password' onKeyDown={async (e) => {
+            if (e.keyCode === 13) await onSubmit()
+          }} onChange={onChange('password')}/>
         </div>
         <Checkbox label='Remember me'/>
         <Button className='authorization_page_buttons_login' onClick={onSubmit}>Log in</Button>
