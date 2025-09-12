@@ -15,8 +15,8 @@ const ActivityLogModal = ({ open, cancel, customer, customerId }: ActivityLogMod
   const { activities, fetchActivities } = getAuditLogsFunction(customerId);
 
   useEffect(() => {
-    fetchActivities();
-  }, []);
+    if (open) fetchActivities();
+  }, [open]);
 
   return <Modal open={open} onCancel={cancel} onOk={cancel}>
     <div className='activity_log_modal'>
