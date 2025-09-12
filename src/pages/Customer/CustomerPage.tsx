@@ -11,6 +11,7 @@ import CustomerUpdateModal from "@/pages/Customer/components/CustomerUpdateModal
 import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
 import Permission from "@/layout/Permission/Permission.tsx";
 import { Button } from "antd";
+import CustomerDeleteModal from "@/pages/Customer/components/CustomerDeleteModal/CustomerDeleteModal.tsx";
 
 const CustomerPage = () => {
   const {
@@ -28,7 +29,9 @@ const CustomerPage = () => {
     createCustomer, updateCustomer,
 
     cancelCreateCustomerModal, cancelUpdateCustomerModal,
-    openCreateCustomerModal, openUpdateCustomerModal
+    openCreateCustomerModal, openUpdateCustomerModal,
+
+    cancelDeleteCustomerModal, deleteCustomer, isDeleteModalOpen, openDeleteCustomerModal,
   } = getCustomerFunctions();
 
   const { fetchMyself, user } = getAuthFunctions();
@@ -39,15 +42,19 @@ const CustomerPage = () => {
   }, []);
 
   const customersTableActions = (
-    <div>
-      <Permission user_permission={user.permissions} permission="update_customers">
-        {selectedCustomer && (
-          <Button onClick={openUpdateCustomerModal}>Update the customer</Button>
-        )}
-      </Permission>
-
+    <div className='customer_page_actions'>
+      {
+        selectedCustomer && <Permission user_permission={user.permissions} permission="delete_customers">
+              <Button onClick={openDeleteCustomerModal} color='danger' variant='solid'>Delete the customer</Button>
+          </Permission>
+      }
+      {
+        selectedCustomer && <Permission user_permission={user.permissions} permission="update_customers">
+              <Button onClick={openUpdateCustomerModal} color='orange' variant='solid'>Update the customer</Button>
+          </Permission>
+      }
       <Permission user_permission={user.permissions} permission="create_customers">
-        <Button onClick={openCreateCustomerModal}>Create customer</Button>
+        <Button onClick={openCreateCustomerModal} type='primary' variant='solid'>Create customer</Button>
       </Permission>
     </div>
   );
@@ -64,6 +71,7 @@ const CustomerPage = () => {
     <CustomerCreateModal open={isCreateModalOpen} submit={createCustomer} cancel={cancelCreateCustomerModal}/>
     <CustomerUpdateModal open={isUpdateModalOpen} submit={updateCustomer} cancel={cancelUpdateCustomerModal}
                          selectedCustomer={selectedCustomer}/>
+    <CustomerDeleteModal open={isDeleteModalOpen} cancel={cancelDeleteCustomerModal} submit={deleteCustomer}/>
   </Page>
 }
 

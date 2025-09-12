@@ -6,4 +6,10 @@
   padding: 20px;
 
   flex: 1;
+
+  &_actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 }

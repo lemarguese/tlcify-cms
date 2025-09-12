@@ -1,12 +1,13 @@
 import { useCallback, useState } from "react";
 import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 
-import type { DriverVehicleLicenseInfo, IDriver, IDriverCreate } from "@/types/driver/main.ts";
+import type { DriverVehicleLicenseInfo, IDriver, IDriverCreate, IDriverUpdate } from "@/types/driver/main.ts";
 import { instance } from "@/api/axios.ts";
 import { Dayjs } from "dayjs";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 import lodash from "lodash";
 import type { AxiosResponse } from "axios";
+import type { TableRowSelection } from "antd/es/table/interface";
 
 export const newDriverFormInitialState: IDriverCreate = {
   customer: '',
@@ -28,6 +29,20 @@ export const newDriverFormInitialState: IDriverCreate = {
 export const getDriverFunctions = (customerId?: string) => {
   const { success, error } = useNotify()
   const [isDriverCreateModalOpen, setIsDriverCreateModalOpen] = useState(false);
+  const [isDriverUpdateModalOpen, setIsDriverUpdateModalOpen] = useState(false);
+  const [isDriverDeleteModalOpen, setIsDriverDeleteModalOpen] = useState(false);
+
+  const [selectedDriver, setSelectedDriver] = useState<IDriver>()
+
+  const [driversSelection] = useState<TableRowSelection>({
+    onSelect: (_, _s, multipleRows) => {
+      const isMultipleSelected = multipleRows.length > 1;
+      const [rowSelectedCustomer] = multipleRows as IDriver[];
+
+      setSelectedDriver(!isMultipleSelected ? rowSelectedCustomer : undefined);
+    },
+  });
+
   const [drivers, setDrivers] = useState<IDriver[]>([]);
 
   const fetchDrivers = useCallback(async () => {
@@ -46,6 +61,39 @@ export const getDriverFunctions = (customerId?: string) => {
     }
   }, [customerId]);
 
+  const updateDriver = useCallback(async (updateDriverForm: IDriverUpdate) => {
+    try {
+      const touchedFormFields: { [k: string]: unknown } = {};
+
+      Object.entries(updateDriverForm).forEach(([key, value]) => {
+        if (selectedDriver) {
+          if (selectedDriver[key as keyof IDriver] !== updateDriverForm[key as keyof IDriverUpdate]) {
+            touchedFormFields[key] = value;
+          }
+        }
+      });
+
+      await instance.patch('/driver', touchedFormFields);
+      success('Driver was successfully updated!');
+    } catch (e) {
+      error('There is a problem with driver update. Try again.');
+    } finally {
+      await cancelUpdateModal();
+      await fetchDrivers();
+    }
+  }, [selectedDriver]);
+
+  const deleteDriver = useCallback(async () => {
+    try {
+      await instance.delete(`/driver/${selectedDriver!._id}`);
+      success('Driver was successfully deleted!');
+      await fetchDrivers();
+    } catch (e) {
+      error('There is a problem with driver deletion. Try again.');
+    }
+    await cancelDriverDeleteModal();
+  }, [selectedDriver]);
+
   const cancelDriverModal = useCallback(async () => {
     setIsDriverCreateModalOpen(false);
     await fetchDrivers();
@@ -53,12 +101,33 @@ export const getDriverFunctions = (customerId?: string) => {
 
   const openDriverModal = useCallback(() => {
     setIsDriverCreateModalOpen(true);
+  }, []);
+
+  const openUpdateModal = useCallback(() => {
+    setIsDriverUpdateModalOpen(true);
+  }, [])
+
+  const cancelUpdateModal = useCallback(() => {
+    setIsDriverUpdateModalOpen(false);
+  }, []);
+
+  const openDriverDeleteModal = useCallback(() => {
+    setIsDriverDeleteModalOpen(true);
+  }, []);
+
+  const cancelDriverDeleteModal = useCallback(() => {
+    setIsDriverDeleteModalOpen(false);
   }, [])
 
   return {
     isDriverCreateModalOpen,
     drivers, fetchDrivers,
     cancelDriverModal, createDriver,
+
+    cancelUpdateModal, openUpdateModal, isDriverUpdateModalOpen,
+    driversSelection, updateDriver, selectedDriver,
+
+    cancelDriverDeleteModal, openDriverDeleteModal, isDriverDeleteModalOpen, deleteDriver,
 
     openDriverModal
   }

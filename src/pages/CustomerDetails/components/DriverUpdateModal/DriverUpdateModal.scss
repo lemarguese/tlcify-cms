@@ -1,0 +1,21 @@
+.driver_update_modal {
+  padding-top: 16px;
+
+  &_container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  &_horizontal {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &_vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

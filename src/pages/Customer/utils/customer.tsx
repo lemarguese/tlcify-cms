@@ -74,6 +74,7 @@ export const getCustomerFunctions = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [customers, setCustomers] = useState<ICustomer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<ICustomer>();
@@ -127,11 +128,21 @@ export const getCustomerFunctions = () => {
     }
   }, [selectedCustomer]);
 
+  const deleteCustomer = useCallback(async () => {
+    try {
+      await instance.delete(`/customer/${selectedCustomer!._id}`);
+      success('Customer was successfully deleted!');
+      await fetchCustomers();
+    } catch (e) {
+      error('There is a problem with customer deletion. Try again.');
+    }
+    await cancelDeleteCustomerModal();
+  }, [selectedCustomer]);
+
   const fetchCustomers = async (query?: string) => {
     const all = await instance.get('/customer', { params: { search: query } });
     setCustomers(all.data);
   }
-
 
   const handleSearchQuery = useCallback((value: BaseSyntheticEvent) => {
     setSearchQuery(value ? value.target.value : undefined);
@@ -157,6 +168,14 @@ export const getCustomerFunctions = () => {
     setIsUpdateModalOpen(false)
   }
 
+  const cancelDeleteCustomerModal = () => {
+    setIsDeleteModalOpen(false);
+  }
+
+  const openDeleteCustomerModal = () => {
+    setIsUpdateModalOpen(true)
+  }
+
   return {
     isCreateModalOpen, isUpdateModalOpen, customers, fetchCustomers,
     handleSearchQuery,
@@ -165,6 +184,8 @@ export const getCustomerFunctions = () => {
 
     createCustomer, updateCustomer,
     cancelCreateCustomerModal, cancelUpdateCustomerModal, selectedCustomer,
+
+    openDeleteCustomerModal, cancelDeleteCustomerModal, isDeleteModalOpen, deleteCustomer,
 
     openCreateCustomerModal, openUpdateCustomerModal
   }

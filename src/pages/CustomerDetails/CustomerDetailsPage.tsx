@@ -32,6 +32,8 @@ import { SendOutlined } from "@ant-design/icons";
 import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
 import Permission from "@/layout/Permission/Permission.tsx";
 import ActivityLogModal from "@/pages/CustomerDetails/components/ActivityLogModal/ActivityLogModal.tsx";
+import DriverUpdateModal from "@/pages/CustomerDetails/components/DriverUpdateModal/DriverUpdateModal.tsx";
+import DriverDeleteModal from "@/pages/CustomerDetails/components/DriverDeleteModal/DriverDeleteModal.tsx";
 
 const CustomerDetailsPage = () => {
 
@@ -46,7 +48,12 @@ const CustomerDetailsPage = () => {
     cancelDriverModal,
     createDriver,
     isDriverCreateModalOpen,
-    openDriverModal
+    openDriverModal,
+
+    openUpdateModal, isDriverUpdateModalOpen, cancelUpdateModal,
+    driversSelection, selectedDriver, updateDriver,
+
+    deleteDriver, openDriverDeleteModal, cancelDriverDeleteModal, isDriverDeleteModalOpen
   } = getDriverFunctions(customerId);
 
   const {
@@ -106,7 +113,17 @@ const CustomerDetailsPage = () => {
     fetchMyself();
   }, []);
 
-  const addNewDriverButton = <div>
+  const driversActions = <div className='customer_details_page_actions'>
+    {
+      selectedDriver && <Permission permission='delete_driver' user_permission={user.permissions}>
+            <Button variant='solid' type='primary' color='danger' onClick={openDriverDeleteModal}>Delete Driver</Button>
+        </Permission>
+    }
+    {selectedDriver &&
+        <Permission permission='update_driver' user_permission={user.permissions}>
+            <Button variant='solid' type='primary' color='geekblue' onClick={openUpdateModal}>Update Driver</Button>
+        </Permission>
+    }
     <Permission permission='create_driver' user_permission={user.permissions}>
       <Button onClick={openDriverModal}>Create Driver</Button>
     </Permission>
@@ -122,7 +139,7 @@ const CustomerDetailsPage = () => {
   const policiesActionButton = <div className='customer_details_page_actions'>
     <Permission permission='delete_policy' user_permission={user.permissions}>
       {selectedPolicy &&
-          <Button variant='outlined' color={'danger'} onClick={openDeletePolicyModal}>Delete the
+          <Button variant='outlined' color='danger' onClick={openDeletePolicyModal}>Delete the
               policy</Button>}
     </Permission>
     <Permission permission='update_policy' user_permission={user.permissions}>
@@ -133,7 +150,7 @@ const CustomerDetailsPage = () => {
           payment</Button>}
     </Permission>
     <Permission permission='create_policy' user_permission={user.permissions}>
-      <Button variant='outlined' color={'geekblue'} onClick={openCreatePolicyModal}>Add policy</Button>
+      <Button variant='outlined' color='geekblue' onClick={openCreatePolicyModal}>Add policy</Button>
     </Permission>
     <Permission permission='send_invoices' user_permission={user.permissions}>
       <Button variant='solid' color='green' icon={<SendOutlined/>} onClick={openInvoiceCreateModal}>Send
@@ -186,11 +203,15 @@ const CustomerDetailsPage = () => {
           navigate(`policy/${item._id}`);
         },
       })}/>
-      <Table label='Drivers' rowKey='_id' actions={addNewDriverButton} columns={customerTableHeaders}
+      <Table label='Drivers' rowKey='_id' rowSelection={driversSelection} actions={driversActions}
+             columns={customerTableHeaders}
              dataSource={drivers}/>
     </div>
     <DriverCreateModal cancel={cancelDriverModal}
                        open={isDriverCreateModalOpen} submit={createDriver}/>
+    <DriverUpdateModal selectedDriver={selectedDriver} open={isDriverUpdateModalOpen} submit={updateDriver}
+                       cancel={cancelUpdateModal}/>
+    <DriverDeleteModal open={isDriverDeleteModalOpen} cancel={cancelDriverDeleteModal} submit={deleteDriver}/>
     <PolicyCreateModal open={isPolicyCreateModalOpen} cancel={cancelCreatePolicyModal}
                        submit={createPolicy} {...commonPolicyFunctions} />
     <PolicyUpdateModal open={isPolicyUpdateModalOpen} cancel={cancelUpdatePolicyModal} submit={updatePolicy}
