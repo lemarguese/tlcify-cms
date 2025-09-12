@@ -44,7 +44,7 @@ const TransactionsPage = ({}) => {
     <div className='transactions_page'>
       <div className='transactions_page_header'>
         <div className='transactions_page_header_filter'>
-          <div>
+          <div className='transactions_page_header_filter_container'>
             <div className='transactions_page_header_filter_items'>
               <Selector label='Insurance Carrier' onChange={changeQuerySelector('insuranceCarrier')}
                         value={query?.insuranceCarrier} options={selectorInsuranceOptions}/>

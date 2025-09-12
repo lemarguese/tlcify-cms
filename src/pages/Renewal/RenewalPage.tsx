@@ -6,7 +6,13 @@ import { getRenewalsFunction, renewalTableHeaders } from "@/pages/Renewal/utils/
 import { useEffect } from "react";
 
 const RenewalPage = () => {
-  const { fetchRenewalsOfCustomers, renewals, actions, renewalsFilters } = getRenewalsFunction();
+  const {
+    fetchRenewalsOfCustomers,
+    navigateToCustomerDetails,
+    renewals,
+    actions,
+    renewalsFilters
+  } = getRenewalsFunction();
 
   useEffect(() => {
     fetchRenewalsOfCustomers(renewalsFilters);
@@ -14,7 +20,13 @@ const RenewalPage = () => {
 
   return <Page title='Renewals' showSearch>
     <div className='renewals_page'>
-      <Table label='Renewals' actions={actions} columns={renewalTableHeaders} dataSource={renewals}/>
+      <Table label='Renewals' actions={actions} onRow={(item) => {
+        return {
+          onClick: () => {
+            navigateToCustomerDetails(item._id)
+          }
+        }
+      }} columns={renewalTableHeaders} dataSource={renewals}/>
     </div>
   </Page>
 }

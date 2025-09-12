@@ -25,6 +25,12 @@
 
       border-radius: 8px;
 
+      &_container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
       &_items {
         display: flex;
         align-items: center;
