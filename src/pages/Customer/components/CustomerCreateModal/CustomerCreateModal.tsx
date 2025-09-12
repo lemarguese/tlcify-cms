@@ -61,16 +61,16 @@ const CustomerCreateModal = ({ cancel, open, submit }: CustomerCreateModalProps)
                }}/>
       </div>
       <div className='customer_create_modal_horizontal'>
-        <Input placeholder={'First name'} value={newCustomerForm.firstName} required
+        <Input placeholder={'First name'} value={newCustomerForm.firstName ?? ''} required
                onChange={changeCustomerFormData('firstName', setNewCustomerForm)} label={'First Name'}/>
-        <Input placeholder={'Last name'} value={newCustomerForm.lastName}
+        <Input placeholder={'Last name'} value={newCustomerForm.lastName ?? ''}
                onChange={changeCustomerFormData('lastName', setNewCustomerForm)} label={'Last Name'}/>
         <DatePicker label='Date of birth' required
                     value={newCustomerForm.dateOfBirth ? dayjs(newCustomerForm.dateOfBirth) : undefined}
                     onChange={changeCustomerFormTime('dateOfBirth', setNewCustomerForm)}/>
       </div>
       <div className='customer_create_modal_horizontal'>
-        <Input placeholder={'Corporation name'} value={newCustomerForm.corporationName}
+        <Input placeholder={'Corporation name'} value={newCustomerForm.corporationName ?? ''}
                onChange={changeCustomerFormData('corporationName', setNewCustomerForm)} label={'Corporation Name'}/>
       </div>
       <div className='customer_create_modal_horizontal'>

@@ -52,7 +52,7 @@ const TransactionsPage = ({}) => {
                         value={query?.paymentMethod}
                         options={transactionsFilterSelectionOptions}/>
             </div>
-            <Range label='Report Date Range' onChange={changeQueryDate}/>
+            <Range label='Report Date Range' onChange={changeQueryDate} allowClear={false}/>
           </div>
           <div className='transactions_page_header_filter_submit'>
             <Button variant='solid' type='primary' onClick={fetchAllPayments}>Apply filters</Button>
@@ -62,7 +62,7 @@ const TransactionsPage = ({}) => {
         <div className='transactions_page_header_reports'>
           <Table columns={transactionsReportsTableHeaders} actions={<></>} dataSource={reportsData}
                  label='Reports by payment method' pagination={false} footer={
-            (data) => <div className='transactions_page_header_reports_footer'>
+            (_) => <div className='transactions_page_header_reports_footer'>
               <label>GRAND TOTAL: </label>
               <div className='transactions_page_header_reports_footer_list'>
                 <p>{formatCurrency(grandTotal.totalPrice)}</p>

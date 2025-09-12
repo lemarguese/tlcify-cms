@@ -44,7 +44,7 @@ const CustomerDetailProfile: FC<CustomerDetailProfileProps> = ({
         </div>
       </div>
       <div className='customer_details_page_profile_footer_section'>
-        <Permission permission={['read_audit_logs']} user_permission={user_permission}>
+        <Permission permission={'read_audit_logs'} user_permission={user_permission}>
           <Button variant='solid' onClick={showActivity} type='primary'>Show activity logs</Button>
         </Permission>
       </div>

@@ -27,7 +27,8 @@ const AnalyticsPage = () => {
     fetchExpiringPolicies,
     changeFrequency,
     fetchCoveredCustomers,
-    coveredCustomers
+    coveredCustomers,
+    customersSelection
   } = getAnalyticsFunctions()
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const AnalyticsPage = () => {
     fetchCoveredCustomers(dayjs())
   }, []);
 
-  return <Page title='Analytics'>
+  return <Page>
     <div className='analytics_page'>
       <div className='analytics_page_kpis'>
         <Card variant="borderless" className='analytics_page_kpis_card'>
@@ -101,7 +102,7 @@ const AnalyticsPage = () => {
       <div className='analytics_page_tables'>
         <Table actions={<div>
           <Date label='Due Date' onChange={fetchCoveredCustomers}/>
-        </div>} label='Fully due amount covered customers' dataSource={coveredCustomers}
+        </div>} rowSelection={customersSelection} rowKey='customerName' label='Fully due amount covered customers' dataSource={coveredCustomers}
                columns={fullyCoveredDueAmountCustomersTableHeaders}/>
       </div>
       <div className='analytics_page_tables'>

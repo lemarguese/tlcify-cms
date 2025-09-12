@@ -5,6 +5,7 @@ import dayjs, { Dayjs } from "dayjs";
 import type { IPolicy } from "@/types/policy/main.ts";
 import type { RadioChangeEvent } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import type { TableRowSelection } from "antd/es/table/interface";
 
 export const soonestExpiringPoliciesTableHeaders = [
   {
@@ -82,6 +83,15 @@ export const getAnalyticsFunctions = () => {
   const [expiringPolicies, setExpiringPolicies] = useState<IPolicy[]>([]);
   const [coveredCustomers, setCoveredCustomers] = useState([]);
 
+  const [customersSelection] = useState<TableRowSelection>({
+    onSelect: (_, _s) => {
+      // const _ = multipleRows.length > 1;
+      // const [_] = multipleRows as ICustomer[];
+
+      // setSelectedCustomer(!isMultipleSelected ? rowSelectedCustomer : undefined);
+    },
+  });
+
   const fetchKpis = async () => {
     const response = await instance.get('/analytics/kpis');
     setKpis(response.data)
@@ -120,7 +130,9 @@ export const getAnalyticsFunctions = () => {
     revenueByFrequency, fetchRevenueByFrequency,
     frequency, changeFrequency,
     expiringPolicies, fetchExpiringPolicies,
-    fetchCoveredCustomers, coveredCustomers
+    fetchCoveredCustomers, coveredCustomers,
+
+    customersSelection
   }
 }
 

@@ -38,7 +38,6 @@ const CustomerUpdateModal = ({ cancel, open, selectedCustomer, submit }: Custome
 
   const validForm = useMemo(() => {
     const options = {
-      firstNameValid: !!updateCustomerForm.firstName.trim(),
       phoneNumberValid: !!updateCustomerForm.phoneNumber.trim(),
       addressValid: !!updateCustomerForm.address.trim(),
       emailValid: !!updateCustomerForm.email.trim(),
@@ -70,9 +69,9 @@ const CustomerUpdateModal = ({ cancel, open, selectedCustomer, submit }: Custome
                }}/>
       </div>
       <div className='customer_update_modal_horizontal'>
-        <Input placeholder={'First name'} value={updateCustomerForm.firstName} required
+        <Input placeholder={'First name'} value={updateCustomerForm.firstName ?? ''} required
                onChange={changeCustomerFormData('firstName', setUpdateCustomerForm)} label={'First Name'}/>
-        <Input placeholder={'Last name'} value={updateCustomerForm.lastName}
+        <Input placeholder={'Last name'} value={updateCustomerForm.lastName ?? ''}
                onChange={changeCustomerFormData('lastName', setUpdateCustomerForm)} label={'Last Name'}/>
         <DatePicker label='Date of birth' required
                     value={updateCustomerForm.dateOfBirth ? dayjs(updateCustomerForm.dateOfBirth) : undefined}

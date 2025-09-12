@@ -1,5 +1,5 @@
 import type { ColumnsType } from "antd/es/table";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useCallback, useMemo, useState } from "react";
 import type { IPayment, IPaymentQuery } from "@/types/transactions/main.ts";
 import { instance } from "@/api/axios.ts";
@@ -120,14 +120,14 @@ export const getTransactionFunctions = () => {
         [key]: val
       }))
     }
-  }, [])
+  }, []);
 
-  const changeQueryDate = useCallback((val: Dayjs[]) => {
-    const [fromDate, toDate] = val;
+  // todo any
+  const changeQueryDate = useCallback((val: any[] | null) => {
     setQuery(prev => ({
       ...prev,
-      fromDate: fromDate.toDate(),
-      toDate: toDate.toDate()
+      fromDate: val ? val[0].toDate() : undefined,
+      toDate: val ? val[1].toDate() : undefined
     }))
   }, []);
 
@@ -163,6 +163,7 @@ export const getTransactionFunctions = () => {
       totalPremiumPrice: 0
     })
 
+    // todo any
     return {
       grandTotal,
       reportsData: Object.values(
@@ -179,7 +180,7 @@ export const getTransactionFunctions = () => {
           acc[cur.paymentType].premiumPrice += cur.premiumPrice;
           acc[cur.paymentType].totalPrice += cur.totalPrice;
           return acc;
-        }, {}))
+        }, {} as any)) as any[]
     }
   }, [payments])
 

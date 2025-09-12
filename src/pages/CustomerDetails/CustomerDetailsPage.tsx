@@ -32,7 +32,6 @@ import { SendOutlined } from "@ant-design/icons";
 import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
 import Permission from "@/layout/Permission/Permission.tsx";
 import ActivityLogModal from "@/pages/CustomerDetails/components/ActivityLogModal/ActivityLogModal.tsx";
-import { getAuditLogsFunction } from "@/pages/CustomerDetails/utils/audit_log.tsx";
 
 const CustomerDetailsPage = () => {
 
@@ -204,7 +203,8 @@ const CustomerDetailsPage = () => {
     <InvoiceCreateModal open={isInvoiceConfirmModalOpen} cancel={cancelInvoiceCreateModal}
                         submit={() => createInvoice(navigate)}
     />
-    <ActivityLogModal open={isActivityLogsOpen} cancel={cancelActivityModal} customerId={customerId}/>
+    <ActivityLogModal open={isActivityLogsOpen} cancel={cancelActivityModal} customer={customerById}
+                      customerId={customerId}/>
   </Page>
 }
 

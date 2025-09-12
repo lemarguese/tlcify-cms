@@ -1,5 +1,8 @@
 export interface IAuditLog {
-  user: string;
+  user: {
+    _id: string;
+    email: string;
+  };
   action: string;
   model: string;
   documentId: string;
