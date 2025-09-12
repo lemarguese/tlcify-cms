@@ -1,5 +1,64 @@
 .transactions_page {
-  &_container {
-    padding: 24px;
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &_header {
+    display: flex;
+    align-items: stretch;
+    gap: 24px;
+
+    &_filter {
+      padding: 24px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+
+      flex: 1;
+
+      background-color: #FFF;
+      border: 1px solid #FAFAFA;
+
+      border-radius: 8px;
+
+      &_items {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      &_submit {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        align-self: end;
+      }
+
+    }
+
+    &_reports {
+      flex: 1;
+
+      &_footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &_list {
+          flex: 1;
+
+          display: flex;
+          align-items: center;
+          justify-content: space-evenly;
+          gap: 8px;
+        }
+      }
+    }
   }
+
 }

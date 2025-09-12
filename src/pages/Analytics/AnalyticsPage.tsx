@@ -6,14 +6,15 @@ import Card from "@/components/Card/Card.tsx";
 import { ArrowUpOutlined } from '@ant-design/icons';
 import { ResponsiveLine } from '@nivo/line';
 import {
-  frequencyRadioOptions,
+  frequencyRadioOptions, fullyCoveredDueAmountCustomersTableHeaders,
   getAnalyticsFunctions,
   soonestExpiringPoliciesTableHeaders
 } from "@/pages/Analytics/utils/analytics.tsx";
 import Table from "@/components/Table/Table.tsx";
 import { useEffect } from "react";
 import Radio from "@/components/Radio/Radio.tsx";
-
+import dayjs from "dayjs";
+import Date from "@/components/Date/Date.tsx";
 
 const AnalyticsPage = () => {
   const {
@@ -24,7 +25,9 @@ const AnalyticsPage = () => {
     frequency,
     expiringPolicies,
     fetchExpiringPolicies,
-    changeFrequency
+    changeFrequency,
+    fetchCoveredCustomers,
+    coveredCustomers
   } = getAnalyticsFunctions()
 
   useEffect(() => {
@@ -34,7 +37,8 @@ const AnalyticsPage = () => {
   useEffect(() => {
     fetchKpis();
     fetchExpiringPolicies()
-  }, [])
+    fetchCoveredCustomers(dayjs())
+  }, []);
 
   return <Page title='Analytics'>
     <div className='analytics_page'>
@@ -43,8 +47,7 @@ const AnalyticsPage = () => {
           <Statistic className='analytics_page_kpis_card_item' value={kpis.totalRevenue} prefix={<div>
             <ArrowUpOutlined/>
             $
-          </div>}
-                     valueStyle={{ color: '#3f8600' }} title='Total Revenue'/>
+          </div>} valueStyle={{ color: '#3f8600' }} title='Total Revenue'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
           <Statistic className='analytics_page_kpis_card_item' valueStyle={{ color: '#3f8600' }}
@@ -80,7 +83,8 @@ const AnalyticsPage = () => {
         <div className='analytics_page_kpis_charts_revenue'>
           <div className='analytics_page_kpis_charts_revenue_header'>
             <label className='analytics_page_kpis_charts_revenue_header_title'>Revenue by Month</label>
-            <Radio label='' buttonStyle='solid' block optionType='button' options={frequencyRadioOptions} onChange={changeFrequency} value={frequency}/>
+            <Radio label='' buttonStyle='solid' block optionType='button' options={frequencyRadioOptions}
+                   onChange={changeFrequency} value={frequency}/>
           </div>
           <ResponsiveLine
             data={revenueByFrequency}
@@ -93,6 +97,12 @@ const AnalyticsPage = () => {
             enableSlices="x"
           />
         </div>
+      </div>
+      <div className='analytics_page_tables'>
+        <Table actions={<div>
+          <Date label='Due Date' onChange={fetchCoveredCustomers}/>
+        </div>} label='Fully due amount covered customers' dataSource={coveredCustomers}
+               columns={fullyCoveredDueAmountCustomersTableHeaders}/>
       </div>
       <div className='analytics_page_tables'>
         <Table actions={<></>} label='Soonest expiring policies' dataSource={expiringPolicies}

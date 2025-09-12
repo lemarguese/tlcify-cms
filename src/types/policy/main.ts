@@ -48,7 +48,7 @@ export interface IPolicyCycle {
   cycle: number,
   dueDate: Date,
   baseAmount: number,
-  fees: number,
+  fees: IPolicyFee[],
   totalPaid: number,
   carryOver: number,
   totalDue: number,

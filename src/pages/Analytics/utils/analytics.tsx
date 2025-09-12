@@ -1,9 +1,10 @@
 import { useCallback, useState } from "react";
 import type { IAnalyticsFrequency, IAnalyticsKpi, IAnalyticsRevenueByFrequency } from "@/types/analytics/main.ts";
 import { instance } from "@/api/axios.ts";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import type { IPolicy } from "@/types/policy/main.ts";
 import type { RadioChangeEvent } from "antd";
+import type { ColumnsType } from "antd/es/table";
 
 export const soonestExpiringPoliciesTableHeaders = [
   {
@@ -30,6 +31,42 @@ export const soonestExpiringPoliciesTableHeaders = [
   },
 ];
 
+export const fullyCoveredDueAmountCustomersTableHeaders: ColumnsType = [
+  {
+    title: 'Customer Name',
+    dataIndex: 'customerName',
+    key: 'customerName',
+  },
+  {
+    title: 'Policy Number',
+    dataIndex: 'policyNumber',
+    key: 'policyNumber',
+  },
+  {
+    title: 'Due date',
+    dataIndex: 'dueDate',
+    key: 'dueDate',
+    render: (item) => dayjs(item).format('MM/DD/YYYY')
+  },
+  {
+    title: 'Paid due amount',
+    dataIndex: 'paidDueAmount',
+    key: 'paidDueAmount',
+  },
+  {
+    title: 'Policy Effective Date',
+    dataIndex: 'effectiveDate',
+    key: 'effectiveDate',
+    render: (item) => dayjs(item).format('MM/DD/YYYY')
+  },
+  {
+    title: 'Policy Expiration Date',
+    dataIndex: 'expirationDate',
+    key: 'expirationDate',
+    render: (item) => dayjs(item).format('MM/DD/YYYY')
+  }
+]
+
 const analyticsKpisInitialState: IAnalyticsKpi = {
   totalFees: 0,
   activePoliciesCount: 0,
@@ -43,6 +80,7 @@ export const getAnalyticsFunctions = () => {
   const [revenueByFrequency, setRevenueByFrequency] = useState<IAnalyticsRevenueByFrequency[]>([]);
   const [frequency, setFrequency] = useState<IAnalyticsFrequency>('daily');
   const [expiringPolicies, setExpiringPolicies] = useState<IPolicy[]>([]);
+  const [coveredCustomers, setCoveredCustomers] = useState([]);
 
   const fetchKpis = async () => {
     const response = await instance.get('/analytics/kpis');
@@ -63,6 +101,16 @@ export const getAnalyticsFunctions = () => {
     setExpiringPolicies(response.data);
   }
 
+  const fetchCoveredCustomers = async (dueDate: Dayjs) => {
+    const response = await instance.get('/analytics/covered-customers', {
+      params: {
+        dueDate: dueDate.toDate()
+      }
+    });
+
+    setCoveredCustomers(response.data);
+  }
+
   const changeFrequency = useCallback((e: RadioChangeEvent) => {
     setFrequency(e.target.value)
   }, [])
@@ -71,7 +119,8 @@ export const getAnalyticsFunctions = () => {
     kpis, fetchKpis,
     revenueByFrequency, fetchRevenueByFrequency,
     frequency, changeFrequency,
-    expiringPolicies, fetchExpiringPolicies
+    expiringPolicies, fetchExpiringPolicies,
+    fetchCoveredCustomers, coveredCustomers
   }
 }
 

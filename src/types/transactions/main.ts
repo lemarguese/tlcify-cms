@@ -22,3 +22,10 @@ export interface IPaymentCreate extends Pick<IPayment, 'method' | 'paidAt' | 'no
   policyId: string;
   paidAt?: Date
 }
+
+export interface IPaymentQuery {
+  insuranceCarrier?: string;
+  fromDate?: Date;
+  toDate?: Date;
+  paymentMethod?: string;
+}
