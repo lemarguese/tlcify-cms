@@ -77,6 +77,10 @@ const CustomerUpdateModal = ({ cancel, open, selectedCustomer, submit }: Custome
                     value={updateCustomerForm.dateOfBirth ? dayjs(updateCustomerForm.dateOfBirth) : undefined}
                     onChange={changeCustomerFormTime('dateOfBirth', setUpdateCustomerForm)}/>
       </div>
+      <div className='customer_create_modal_horizontal'>
+        <Input placeholder={'Corporation name'} value={updateCustomerForm.corporationName ?? ''}
+               onChange={changeCustomerFormData('corporationName', setUpdateCustomerForm)} label={'Corporation Name'}/>
+      </div>
       <div className='customer_update_modal_horizontal'>
         <Input placeholder={'Phone number'} value={updateCustomerForm.phoneNumber} required
                onChange={changeCustomerFormData('phoneNumber', setUpdateCustomerForm)} addonBefore={'+1'}

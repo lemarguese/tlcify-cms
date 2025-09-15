@@ -3,11 +3,52 @@ import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react';
 
 import type { DriverVehicleLicenseInfo, IDriver, IDriverCreate, IDriverUpdate } from "@/types/driver/main.ts";
 import { instance } from "@/api/axios.ts";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 import lodash from "lodash";
 import type { AxiosResponse } from "axios";
 import type { TableRowSelection } from "antd/es/table/interface";
+import type { ColumnsType } from "antd/es/table";
+import { Tag } from "antd";
+
+export const driversTableHeaders: ColumnsType = [
+  {
+    title: "Name",
+    dataIndex: "fullName",
+    key: "fullName",
+    render: (_, record) => record.firstName && record.lastName ? `${record.firstName} ${record.lastName}` : record.corporationName,
+  },
+  { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
+  { title: "Address", dataIndex: "address", key: "address" },
+  { title: "TCL Number", dataIndex: "tlcNumber", key: "tlcFhvNumber" },
+  {
+    title: "TLC Expiration.",
+    dataIndex: "tlcExp",
+    key: "tlcExp",
+    render: (value) => dayjs(value).format('MM/DD/YYYY'),
+    sorter: (a, b) => a.tlcExp.valueOf() - b.tlcExp.valueOf()
+  },
+  { title: "DL Number", dataIndex: "driverLicenseNumber", key: "driverLicenseNumber" },
+  {
+    title: "DL Expiration.",
+    dataIndex: "driverLicenseExp",
+    key: "driverLicenseExp",
+    render: (value) => dayjs(value).format('MM/DD/YYYY'),
+    sorter: (a, b) => a.driverLicenseExp.valueOf() - b.driverLicenseExp.valueOf()
+  },
+  {
+    title: "DDC Expiration.",
+    dataIndex: "defensiveDriverCourseExp",
+    key: "defensiveDriverCourseExp",
+    render: (value) => dayjs(value).format('MM/DD/YYYY'),
+    sorter: (a, b) => new Date(a.defensiveDriverCourseExp).valueOf() - new Date(b.defensiveDriverCourseExp).valueOf()
+  },
+  {
+    title: "Status", dataIndex: "status", key: "status", render: () => <>
+      <Tag color={'green'}>Active</Tag>
+    </>,
+  }
+];
 
 export const newDriverFormInitialState: IDriverCreate = {
   customer: '',

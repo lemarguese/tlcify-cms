@@ -173,7 +173,7 @@ export const getCustomerFunctions = () => {
   }
 
   const openDeleteCustomerModal = () => {
-    setIsUpdateModalOpen(true)
+    setIsDeleteModalOpen(true)
   }
 
   return {

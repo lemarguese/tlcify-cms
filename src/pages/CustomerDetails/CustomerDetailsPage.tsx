@@ -2,7 +2,6 @@ import './CustomerDetailsPage.scss';
 
 import Page from '../../layout/Page/Page.tsx';
 import Table from "../../components/Table/Table.tsx";
-import { customerTableHeaders } from "../Customer/utils/customer.tsx";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -17,7 +16,7 @@ import {
 } from "@/pages/CustomerDetails/utils/policy.tsx";
 import DriverCreateModal from "@/pages/CustomerDetails/components/DriverCreateModal/DriverCreateModal.tsx";
 import PolicyCreateModal from "@/pages/CustomerDetails/components/PolicyCreateModal/PolicyCreateModal.tsx";
-import { getDriverFunctions } from "@/pages/CustomerDetails/utils/driver.tsx";
+import { driversTableHeaders, getDriverFunctions } from "@/pages/CustomerDetails/utils/driver.tsx";
 import PolicyUpdateModal from "@/pages/CustomerDetails/components/PolicyUpdateModal/PolicyUpdateModal.tsx";
 import PolicyDeleteModal from "@/pages/CustomerDetails/components/PolicyDeleteModal/PolicyDeleteModal.tsx";
 import CustomerDetailStatisticsItem
@@ -204,7 +203,7 @@ const CustomerDetailsPage = () => {
         },
       })}/>
       <Table label='Drivers' rowKey='_id' rowSelection={driversSelection} actions={driversActions}
-             columns={customerTableHeaders}
+             columns={driversTableHeaders}
              dataSource={drivers}/>
     </div>
     <DriverCreateModal cancel={cancelDriverModal}
