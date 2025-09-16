@@ -24,7 +24,7 @@ const ActivityLogModal = ({ open, cancel, customer, customerId }: ActivityLogMod
       <label className='activity_log_modal_label'>Activities
         on {customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : customer.corporationName}</label>
       {activities.map(act => <div>
-        {dayjs(act.createdAt).format('MM/DD/YYYY hh:mm:ss')}: {act.message} by {act.user.email}
+        {dayjs(act.createdAt).format('MM/DD/YYYY HH:mm:ss')}: {act.message} by {act.user.email}
       </div>)}
     </div>
   </Modal>
