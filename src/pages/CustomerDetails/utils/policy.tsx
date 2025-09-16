@@ -124,7 +124,10 @@ export const policyTableHeaders: ColumnsType = [
     title: "Due Date",
     dataIndex: "dueDate",
     key: "dueDate",
-    render: (value) => dayjs(value).format('MM/DD/YYYY'),
+    render: (value) => {
+      const [date] = value.split('T');
+      return dayjs(date).format('MM/DD/YYYY');
+    },
     sorter: (a, b) => a.firstName.localeCompare(b.firstName)
   },
 ];
