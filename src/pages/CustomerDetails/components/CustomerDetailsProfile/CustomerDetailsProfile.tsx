@@ -5,7 +5,7 @@ import BirthdayIcon from '@/assets/icons/birthday_icon.svg';
 import type { FC } from "react";
 import dayjs from 'dayjs';
 
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import Button from "@/components/Button/Button.tsx";
 import Permission from "@/layout/Permission/Permission.tsx";
 
@@ -53,7 +53,8 @@ const CustomerDetailProfile: FC<CustomerDetailProfileProps> = ({
                       </div>
                     </>
                     }>
-          <Button variant='solid' onClick={showActivity} type='primary'>Show activity logs</Button>
+          <Button variant='solid' onClick={showActivity} type='primary' icon={<ClockCircleOutlined/>}>Show activity
+            logs</Button>
         </Permission>
       </div>
     </div>

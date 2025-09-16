@@ -10,6 +10,7 @@ import type { TableRowSelection } from "antd/es/table/interface";
 import Button from "@/components/Button/Button.tsx";
 import type { IPayment } from "@/types/transactions/main.ts";
 import { Tag } from "antd";
+import type { IAuditLog } from "@/types/audit_log/main.ts";
 
 export const vehicleLicenseColumns: ColumnsType = [
   { title: "Vehicle License Number", dataIndex: "vehicle_license_number", key: "vehicle_license_number" },
@@ -82,6 +83,8 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
   const [paymentsByPolicy, setPaymentsByPolicy] = useState<IPayment[]>([]);
 
   const [isPolicyFeeDeleteModalOpen, setIsPolicyFeeDeleteModalOpen] = useState(false);
+  const [isPolicyActivityOpen, setIsPolicyActivityOpen] = useState(false);
+
   const [selectedPolicyFee, setSelectedPolicyFee] = useState<IPolicyFee>();
 
   const [policyFeeSelection] = useState<TableRowSelection>({
@@ -215,6 +218,14 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     setIsPolicyFeeDeleteModalOpen(false);
   }, []);
 
+  const cancelPolicyActivity = useCallback(() => {
+    setIsPolicyActivityOpen(false);
+  }, []);
+
+  const openPolicyActivity = useCallback(() => {
+    setIsPolicyActivityOpen(true)
+  }, []);
+
   return {
     fetchPolicyById, policyById,
     policyDescriptionItems,
@@ -227,6 +238,22 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
     // installments
 
-    installmentsDescriptionItems
+    installmentsDescriptionItems,
+
+    // activity
+    openPolicyActivity, cancelPolicyActivity, isPolicyActivityOpen
+  }
+}
+
+export const getPolicyActivityFunctions = (policyId?: string) => {
+  const [activities, setActivities] = useState<IAuditLog[]>([]);
+
+  const fetchPolicyActivities = async () => {
+    const response = await instance.get(`/audit/policy/${policyId}`);
+    setActivities(response.data);
+  }
+
+  return {
+    fetchPolicyActivities, activities
   }
 }

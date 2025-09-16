@@ -19,6 +19,7 @@ import Calendar from "@/components/Calendar/Calendar.tsx";
 import { useEffect } from "react";
 import PolicyFeeDeleteModal from "@/pages/PolicyDetail/components/PolicyFeeDeleteModal/PolicyFeeDeleteModal.tsx";
 import { transactionsTableHeaders } from "@/pages/Transactions/utils/transactions.tsx";
+import PolicyActivityModal from "@/pages/PolicyDetail/components/PolicyActivityModal/PolicyActivityModal.tsx";
 
 const PolicyDetailPage = () => {
   const { policyId } = useParams();
@@ -37,6 +38,8 @@ const PolicyDetailPage = () => {
     paymentsByPolicy, fetchPaymentsByPolicy,
 
     installmentsDescriptionItems,
+
+    isPolicyActivityOpen, cancelPolicyActivity, openPolicyActivity
   } = getPolicyDetailFunctions(policyId);
 
   useEffect(() => {
@@ -142,8 +145,9 @@ const PolicyDetailPage = () => {
       <div className='policy_detail_page_top'>
         <h4>Detail information of Policy No. {policyById.policyNumber}</h4>
         <div className='policy_detail_page_top_actions'>
-          <Button variant='solid' color='orange' icon={<ClockCircleOutlined/>}>Show activity</Button>
-          <Button variant='solid' color='primary'>Show policy ledger</Button>
+          <Button variant='solid' color='orange' icon={<ClockCircleOutlined/>} onClick={openPolicyActivity}>Show
+            activity</Button>
+          {/*<Button variant='solid' color='primary'>Show policy ledger</Button>*/}
           {/*<Button>Delete policy</Button>*/}
           {/*<Button>Edit policy</Button>*/}
         </div>
@@ -158,6 +162,8 @@ const PolicyDetailPage = () => {
       </div>
     </div>
     <PolicyFeeDeleteModal open={isPolicyFeeDeleteModalOpen} cancel={cancelPolicyFeeModal} submit={updatePolicyFee}/>
+    <PolicyActivityModal open={isPolicyActivityOpen} cancel={cancelPolicyActivity} policyId={policyId}
+                         policy={policyById}/>
   </Page>
 }
 
