@@ -137,7 +137,14 @@
         }
       }
 
-      &_payments {}
+      &_payments {
+
+        &_row {
+          &_void {
+            background-color: #ea8d8d;
+          }
+        }
+      }
     }
 
     &_footer {

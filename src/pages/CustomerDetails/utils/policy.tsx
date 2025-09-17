@@ -119,6 +119,7 @@ export const policyTableHeaders: ColumnsType = [
     title: "Amount Due",
     dataIndex: "amountDue",
     key: "amountDue",
+    render: (value) => value.toFixed(2)
   },
   {
     title: "Due Date",

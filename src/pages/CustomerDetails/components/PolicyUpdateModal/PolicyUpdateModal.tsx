@@ -180,6 +180,7 @@ const PolicyUpdateModal = ({
     } = newPolicyForm;
 
     const premiumPriceNet = premiumPrice - deposit;
+    const installmentCountNet = installmentCount - (deposit ? 1 : 0);
 
     const effectiveDateWrapped = dayjs(effectiveDate).startOf('day');
     const customEffectiveDateWrapper = dayjs(customEffectiveDate).startOf('day');
@@ -189,7 +190,7 @@ const PolicyUpdateModal = ({
     let installmentAmount = 0;
 
     for (let index = 0; index < +installmentCount; index++) {
-      const date = (index === 0 ? effectiveDateWrapped : customEffectiveDateWrapper);
+      const date = index === 0 ? effectiveDateWrapped : customEffectiveDate ? customEffectiveDateWrapper : effectiveDateWrapped;
       const dueDate = date.add(index, 'month');
 
       const matchingFees = fees.filter(fee => {
@@ -199,12 +200,14 @@ const PolicyUpdateModal = ({
       const matchingFeesSum = matchingFees.reduce((acc, item) => acc + Number(item.amount), 0);
       const feesWarningText = matchingFees.length ? `(${matchingFees[0].type} fee: $ ${matchingFeesSum})` : ''
 
-      installmentAmount = premiumPriceNet / +installmentCount;
+      installmentAmount = premiumPriceNet / installmentCountNet;
 
       if (+monthlyPayment) {
-        if (index === +installmentCount - 1) installmentAmount = premiumPriceNet - (+installmentCount - 1) * +monthlyPayment;
+        if (index === +installmentCount - 1) installmentAmount = premiumPriceNet - (installmentCountNet - 1) * +monthlyPayment;
         else installmentAmount = monthlyPayment;
       }
+
+      if (Boolean(deposit) && index === 0) installmentAmount = +deposit;
 
       installmentArray[index] = {
         label: date.add(index, 'month').format('Do MMMM, YYYY'),
@@ -271,7 +274,7 @@ const PolicyUpdateModal = ({
             <div className='policy_update_modal_information_horizontal'>
               <Input label='Policy number' placeholder='Ex. C813P05' required value={newPolicyForm.policyNumber}
                      onChange={changePolicyFormData('policyNumber', setNewPolicyForm)}/>
-              <Date label='Custom Effective date'
+              <Date label='Custom Due Date'
                     onChange={changePolicyFormTime('customEffectiveDate', setNewPolicyForm)}
                     value={newPolicyForm.customEffectiveDate ? dayjs(newPolicyForm.customEffectiveDate) : null}/>
             </div>

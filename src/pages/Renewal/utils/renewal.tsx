@@ -1,9 +1,7 @@
 import type { ColumnsType } from "antd/es/table";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { IRenewal, IRenewalFilter } from "@/types/renewal/main.ts";
 import { instance } from "@/api/axios.ts";
-import Date from "@/components/Date/Date.tsx";
-import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router";
 
@@ -14,67 +12,79 @@ export const renewalTableHeaders: ColumnsType = [
     key: "fullName",
     render: (_, record) => record.firstName && record.lastName ? `${record.firstName} ${record.lastName}` : record.corporationName,
   },
-  { title: "TLC FHV Number", dataIndex: "tlcFhvNumber", key: "tlcFhvNumber" },
   {
-    title: "TLC FHV Exp. Date",
+    title: "TLC (FHV) Number", dataIndex: "tlcFhvNumber", key: "tlcFhvNumber", render: (_, record) => {
+      return record.tlcFhvNumber ? record.tlcFhvNumber : record.tlcNumber
+    }
+  },
+  {
+    title: "TLC (FHV) Exp. Date",
     dataIndex: "tlcFhvExpiration",
     key: "tlcFhvExpiration",
-    render: (value) => dayjs(value).format('MM/DD/YYYY')
+    render: (_, record) => {
+      return dayjs(record.tlcFhvExpiration ? record.tlcFhvExpiration : record.tlcExp).format('MM/DD/YYYY')
+    }
   },
   {
-    title: "DMV Exp. Date",
+    title: "Registration Exp. Date",
     dataIndex: "dmvExpiration",
     key: "dmvExpiration",
-    render: (value) => dayjs(value).format('MM/DD/YYYY')
+    render: (_, record) => {
+      return record.dmvExpiration ? dayjs(record.dmvExpiration).format('MM/DD/YYYY') : 'Not a customer'
+    }
+  },
+  {
+    title: "DDC Exp. Date",
+    dataIndex: "defensiveDriverCourseExpiration",
+    key: "defensiveDriverCourseExpiration",
+    render: (_, record) => {
+      const driverDDCExp = record.defensiveDriverCourseExp ? dayjs(record.defensiveDriverCourseExp).format('MM/DD/YYYY') : 'Not provided';
+      const customerDDCExp = record.defensiveDriverCourseExpiration ? dayjs(record.defensiveDriverCourseExpiration).format('MM/DD/YYYY') : 'Not provided';
+
+      return driverDDCExp !== 'Not provided' ? driverDDCExp : customerDDCExp;
+    }
   },
 ];
-
-const renewalFilterInitialState: IRenewalFilter = {
-  tlcFhvExpiration: undefined,
-  dmvExpiration: undefined
-}
 
 export const getRenewalsFunction = () => {
   const navigate = useNavigate();
   const [renewals, setRenewals] = useState<IRenewal[]>([]);
-  const [renewalsFilters, setRenewalsFilter] = useState<IRenewalFilter>(renewalFilterInitialState)
+  const [renewalsFilters, setRenewalsFilter] = useState<IRenewalFilter>()
 
-  const fetchRenewalsOfCustomers = async (params: IRenewalFilter) => {
+  const fetchRenewalsOfCustomers = async (params?: IRenewalFilter) => {
     const response = await instance.get('/customer/renewals', {
       params
     });
     setRenewals(response.data);
   }
 
-  const changeFilters = (key: keyof IRenewalFilter) => {
-    return (value: Dayjs | null) => {
+  const changeQueryDate = useCallback((key: 'dmvExpiration' | 'tlcFhvExpiration' | 'ddcExp') => {
+    return (val: any[] | null) => {
       setRenewalsFilter(prev => ({
         ...prev,
-        [key]: value ? value.toDate() : undefined
+        [`${key}From`]: val ? val[0].toDate() : undefined,
+        [`${key}To`]: val ? val[1].toDate() : undefined
       }))
     }
-  }
-
-  const actions = <div className='renewals_page_actions'>
-    <label className='renewals_page_actions_label'>Filters</label>
-    <div className='renewals_page_actions_filters'>
-      <Date label='TLC FHV Expiration'
-            value={renewalsFilters.tlcFhvExpiration ? dayjs(renewalsFilters.tlcFhvExpiration) : null}
-            onChange={changeFilters('tlcFhvExpiration')}/>
-      <Date label='DMV Expiration'
-            value={renewalsFilters.dmvExpiration ? dayjs(renewalsFilters.dmvExpiration) : null}
-            onChange={changeFilters('dmvExpiration')}/>
-    </div>
-  </div>;
+  }, []);
 
   const navigateToCustomerDetails = (customerId: string) => {
     navigate(`/customers/${customerId}`);
-  }
+  };
+
+  const resetFilters = useCallback(() => {
+    setRenewalsFilter(prev => {
+      if (prev) {
+        fetchRenewalsOfCustomers()
+        return undefined;
+      }
+    })
+  }, [])
 
   return {
     fetchRenewalsOfCustomers, renewals, renewalsFilters,
 
-    actions, navigateToCustomerDetails
+    changeQueryDate, navigateToCustomerDetails, resetFilters
   }
 }
 

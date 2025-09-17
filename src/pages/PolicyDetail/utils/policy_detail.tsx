@@ -9,36 +9,8 @@ import type { TileArgs } from "react-calendar";
 import type { TableRowSelection } from "antd/es/table/interface";
 import Button from "@/components/Button/Button.tsx";
 import type { IPayment } from "@/types/transactions/main.ts";
-import { Tag } from "antd";
 import type { IAuditLog } from "@/types/audit_log/main.ts";
-
-export const vehicleLicenseColumns: ColumnsType = [
-  { title: "Vehicle License Number", dataIndex: "vehicle_license_number", key: "vehicle_license_number" },
-  { title: "Name", dataIndex: "name", key: "name" },
-  { title: "License Type", dataIndex: "license_type", key: "license_type" },
-  { title: "Expiration Date", dataIndex: "expiration_date", key: "expiration_date" },
-  { title: "Permit License Number", dataIndex: "permit_license_number", key: "permit_license_number" },
-  { title: "DMV License Plate Number", dataIndex: "dmv_license_plate_number", key: "dmv_license_plate_number" },
-  { title: "Vehicle VIN Number", dataIndex: "vehicle_vin_number", key: "vehicle_vin_number" },
-  { title: "Certification Date", dataIndex: "certification_date", key: "certification_date" },
-  { title: "Hack Up Date", dataIndex: "hack_up_date", key: "hack_up_date" },
-  { title: "Vehicle Year", dataIndex: "vehicle_year", key: "vehicle_year" },
-  { title: "Base Number", dataIndex: "base_number", key: "base_number" },
-  { title: "Base Name", dataIndex: "base_name", key: "base_name" },
-  { title: "Base Type", dataIndex: "base_type", key: "base_type" },
-  { title: "Vehicle Type", dataIndex: "veh", key: "veh" },
-  { title: "Base Telephone Number", dataIndex: "base_telephone_number", key: "base_telephone_number" },
-  { title: "Base Address", dataIndex: "base_address", key: "base_address" },
-  { title: "Reason", dataIndex: "reason", key: "reason" },
-  { title: "Last Date Updated", dataIndex: "last_date_updated", key: "last_date_updated" },
-  { title: "Last Time Updated", dataIndex: "last_time_updated", key: "last_time_updated" },
-  {
-    title: "Status", dataIndex: "active", key: "active", render: (isActive) => <>
-      <Tag color={isActive ? 'green' : 'red'}>{isActive ? 'Active' : 'Inactive'}</Tag>
-    </>,
-  },
-];
-
+import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 export const policyFeesTableHeaders: ColumnsType = [
   {
@@ -242,6 +214,50 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
     // activity
     openPolicyActivity, cancelPolicyActivity, isPolicyActivityOpen
+  }
+}
+
+export const getPolicyPaymentsFunctions = () => {
+  const { error, success } = useNotify();
+  const [selectedPayment, setSelectedPayment] = useState<IPayment>();
+
+  const [isPaymentVoidModalOpen, setIsPaymentVoidModalOpen] = useState(false);
+
+  const [paymentSelection] = useState<TableRowSelection>({
+    onSelect: (_, _s, multipleRows) => {
+      const isMultipleSelected = multipleRows.length > 1;
+      const [rowSelectedPayment] = multipleRows as IPayment[];
+
+      setSelectedPayment(!isMultipleSelected ? rowSelectedPayment : undefined);
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.isDeleted, // Column configuration not to be checked
+    }),
+  });
+
+  const voidPayment = useCallback(async () => {
+    try {
+      await instance.delete(`/payment/${selectedPayment!._id}`);
+      success('Payment successfully voided!');
+    } catch (e) {
+      error('Error while voiding the payment. Try again...');
+    } finally {
+      cancelPaymentVoidModal();
+    }
+  }, [selectedPayment]);
+
+  const cancelPaymentVoidModal = () => {
+    setIsPaymentVoidModalOpen(false);
+  }
+
+  const openPaymentVoidModal = () => {
+    setIsPaymentVoidModalOpen(true)
+  }
+
+  return {
+    isPaymentVoidModalOpen, cancelPaymentVoidModal, openPaymentVoidModal,
+
+    selectedPayment, voidPayment, paymentSelection
   }
 }
 

@@ -10,7 +10,7 @@ import { useParams } from "react-router";
 import Table from "@/components/Table/Table.tsx";
 import {
   calendarTileStatuses,
-  getPolicyDetailFunctions,
+  getPolicyDetailFunctions, getPolicyPaymentsFunctions,
   policyFeesTableHeaders,
 } from "@/pages/PolicyDetail/utils/policy_detail.tsx";
 import Tabs from "@/components/Tabs/Tabs.tsx";
@@ -20,9 +20,14 @@ import { useEffect } from "react";
 import PolicyFeeDeleteModal from "@/pages/PolicyDetail/components/PolicyFeeDeleteModal/PolicyFeeDeleteModal.tsx";
 import { transactionsTableHeaders } from "@/pages/Transactions/utils/transactions.tsx";
 import PolicyActivityModal from "@/pages/PolicyDetail/components/PolicyActivityModal/PolicyActivityModal.tsx";
+import PaymentVoidModal from "@/pages/PolicyDetail/components/PaymentVoidModal/PaymentVoidModal.tsx";
+import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
+import Permission from "@/layout/Permission/Permission.tsx";
 
 const PolicyDetailPage = () => {
   const { policyId } = useParams();
+
+  const { user, fetchMyself } = getAuthFunctions();
 
   const {
     fetchPolicyById,
@@ -42,10 +47,26 @@ const PolicyDetailPage = () => {
     isPolicyActivityOpen, cancelPolicyActivity, openPolicyActivity
   } = getPolicyDetailFunctions(policyId);
 
+  const {
+    isPaymentVoidModalOpen,
+    cancelPaymentVoidModal,
+    openPaymentVoidModal,
+    voidPayment,
+    selectedPayment,
+    paymentSelection
+  } = getPolicyPaymentsFunctions();
+
   useEffect(() => {
     fetchPolicyById();
     fetchPaymentsByPolicy();
+    fetchMyself();
   }, []);
+
+  const paymentTableActions = <div>
+    {selectedPayment && <Permission permission='delete_payments' user_permission={user.permissions}>
+        <Button variant='solid' onClick={openPaymentVoidModal} type='primary' color={'danger'}>Void payment</Button>
+    </Permission>}
+  </div>
 
   const tabs: TabsProps['items'] = [
     {
@@ -105,8 +126,12 @@ const PolicyDetailPage = () => {
           </div>
           <div className='policy_detail_page_body_right'>
             <div className='policy_detail_page_body_right_payments'>
-              <Table actions={<></>}
+              <Table actions={paymentTableActions}
                      label='Paid payments'
+                     rowClassName={(record) =>
+                       record.isDeleted ? 'policy_detail_page_body_right_payments_row_void' : ''
+                     }
+                     rowSelection={paymentSelection}
                      rowKey='_id'
                      columns={transactionsTableHeaders} dataSource={paymentsByPolicy}/>
             </div>
@@ -164,6 +189,7 @@ const PolicyDetailPage = () => {
     <PolicyFeeDeleteModal open={isPolicyFeeDeleteModalOpen} cancel={cancelPolicyFeeModal} submit={updatePolicyFee}/>
     <PolicyActivityModal open={isPolicyActivityOpen} cancel={cancelPolicyActivity} policyId={policyId}
                          policy={policyById}/>
+    <PaymentVoidModal open={isPaymentVoidModalOpen} submit={voidPayment} cancel={cancelPaymentVoidModal}/>
   </Page>
 }
 

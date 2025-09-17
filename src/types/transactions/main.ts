@@ -16,6 +16,8 @@ export interface IPayment {
   notes?: string;
   createdAt: Date;
   updatedAt: Date;
+  isDeleted: boolean,
+  deletedAt: boolean
 }
 
 export interface IPaymentCreate extends Pick<IPayment, 'method' | 'paidAt' | 'notes' | 'discountAmount' | 'totalPaid'> {

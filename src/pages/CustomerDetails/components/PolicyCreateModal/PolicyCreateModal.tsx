@@ -211,7 +211,7 @@ const PolicyCreateModal = ({
             <div className='policy_create_modal_information_horizontal'>
               <Input label='Policy number' placeholder='Ex. C813P05' required value={newPolicyForm.policyNumber}
                      onChange={changePolicyFormData('policyNumber', setNewPolicyForm)}/>
-              <Date label='Custom Effective date'
+              <Date label='Custom Due Date'
                     onChange={changePolicyFormTime('customEffectiveDate', setNewPolicyForm)}
                     value={newPolicyForm.customEffectiveDate ? dayjs(newPolicyForm.customEffectiveDate) : null}/>
             </div>

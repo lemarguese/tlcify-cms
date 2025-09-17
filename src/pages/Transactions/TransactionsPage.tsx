@@ -14,6 +14,7 @@ import Button from "@/components/Button/Button.tsx";
 import Range from "@/components/Range/Range.tsx";
 import { getInsuranceFunctions } from "@/pages/Insurance/utils/insurance.tsx";
 import { formatCurrency } from "@/utils/payment.ts";
+import dayjs from "dayjs";
 
 const TransactionsPage = () => {
   const navigate = useNavigate();
@@ -52,7 +53,10 @@ const TransactionsPage = () => {
                         value={query?.paymentMethod}
                         options={transactionsFilterSelectionOptions}/>
             </div>
-            <Range label='Report Date Range' onChange={changeQueryDate} allowClear={false}/>
+            <Range label='Report Date Range' value={[
+              query ? dayjs(query.fromDate) : null,
+              query ? dayjs(query.toDate) : null
+            ]} onChange={changeQueryDate} allowClear={false}/>
           </div>
           <div className='transactions_page_header_filter_submit'>
             <Button variant='solid' type='primary' onClick={fetchAllPayments}>Apply filters</Button>
