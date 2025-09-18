@@ -31,6 +31,36 @@ export const policyFeesTableHeaders: ColumnsType = [
   },
 ];
 
+export const installmentTableHeaders: ColumnsType = [
+  {
+    title: "#",
+    dataIndex: 'index',
+    key: 'index',
+    render: (v, r, i) => i
+  },
+  {
+    title: "Due date",
+    dataIndex: 'dueDate',
+    key: 'dueDate',
+    render: (value) => dayjs(value).format('MM/DD/YYYY')
+  },
+  {
+    title: "Scheduled amount",
+    dataIndex: 'monthlyAmount',
+    key: 'monthlyAmount',
+  },
+  {
+    title: "Due now",
+    dataIndex: 'dueAmount',
+    key: 'dueAmount',
+  },
+  {
+    title: "Net to Carrier",
+    dataIndex: 'netToCarrier',
+    key: 'netToCarrier',
+  },
+];
+
 export const calendarTileStatuses = [
   { color: '#ef4444', type: 'fee' },
   { color: '#0085FF', type: 'due' },
@@ -97,64 +127,28 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
       }
     });
 
-  const installmentsDescriptionItems: DescriptionsProps['items'] = useMemo(() => {
+  const installmentsTableItems = useMemo(() => {
     const policyCycles = policyById.cycles;
+    const carrier = policyById.insurance;
 
-    const { totalScheduledAmount, totalDueNowAmount } = policyCycles.reduce((acc, item) => {
+    const { totalScheduledAmount, totalDueNowAmount, totalNetToCarrier } = policyCycles.reduce((acc, item) => {
       acc.totalScheduledAmount += item.baseAmount;
       acc.totalDueNowAmount += item.amountRemaining - item.carryOver;
+      acc.totalNetToCarrier += acc.totalDueNowAmount - acc.totalDueNowAmount * (carrier.commissionFee / 100)
 
       return acc;
-    }, { totalScheduledAmount: 0, totalDueNowAmount: 0 })
+    }, { totalScheduledAmount: 0, totalDueNowAmount: 0, totalNetToCarrier: 0 });
 
-    const descriptionItems = policyCycles.map(({
-                                                 dueDate,
-                                                 baseAmount,
-                                                 carryOver,
-                                                 amountRemaining,
-                                               }, index) => {
-      return {
-        label: `Cycle ${index + 1}`,
-        key: `cycle_${index + 1}`,
-        children: <div className='policy_detail_page_body_left_installments_content'>
-          <div className='policy_detail_page_body_left_installments_content_item'>
-            <strong>Due Date:</strong>
-            <p>{dayjs(dueDate).format('MM/DD/YYYY')}</p>
-          </div>
-          <div className='policy_detail_page_body_left_installments_content_item'>
-            <strong>Monthly amount:</strong>
-            <p>{baseAmount.toFixed(2)}</p>
-          </div>
-          <div className='policy_detail_page_body_left_installments_content_item'>
-            <strong>Due amount:</strong>
-            <p>{amountRemaining - carryOver}</p>
-          </div>
-          <div className='policy_detail_page_body_left_installments_content_item'>
-            <strong>Type:</strong>
-            <p>Monthly</p>
-          </div>
-        </div>
-      }
-    });
-
-    descriptionItems.push({
-      label: '',
-      key: 'policy_detail_total_amounts',
-      children: <div className='policy_detail_page_body_left_installments_content_footer'>
-        <div className='policy_detail_page_body_left_installments_content_footer_item'>
-          <strong>Total Scheduled amount: </strong>
-          <p>{totalScheduledAmount}</p>
-        </div>
-        <div className='policy_detail_page_body_left_installments_content_footer_item'>
-          <strong>Total Remaining amount: </strong>
-          <p>{totalDueNowAmount}</p>
-        </div>
-      </div>
-    })
-
-    return descriptionItems as DescriptionsProps['items'];
-  }, [policyById.cycles]);
-
+    return policyCycles.map(el => ({
+      dueDate: dayjs(el.dueDate).format('MM/DD/YYYY'),
+      monthlyAmount: el.baseAmount.toFixed(2),
+      netToCarrier: (el.baseAmount - el.baseAmount * (carrier.commissionFee / 100)).toFixed(2),
+      dueAmount: (el.amountRemaining - el.carryOver).toFixed(2),
+      totalScheduledAmount: totalScheduledAmount.toFixed(2),
+      totalDueNowAmount: totalDueNowAmount.toFixed(2),
+      totalNetToCarrier: totalNetToCarrier.toFixed(2)
+    }))
+  }, [policyById.cycles, policyById.insurance]);
 
   const calendarTileTypes = (type: 'fee' | 'due') => ({ date, view }: TileArgs) => {
     // Add class to tiles in month view only
@@ -210,7 +204,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
     // installments
 
-    installmentsDescriptionItems,
+    installmentsTableItems,
 
     // activity
     openPolicyActivity, cancelPolicyActivity, isPolicyActivityOpen

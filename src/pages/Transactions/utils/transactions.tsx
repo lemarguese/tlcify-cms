@@ -33,11 +33,11 @@ export const transactionsTableHeaders: ColumnsType = [
     key: "dueDate",
     render: (_, a) => dayjs(a.dueDate).format('MM/DD/YYYY')
   },
-  {
-    title: "Currency",
-    dataIndex: "currency",
-    key: "currency",
-  },
+  // {
+  //   title: "Currency",
+  //   dataIndex: "currency",
+  //   key: "currency",
+  // },
   {
     title: "Base Amount",
     dataIndex: "baseAmount",

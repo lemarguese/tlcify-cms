@@ -53,38 +53,10 @@
       }
 
       &_installments {
-        padding: 16px;
-        background-color: #FFF;
-
-        border-radius: 12px;
-        border: 1px solid #F2F2F2;
-
-        &_content {
+        &_footer {
           display: flex;
-          gap: 10px;
-
-          &_item {
-            padding: 4px 8px;
-
-            display: flex;
-            align-items: center;
-            gap: 8px;
-
-            //border-radius: 4px;
-            //border: 1px solid #151D48;
-          }
-
-          &_footer {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-
-            &_item {
-              display: flex;
-              align-items: center;
-              gap: 8px;
-            }
-          }
+          align-items: center;
+          gap: 16px;
         }
       }
     }

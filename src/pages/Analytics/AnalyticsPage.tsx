@@ -45,13 +45,13 @@ const AnalyticsPage = () => {
     <div className='analytics_page'>
       <div className='analytics_page_kpis'>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' value={kpis.totalRevenue} prefix={<div>
+          <Statistic className='analytics_page_kpis_card_item' precision={2} value={kpis.totalRevenue} prefix={<div>
             <ArrowUpOutlined/>
             $
           </div>} valueStyle={{ color: '#3f8600' }} title='Total Revenue'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' valueStyle={{ color: '#3f8600' }}
+          <Statistic className='analytics_page_kpis_card_item' precision={2} valueStyle={{ color: '#3f8600' }}
                      value={kpis.totalCommissionFee}
                      prefix={<div>
                        <ArrowUpOutlined/>
@@ -60,19 +60,20 @@ const AnalyticsPage = () => {
                      title='Total commission fee'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' valueStyle={{ color: '#3f8600' }}
+          <Statistic className='analytics_page_kpis_card_item' precision={0} valueStyle={{ color: '#3f8600' }}
                      value={kpis.activePoliciesCount}
                      prefix={<ArrowUpOutlined/>}
                      title='Active policies'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' valueStyle={{ color: '#3f8600' }}
+          <Statistic className='analytics_page_kpis_card_item' precision={2} valueStyle={{ color: '#3f8600' }}
                      value={kpis.expiringPoliciesCount}
                      prefix={<ArrowUpOutlined/>}
                      title='Expiring policies'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' valueStyle={{ color: '#3f8600' }} value={kpis.totalFees}
+          <Statistic className='analytics_page_kpis_card_item' precision={2} valueStyle={{ color: '#3f8600' }}
+                     value={kpis.totalFees}
                      prefix={<div>
                        <ArrowUpOutlined/>
                        $

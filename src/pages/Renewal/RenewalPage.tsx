@@ -25,29 +25,32 @@ const RenewalPage = () => {
   return <Page title='Renewals' showSearch>
     <div className='renewals_page'>
       <div className='renewals_page_actions'>
-        <label className='renewals_page_actions_label'>Filters</label>
-        <div className='renewals_page_actions_filters'>
-          <Range label='TLC (FHV) Expiration'
-                 value={[
-                   renewalsFilters ? renewalsFilters.tlcFhvExpirationFrom ? dayjs(renewalsFilters.tlcFhvExpirationFrom) : null : null,
-                   renewalsFilters ? renewalsFilters.tlcFhvExpirationTo ? dayjs(renewalsFilters.tlcFhvExpirationTo) : null : null,
-                 ]}
-                 onChange={changeQueryDate('tlcFhvExpiration')}/>
-          <Range label='Registration Expiration'
-                 value={[
-                   renewalsFilters ? renewalsFilters.dmvExpirationFrom ? dayjs(renewalsFilters.dmvExpirationFrom) : null : null,
-                   renewalsFilters ? renewalsFilters.dmvExpirationTo ? dayjs(renewalsFilters.dmvExpirationTo) : null : null
-                 ]}
-                 onChange={changeQueryDate('dmvExpiration')}/>
-          <Range label='DDC. Expiration'
-                 value={[
-                   renewalsFilters ? renewalsFilters.ddcExpFrom ? dayjs(renewalsFilters.ddcExpFrom) : null : null,
-                   renewalsFilters ? renewalsFilters.ddcExpTo ? dayjs(renewalsFilters.ddcExpTo) : null : null,
-                 ]}
-                 onChange={changeQueryDate('ddcExp')}/>
-          <div className='renewals_page_actions_filters_actions'>
-            <Button onClick={() => fetchRenewalsOfCustomers(renewalsFilters)}>Apply Filters</Button>
-            <Button onClick={resetFilters}>Reset Filters</Button>
+        <div className='renewals_page_actions_left'></div>
+        <div className='renewals_page_actions_right'>
+          <label className='renewals_page_actions_right_label'>Filters</label>
+          <div className='renewals_page_actions_right_filters'>
+            <Range label='TLC (FHV) Expiration'
+                   value={[
+                     renewalsFilters ? renewalsFilters.tlcFhvExpirationFrom ? dayjs(renewalsFilters.tlcFhvExpirationFrom) : null : null,
+                     renewalsFilters ? renewalsFilters.tlcFhvExpirationTo ? dayjs(renewalsFilters.tlcFhvExpirationTo) : null : null,
+                   ]}
+                   onChange={changeQueryDate('tlcFhvExpiration')}/>
+            <Range label='Registration Expiration'
+                   value={[
+                     renewalsFilters ? renewalsFilters.dmvExpirationFrom ? dayjs(renewalsFilters.dmvExpirationFrom) : null : null,
+                     renewalsFilters ? renewalsFilters.dmvExpirationTo ? dayjs(renewalsFilters.dmvExpirationTo) : null : null
+                   ]}
+                   onChange={changeQueryDate('dmvExpiration')}/>
+            <Range label='DDC. Expiration'
+                   value={[
+                     renewalsFilters ? renewalsFilters.ddcExpFrom ? dayjs(renewalsFilters.ddcExpFrom) : null : null,
+                     renewalsFilters ? renewalsFilters.ddcExpTo ? dayjs(renewalsFilters.ddcExpTo) : null : null,
+                   ]}
+                   onChange={changeQueryDate('ddcExp')}/>
+            <div className='renewals_page_actions_right_filters_actions'>
+              <Button onClick={() => fetchRenewalsOfCustomers(renewalsFilters)}>Apply Filters</Button>
+              <Button onClick={resetFilters}>Reset Filters</Button>
+            </div>
           </div>
         </div>
       </div>

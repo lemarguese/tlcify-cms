@@ -2,31 +2,44 @@
   padding: 16px;
 
   &_actions {
-    padding: 12px;
-    border-radius: 8px;
-
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    gap: 32px;
 
-    background-color: #FFF;
+    &_right {
+      flex: 1;
 
-    &_label {
-      font-weight: bold;
-    }
+      padding: 12px;
+      border-radius: 8px;
 
-    &_filters {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
 
-      &_actions {
-        align-self: end;
+      background-color: #FFF;
 
+      &_label {
+        font-weight: bold;
+      }
+
+      &_filters {
         display: flex;
-        align-items: center;
-        gap: 16px;
+        flex-direction: column;
+        gap: 12px;
+
+        &_actions {
+          align-self: end;
+
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
       }
     }
+
+    &_left {
+      flex: 1;
+    }
+
   }
 }

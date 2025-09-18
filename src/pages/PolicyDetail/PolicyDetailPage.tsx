@@ -7,10 +7,13 @@ import { ClockCircleOutlined } from "@ant-design/icons";
 import Description from "@/components/Description/Description.tsx";
 import type { TabsProps } from "antd";
 import { useParams } from "react-router";
+
 import Table from "@/components/Table/Table.tsx";
+import { Table as AntTable } from 'antd';
+
 import {
   calendarTileStatuses,
-  getPolicyDetailFunctions, getPolicyPaymentsFunctions,
+  getPolicyDetailFunctions, getPolicyPaymentsFunctions, installmentTableHeaders,
   policyFeesTableHeaders,
 } from "@/pages/PolicyDetail/utils/policy_detail.tsx";
 import Tabs from "@/components/Tabs/Tabs.tsx";
@@ -42,7 +45,7 @@ const PolicyDetailPage = () => {
 
     paymentsByPolicy, fetchPaymentsByPolicy,
 
-    installmentsDescriptionItems,
+    installmentsTableItems,
 
     isPolicyActivityOpen, cancelPolicyActivity, openPolicyActivity
   } = getPolicyDetailFunctions(policyId);
@@ -120,9 +123,20 @@ const PolicyDetailPage = () => {
       children:
         <div className='policy_detail_page_body_horizontal'>
           <div className='policy_detail_page_body_left'>
-            <Description title="Installments" layout="horizontal" className='policy_detail_page_body_left_installments'
-                         size='small' column={1} bordered
-                         items={installmentsDescriptionItems}/>
+            <Table label='Installments' dataSource={installmentsTableItems} columns={installmentTableHeaders}
+                   summary={(data) => {
+                     const [{ totalScheduledAmount, totalDueNowAmount, totalNetToCarrier }] = data;
+
+                     return <AntTable.Summary.Row>
+                       <AntTable.Summary.Cell index={1} colSpan={2} align='center'>Total</AntTable.Summary.Cell>
+                       <AntTable.Summary.Cell index={2} colSpan={1}>{totalScheduledAmount}</AntTable.Summary.Cell>
+                       <AntTable.Summary.Cell index={3} colSpan={1}>{totalDueNowAmount}</AntTable.Summary.Cell>
+                       <AntTable.Summary.Cell index={3} colSpan={1}>{totalNetToCarrier}</AntTable.Summary.Cell>
+                     </AntTable.Summary.Row>
+                   }}
+                   pagination={false}
+                   size={'small'}
+                   actions={<></>}/>
           </div>
           <div className='policy_detail_page_body_right'>
             <div className='policy_detail_page_body_right_payments'>

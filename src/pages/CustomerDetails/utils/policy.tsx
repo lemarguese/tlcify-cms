@@ -119,13 +119,19 @@ export const policyTableHeaders: ColumnsType = [
     title: "Amount Due",
     dataIndex: "amountDue",
     key: "amountDue",
-    render: (value) => value.toFixed(2)
+    render: (value) => {
+      if (!value) return 'Totally paid';
+
+      return value.toFixed(2);
+    }
   },
   {
     title: "Due Date",
     dataIndex: "dueDate",
     key: "dueDate",
     render: (value) => {
+      if (!value) return 'Totally paid';
+
       const [date] = value.split('T');
       return dayjs(date).format('MM/DD/YYYY');
     },

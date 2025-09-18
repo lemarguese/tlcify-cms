@@ -6,12 +6,12 @@ import CountUp from 'react-countup';
 interface CustomStatisticProps extends StatisticProps {
 }
 
-const formatter: StatisticProps['formatter'] = (value) => (
-  <CountUp end={value as number} separator=","/>
+const formatter: StatisticProps['formatter'] = (value, config) => (
+  <CountUp end={value as number} separator="," decimals={config?.precision} />
 );
 
 const Statistic: FC<CustomStatisticProps> = (props) => {
-  return <AntStatistic {...props} formatter={formatter}/>
+  return <AntStatistic {...props} formatter={(value) => formatter(value, { precision: props.precision })}/>
 }
 
 export default Statistic;

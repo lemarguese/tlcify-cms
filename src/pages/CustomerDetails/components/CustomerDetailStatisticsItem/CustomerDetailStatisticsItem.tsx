@@ -8,7 +8,7 @@ interface CustomerDetailStatisticsItemProps {
 
 const CustomerDetailStatisticsItem = ({ title, description }: CustomerDetailStatisticsItemProps) => {
   return <div className='customer_detail_statistics_item'>
-    <Statistic value={description} prefix={'$'} valueStyle={{
+    <Statistic precision={2} value={description} prefix={'$'} valueStyle={{
       color: '#228D57'
     }} title={title}/>
     {/*<div className='customer_details_page_statistics_item_footer'>*/}

@@ -15,6 +15,7 @@ import Range from "@/components/Range/Range.tsx";
 import { getInsuranceFunctions } from "@/pages/Insurance/utils/insurance.tsx";
 import { formatCurrency } from "@/utils/payment.ts";
 import dayjs from "dayjs";
+import { Table as AntTable } from "antd";
 
 const TransactionsPage = () => {
   const navigate = useNavigate();
@@ -65,16 +66,14 @@ const TransactionsPage = () => {
         </div>
         <div className='transactions_page_header_reports'>
           <Table columns={transactionsReportsTableHeaders} actions={<></>} dataSource={reportsData}
-                 label='Reports by payment method' pagination={false} footer={
-            (_) => <div className='transactions_page_header_reports_footer'>
-              <label>GRAND TOTAL: </label>
-              <div className='transactions_page_header_reports_footer_list'>
-                <p>{formatCurrency(grandTotal.totalPremiumPrice)}</p>
-                <p>{formatCurrency(grandTotal.totalPremiumFee)}</p>
-                <p>{formatCurrency(grandTotal.totalPrice)}</p>
-              </div>
-            </div>
-          }/>
+                 label='Reports by payment method' pagination={false} summary={(_) => {
+            return <AntTable.Summary.Row>
+              <AntTable.Summary.Cell index={1} colSpan={1}>GRAND TOTAL: </AntTable.Summary.Cell>
+              <AntTable.Summary.Cell index={2} colSpan={1}>{formatCurrency(grandTotal.totalPremiumPrice)}</AntTable.Summary.Cell>
+              <AntTable.Summary.Cell index={3} colSpan={1}>{formatCurrency(grandTotal.totalPremiumFee)}</AntTable.Summary.Cell>
+              <AntTable.Summary.Cell index={3} colSpan={1}>{formatCurrency(grandTotal.totalPrice)}</AntTable.Summary.Cell>
+            </AntTable.Summary.Row>
+          }}/>
         </div>
       </div>
       <Table columns={transactionsTableHeaders} actions={<></>} onRow={(item) => {
