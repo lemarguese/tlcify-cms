@@ -26,7 +26,7 @@ export const driversTableHeaders: ColumnsType = [
     dataIndex: "tlcExp",
     key: "tlcExp",
     render: (value) => dayjs(value).format('MM/DD/YYYY'),
-    sorter: (a, b) => a.tlcExp.valueOf() - b.tlcExp.valueOf()
+    sorter: (a, b) => new Date(a.tlcExp).getTime() - new Date(b.tlcExp).getTime(),
   },
   { title: "DL Number", dataIndex: "driverLicenseNumber", key: "driverLicenseNumber" },
   {
@@ -34,14 +34,14 @@ export const driversTableHeaders: ColumnsType = [
     dataIndex: "driverLicenseExp",
     key: "driverLicenseExp",
     render: (value) => dayjs(value).format('MM/DD/YYYY'),
-    sorter: (a, b) => a.driverLicenseExp.valueOf() - b.driverLicenseExp.valueOf()
+    sorter: (a, b) => new Date(a.driverLicenseExp).getTime() - new Date(b.driverLicenseExp).getTime(),
   },
   {
     title: "DDC Expiration.",
     dataIndex: "defensiveDriverCourseExp",
     key: "defensiveDriverCourseExp",
     render: (value) => dayjs(value).format('MM/DD/YYYY'),
-    sorter: (a, b) => new Date(a.defensiveDriverCourseExp).valueOf() - new Date(b.defensiveDriverCourseExp).valueOf()
+    sorter: (a, b) => new Date(a.defensiveDriverCourseExp).getTime() - new Date(b.defensiveDriverCourseExp).getTime(),
   },
   {
     title: "Status", dataIndex: "status", key: "status", render: () => <>

@@ -75,39 +75,36 @@ export const policyTableHeaders: ColumnsType = [
     title: "Insurance carrier",
     dataIndex: ['insurance', 'name'],
     key: "insuranceName",
-    sorter: (a, b) => a.insuranceName.localeCompare(b.firstName)
   },
   {
     title: "Policy number",
     dataIndex: "policyNumber",
     key: "policyNumber",
-    sorter: (a, b) => a.policyNumber.localeCompare(b.firstName)
   },
   {
     title: "Effective Date",
     dataIndex: "effectiveDate",
     key: "effectiveDate",
     render: (value) => dayjs(value).format('MM/DD/YYYY'),
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
+    sorter: (a, b) => new Date(a.effectiveDate).getTime() - new Date(b.effectiveDate).getTime()
   },
   {
     title: "Expiration Date",
     dataIndex: "expirationDate",
     key: "expirationDate",
     render: (value) => dayjs(value).format('MM/DD/YYYY'),
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
+    sorter: (a, b) => new Date(a.expirationDate).getTime() - new Date(b.expirationDate).getTime()
   },
   {
     title: "Policy term",
     dataIndex: "policyTerm",
     key: "policyTerm",
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
   },
   {
     title: "Premium",
     dataIndex: "premiumPrice",
     key: "premiumPrice",
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
+    sorter: (a, b) => a.premiumPrice - b.premiumPrice
   },
   {
     title: "Fees",
@@ -123,7 +120,8 @@ export const policyTableHeaders: ColumnsType = [
       if (!value) return 'Totally paid';
 
       return value.toFixed(2);
-    }
+    },
+    sorter: (a, b) => a.amountDue - b.amountDue
   },
   {
     title: "Due Date",
@@ -135,7 +133,7 @@ export const policyTableHeaders: ColumnsType = [
       const [date] = value.split('T');
       return dayjs(date).format('MM/DD/YYYY');
     },
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName)
+    sorter: (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
   },
 ];
 

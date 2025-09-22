@@ -31,7 +31,8 @@ export const transactionsTableHeaders: ColumnsType = [
     title: "Due Date",
     dataIndex: "dueDate",
     key: "dueDate",
-    render: (_, a) => dayjs(a.dueDate).format('MM/DD/YYYY')
+    render: (_, a) => dayjs(a.dueDate).format('MM/DD/YYYY'),
+    sorter: (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
   },
   // {
   //   title: "Currency",
