@@ -36,7 +36,7 @@ export const installmentTableHeaders: ColumnsType = [
     title: "#",
     dataIndex: 'index',
     key: 'index',
-    render: (_v, _, i) => i
+    render: (_v, _, i) => i + 1
   },
   {
     title: "Due date",
