@@ -8,7 +8,7 @@ import { ResponsiveLine } from '@nivo/line';
 import {
   frequencyRadioOptions, fullyCoveredDueAmountCustomersTableHeaders,
   getAnalyticsFunctions,
-  soonestExpiringPoliciesTableHeaders
+  soonestExpiringPoliciesTableHeaders, unpaidPoliciesTableHeaders
 } from "@/pages/Analytics/utils/analytics.tsx";
 import Table from "@/components/Table/Table.tsx";
 import { useEffect } from "react";
@@ -28,7 +28,8 @@ const AnalyticsPage = () => {
     changeFrequency,
     fetchCoveredCustomers,
     coveredCustomers,
-    customersSelection
+    customersSelection,
+    unpaidPolicies, fetchUnpaidPolicies
   } = getAnalyticsFunctions()
 
   useEffect(() => {
@@ -38,7 +39,8 @@ const AnalyticsPage = () => {
   useEffect(() => {
     fetchKpis();
     fetchExpiringPolicies()
-    fetchCoveredCustomers(dayjs().startOf('day'))
+    fetchCoveredCustomers(dayjs().startOf('day'));
+    fetchUnpaidPolicies();
   }, []);
 
   return <Page>
@@ -106,6 +108,11 @@ const AnalyticsPage = () => {
         </div>} rowSelection={customersSelection} rowKey='customerName' label='Fully due amount covered customers'
                dataSource={coveredCustomers}
                columns={fullyCoveredDueAmountCustomersTableHeaders}/>
+      </div>
+      <div className='analytics_page_tables'>
+        <Table actions={<></>} label='All unpaid policies'
+               dataSource={unpaidPolicies}
+               columns={unpaidPoliciesTableHeaders}/>
       </div>
       <div className='analytics_page_tables'>
         <Table actions={<></>} label='Soonest expiring policies' dataSource={expiringPolicies}

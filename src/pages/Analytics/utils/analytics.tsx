@@ -66,6 +66,52 @@ export const fullyCoveredDueAmountCustomersTableHeaders: ColumnsType = [
     key: 'expirationDate',
     render: (item) => dayjs(item).format('MM/DD/YYYY')
   }
+];
+
+export const unpaidPoliciesTableHeaders: ColumnsType = [
+  {
+    title: 'Customer Name',
+    dataIndex: 'customerName',
+    key: 'customerName',
+  },
+  {
+    title: 'Insurance Carrier',
+    dataIndex: 'insuranceCarrierName',
+    key: 'insuranceCarrierName',
+  },
+  {
+    title: 'Policy Number',
+    dataIndex: 'policyNumber',
+    key: 'policyNumber',
+  },
+  {
+    title: 'Due date',
+    dataIndex: 'unpaidCycleDueDate',
+    key: 'unpaidCycleDueDate',
+    render: (_, record) => {
+      return dayjs(record.unpaidCycle.dueDate).format('MM/DD/YYYY')
+    }
+  },
+  {
+    title: 'Unpaid due amount',
+    dataIndex: 'unpaidDueAmount',
+    key: 'unpaidDueAmount',
+    render: (_, record) => {
+      return record.unpaidCycle.amountRemaining.toFixed(2);
+    }
+  },
+  {
+    title: 'Policy Effective Date',
+    dataIndex: 'effectiveDate',
+    key: 'effectiveDate',
+    render: (item) => dayjs(item).format('MM/DD/YYYY')
+  },
+  {
+    title: 'Policy Expiration Date',
+    dataIndex: 'expirationDate',
+    key: 'expirationDate',
+    render: (item) => dayjs(item).format('MM/DD/YYYY')
+  }
 ]
 
 const analyticsKpisInitialState: IAnalyticsKpi = {
@@ -82,6 +128,7 @@ export const getAnalyticsFunctions = () => {
   const [frequency, setFrequency] = useState<IAnalyticsFrequency>('daily');
   const [expiringPolicies, setExpiringPolicies] = useState<IPolicy[]>([]);
   const [coveredCustomers, setCoveredCustomers] = useState([]);
+  const [unpaidPolicies, setUnpaidPolicies] = useState([]);
 
   const [customersSelection] = useState<TableRowSelection>({
     onSelect: (_, _s) => {
@@ -121,6 +168,11 @@ export const getAnalyticsFunctions = () => {
     setCoveredCustomers(response.data);
   }
 
+  const fetchUnpaidPolicies = async () => {
+    const response = await instance.get('/analytics/unpaid-policies');
+    setUnpaidPolicies(response.data);
+  }
+
   const changeFrequency = useCallback((e: RadioChangeEvent) => {
     setFrequency(e.target.value)
   }, [])
@@ -131,6 +183,8 @@ export const getAnalyticsFunctions = () => {
     frequency, changeFrequency,
     expiringPolicies, fetchExpiringPolicies,
     fetchCoveredCustomers, coveredCustomers,
+
+    unpaidPolicies, fetchUnpaidPolicies,
 
     customersSelection
   }
