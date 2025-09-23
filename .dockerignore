@@ -1,7 +1,35 @@
+# Node modules & debug logs
 node_modules
 npm-debug.log
-Dockerfile
-.dockerignore
+yarn-error.log
+
+# Dependency folders from package managers
+.pnpm-store
+.bun
+.cache
+
+# Environment & config
+.env
+.env.*
+!.env.example  # keep an example env if you have one
+
+# OS & editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.bak
+
+# Git & version control
 .git
 .gitignore
-.env
+
+# Docker-related
+.dockerignore
+Dockerfile*
+
+# Build output (don’t copy dist until you build inside the container)
+dist
+build
+out
+.next
