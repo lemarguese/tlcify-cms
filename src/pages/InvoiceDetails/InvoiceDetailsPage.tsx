@@ -9,8 +9,6 @@ import TransactionDetailTotalTableFooter
   from "@/pages/InvoiceDetails/components/TotalTableFooter/TotalTableFooter.tsx";
 
 import { SendOutlined } from '@ant-design/icons'
-import TransactionsDetailsPaymentStepper
-  from "@/pages/InvoiceDetails/components/PaymentStepper/PaymentStepper.tsx";
 import { useParams } from "react-router";
 import {
   getInvoiceDetailFunctions, invoiceDetailTableHeaders,
