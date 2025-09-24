@@ -72,18 +72,18 @@ const PolicyDetailPage = () => {
   </div>
 
   const tabs: TabsProps['items'] = [
-    {
-      label: 'Vehicle information',
-      key: 'policy_detail_fhv',
-      children:
-        <div className='policy_detail_page_body_vertical'>
-          <div className='policy_detail_page_body_left'>
-            <div className='policy_detail_page_body_left_fhv'>
-              {/*<Table actions={<></>} columns={vehicleLicenseColumns} dataSource={vehicles}/>*/}
-            </div>
-          </div>
-        </div>
-    },
+    // {
+    //   label: 'Vehicle information',
+    //   key: 'policy_detail_fhv',
+    //   children:
+    //     <div className='policy_detail_page_body_vertical'>
+    //       <div className='policy_detail_page_body_left'>
+    //         <div className='policy_detail_page_body_left_fhv'>
+    //           {/*<Table actions={<></>} columns={vehicleLicenseColumns} dataSource={vehicles}/>*/}
+    //         </div>
+    //       </div>
+    //     </div>
+    // },
     {
       label: 'Policy information',
       key: 'policy_detail_policy',
@@ -193,7 +193,7 @@ const PolicyDetailPage = () => {
       </div>
       <div className='policy_detail_page_body'>
         <Tabs
-          defaultActiveKey="policy_detail_client"
+          defaultActiveKey="policy_detail_policy"
           tabPosition={'top'}
           type='card'
           items={tabs}

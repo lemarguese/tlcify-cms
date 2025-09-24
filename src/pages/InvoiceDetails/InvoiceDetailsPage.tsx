@@ -58,7 +58,7 @@ const InvoiceDetailsPage = () => {
                    className='transactions_details_page_body_top_image'/>
               <div className='transactions_details_page_body_top_content'>
                 <div className='transactions_details_page_body_top_content_head'>
-                  <h6>Sisyphus</h6>
+                  {/*<h6>Sisyphus</h6>*/}
                 </div>
                 <div className='transactions_details_page_body_top_content_body'>
                   <p>{invoiceById.customer.firstName} {invoiceById.customer.lastName}</p>
@@ -103,20 +103,20 @@ const InvoiceDetailsPage = () => {
               </>
             }
           </div>
-          <div className='transactions_details_page_footer_steps'>
-            <div className='transactions_details_page_footer_steps_header'>
-              <p>Summary</p>
-            </div>
-            <div className='transactions_details_page_footer_steps_total'>
-              <p>Total</p>
-              <p>{totalPrice}</p>
-            </div>
-            <div className='transactions_details_page_footer_steps_list'>
-              <TransactionsDetailsPaymentStepper hasNext/>
-              <TransactionsDetailsPaymentStepper hasNext/>
-              <TransactionsDetailsPaymentStepper/>
-            </div>
-          </div>
+          {/*<div className='transactions_details_page_footer_steps'>*/}
+          {/*  <div className='transactions_details_page_footer_steps_header'>*/}
+          {/*    <p>Summary</p>*/}
+          {/*  </div>*/}
+          {/*  <div className='transactions_details_page_footer_steps_total'>*/}
+          {/*    <p>Total</p>*/}
+          {/*    <p>{totalPrice}</p>*/}
+          {/*  </div>*/}
+          {/*  <div className='transactions_details_page_footer_steps_list'>*/}
+          {/*    <TransactionsDetailsPaymentStepper hasNext/>*/}
+          {/*    <TransactionsDetailsPaymentStepper hasNext/>*/}
+          {/*    <TransactionsDetailsPaymentStepper/>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
         </div>
       </div>
     </div>

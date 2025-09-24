@@ -339,9 +339,11 @@ export const getPolicyFunctions = (customerId?: string) => {
 
   const createInvoice = useCallback(async (navigate: NavigateFunction) => {
     try {
+      const unpaidPolicies = policies.filter(p => p.amountDue !== 0);
+
       const invoiceBody: IInvoiceCreate = {
         customer: customerId!,
-        policies: policies.map(p => (
+        policies: unpaidPolicies.map(p => (
           {
             policy: p._id,
             number: p.policyNumber,

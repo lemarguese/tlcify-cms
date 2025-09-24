@@ -86,7 +86,7 @@ const AnalyticsPage = () => {
       <div className='analytics_page_kpis_charts'>
         <div className='analytics_page_kpis_charts_revenue'>
           <div className='analytics_page_kpis_charts_revenue_header'>
-            <label className='analytics_page_kpis_charts_revenue_header_title'>Revenue by Month</label>
+            <label className='analytics_page_kpis_charts_revenue_header_title'>{frequency.toUpperCase()} Revenue</label>
             <Radio label='' buttonStyle='solid' block optionType='button' options={frequencyRadioOptions}
                    onChange={changeFrequency} value={frequency}/>
           </div>

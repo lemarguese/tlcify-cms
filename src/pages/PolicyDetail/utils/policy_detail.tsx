@@ -134,7 +134,7 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     const { totalScheduledAmount, totalDueNowAmount, totalNetToCarrier } = policyCycles.reduce((acc, item) => {
       acc.totalScheduledAmount += item.baseAmount;
       acc.totalDueNowAmount += item.amountRemaining - item.carryOver;
-      acc.totalNetToCarrier += acc.totalDueNowAmount - acc.totalDueNowAmount * (carrier.commissionFee / 100)
+      acc.totalNetToCarrier += item.baseAmount - item.baseAmount * (carrier.commissionFee / 100)
 
       return acc;
     }, { totalScheduledAmount: 0, totalDueNowAmount: 0, totalNetToCarrier: 0 });
