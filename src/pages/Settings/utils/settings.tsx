@@ -332,6 +332,7 @@ export const permissions = [
 
   'read_payments',
   'create_payments',
+  'delete_payments',
 
   'send_invoices',
   'read_invoices',
@@ -341,7 +342,9 @@ export const permissions = [
 
   'create_document',
 
-  'read_renewals'
+  'read_renewals',
+
+  'read_audit_logs',
 ];
 
 export const permissionsTypeTexts: { [k: string]: string } = {
@@ -368,6 +371,7 @@ export const permissionsTypeTexts: { [k: string]: string } = {
 
   "read_payments": "View Payments",
   "create_payments": "Create Payment",
+  "delete_payments": "Delete Payment",
 
   "send_invoices": "Send Invoices",
   "read_invoices": "View Invoices",
@@ -377,7 +381,8 @@ export const permissionsTypeTexts: { [k: string]: string } = {
 
   "create_document": "Upload Document",
 
-  "read_renewals": "View Renewals"
+  "read_renewals": "View Renewals",
+  "read_audit_logs": "Read Activity Log"
 }
 
 
