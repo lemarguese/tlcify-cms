@@ -40,7 +40,7 @@ const PaymentCreateModal = ({ open, cancel, submit }: PaymentCreateModalProps) =
   const changeTime = (value: Dayjs) => {
     setNewPaymentForm(prev => ({
       ...prev,
-      paidAt: value.startOf('day').toDate()
+      paidAt: value.toDate()
     }))
   }
 

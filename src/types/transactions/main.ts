@@ -9,6 +9,7 @@ export interface IPayment {
   baseAmount: number;
   discountAmount: number;
   totalPaid: number;
+  transactionNumber: string;
   provider: string;
   providerRef: string;
   method: 'card' | 'check' | 'zelle' | 'cash' | 'other';
@@ -17,7 +18,7 @@ export interface IPayment {
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean,
-  deletedAt: boolean
+  deletedAt: Date
 }
 
 export interface IPaymentCreate extends Pick<IPayment, 'method' | 'paidAt' | 'notes' | 'discountAmount' | 'totalPaid'> {
