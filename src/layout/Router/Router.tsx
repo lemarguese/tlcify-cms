@@ -13,6 +13,7 @@ import RenewalPage from "@/pages/Renewal/RenewalPage.tsx";
 import AnalyticsPage from "@/pages/Analytics/AnalyticsPage.tsx";
 import SettingsPage from "@/pages/Settings/SettingsPage.tsx";
 import ForbiddenPage from "@/pages/Forbidden/ForbiddenPage.tsx";
+import TransactionsDetailsPage from '@/pages/TransactionsDetails/TransactionsDetailsPage.tsx'
 import { permissions } from "@/pages/Settings/utils/settings.tsx";
 
 const Router = () => {
@@ -38,7 +39,10 @@ const Router = () => {
         </Route>
 
         <Route element={<ProtectedRoute requiredPermissions={["read_payments"]}/>}>
-          <Route path="/payments" element={<TransactionsPage/>}/>
+          <Route path="/payments">
+            <Route index element={<TransactionsPage/>}/>
+            <Route path=':paymentId' element={<TransactionsDetailsPage/>}/>
+          </Route>
         </Route>
 
         <Route element={<ProtectedRoute requiredPermissions={["create_insurances"]}/>}>

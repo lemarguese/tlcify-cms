@@ -69,9 +69,12 @@ const TransactionsPage = () => {
                  label='Reports by payment method' pagination={false} summary={(_) => {
             return <AntTable.Summary.Row>
               <AntTable.Summary.Cell index={1} colSpan={1}>GRAND TOTAL: </AntTable.Summary.Cell>
-              <AntTable.Summary.Cell index={2} colSpan={1}>{formatCurrency(grandTotal.totalPremiumPrice)}</AntTable.Summary.Cell>
-              <AntTable.Summary.Cell index={3} colSpan={1}>{formatCurrency(grandTotal.totalPremiumFee)}</AntTable.Summary.Cell>
-              <AntTable.Summary.Cell index={3} colSpan={1}>{formatCurrency(grandTotal.totalPrice)}</AntTable.Summary.Cell>
+              <AntTable.Summary.Cell index={2}
+                                     colSpan={1}>{formatCurrency(grandTotal.totalPremiumPrice)}</AntTable.Summary.Cell>
+              <AntTable.Summary.Cell index={3}
+                                     colSpan={1}>{formatCurrency(grandTotal.totalPremiumFee)}</AntTable.Summary.Cell>
+              <AntTable.Summary.Cell index={3}
+                                     colSpan={1}>{formatCurrency(grandTotal.totalPrice)}</AntTable.Summary.Cell>
             </AntTable.Summary.Row>
           }}/>
         </div>
@@ -79,7 +82,7 @@ const TransactionsPage = () => {
       <Table columns={transactionsTableHeaders} actions={<></>} onRow={(item) => {
         return {
           onClick: () => {
-            navigate(`/invoice/${item._id}`)
+            if (!item.isDeleted) navigate(`/payments/${item._id}`)
           },
         }
       }} dataSource={payments} rowKey='_id' label='Transactions'/>

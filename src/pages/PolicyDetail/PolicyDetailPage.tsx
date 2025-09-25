@@ -43,8 +43,6 @@ const PolicyDetailPage = () => {
     isPolicyFeeDeleteModalOpen,
     cancelPolicyFeeModal,
 
-    paymentsByPolicy, fetchPaymentsByPolicy,
-
     installmentsTableItems,
 
     isPolicyActivityOpen, cancelPolicyActivity, openPolicyActivity
@@ -56,8 +54,10 @@ const PolicyDetailPage = () => {
     openPaymentVoidModal,
     voidPayment,
     selectedPayment,
-    paymentSelection
-  } = getPolicyPaymentsFunctions();
+    paymentSelection,
+
+    paymentsByPolicy, fetchPaymentsByPolicy,
+  } = getPolicyPaymentsFunctions(policyId);
 
   useEffect(() => {
     fetchPolicyById();

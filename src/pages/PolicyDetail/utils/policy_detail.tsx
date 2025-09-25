@@ -82,7 +82,6 @@ const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'cycles' | 'customer' | 
 
 export const getPolicyDetailFunctions = (policyId?: string) => {
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
-  const [paymentsByPolicy, setPaymentsByPolicy] = useState<IPayment[]>([]);
 
   const [isPolicyFeeDeleteModalOpen, setIsPolicyFeeDeleteModalOpen] = useState(false);
   const [isPolicyActivityOpen, setIsPolicyActivityOpen] = useState(false);
@@ -106,11 +105,6 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
   const fetchPolicyById = useCallback(async () => {
     const policyById = await instance.get(`/policy/${policyId}`);
     setPolicyById(policyById.data);
-  }, [policyId]);
-
-  const fetchPaymentsByPolicy = useCallback(async () => {
-    const payments = await instance.get(`/payment/byPolicy/${policyId}`);
-    setPaymentsByPolicy(payments.data);
   }, [policyId]);
 
   // TODO __v, createdAt, updatedAt needs to be removed
@@ -199,9 +193,6 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     calendarTileTypes,
     isPolicyFeeDeleteModalOpen, policyFeeDeletionButton, updatePolicyFee, cancelPolicyFeeModal,
 
-    // payments
-    fetchPaymentsByPolicy, paymentsByPolicy,
-
     // installments
 
     installmentsTableItems,
@@ -211,9 +202,11 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
   }
 }
 
-export const getPolicyPaymentsFunctions = () => {
+export const getPolicyPaymentsFunctions = (policyId?: string) => {
   const { error, success } = useNotify();
   const [selectedPayment, setSelectedPayment] = useState<IPayment>();
+
+  const [paymentsByPolicy, setPaymentsByPolicy] = useState<IPayment[]>([]);
 
   const [isPaymentVoidModalOpen, setIsPaymentVoidModalOpen] = useState(false);
 
@@ -228,6 +221,11 @@ export const getPolicyPaymentsFunctions = () => {
       disabled: record.isDeleted, // Column configuration not to be checked
     }),
   });
+
+  const fetchPaymentsByPolicy = useCallback(async () => {
+    const payments = await instance.get(`/payment/byPolicy/${policyId}`);
+    setPaymentsByPolicy(payments.data);
+  }, [policyId]);
 
   const voidPayment = useCallback(async () => {
     try {
@@ -251,7 +249,9 @@ export const getPolicyPaymentsFunctions = () => {
   return {
     isPaymentVoidModalOpen, cancelPaymentVoidModal, openPaymentVoidModal,
 
-    selectedPayment, voidPayment, paymentSelection
+    selectedPayment, voidPayment, paymentSelection,
+
+    fetchPaymentsByPolicy, paymentsByPolicy
   }
 }
 
