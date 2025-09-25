@@ -5,6 +5,7 @@ import { instance } from "@/api/axios.ts";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 import dayjs from "dayjs";
 import { formatCurrency } from "@/utils/payment.ts";
+import type { AxiosError } from "axios";
 
 const transactionInitialState: IPayment = {
   _id: '',
@@ -34,8 +35,8 @@ export const getTransactionDetailsFunctions = (transactionId?: string) => {
     try {
       const response = await instance.get(`/payment/${transactionId}`);
       setTransactionById(response.data);
-    } catch (e) {
-      error(e.message);
+    } catch (e: unknown) {
+      error((e as AxiosError).message);
     }
   }
 
@@ -63,8 +64,6 @@ export const getTransactionDetailsFunctions = (transactionId?: string) => {
   }, [transactionById])
 
   return {
-    fetchTransactionById, transactionById,
-
-    cellInformation
+    fetchTransactionById, cellInformation
   }
 }

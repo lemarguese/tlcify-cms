@@ -8,7 +8,7 @@ import { useEffect } from "react";
 const TransactionsDetailsPage = () => {
   const { paymentId } = useParams();
 
-  const { fetchTransactionById, transactionById, cellInformation } = getTransactionDetailsFunctions(paymentId);
+  const { fetchTransactionById, cellInformation } = getTransactionDetailsFunctions(paymentId);
 
   useEffect(() => {
     fetchTransactionById();
