@@ -76,12 +76,6 @@ const TransactionsDetailsPage = () => {
               <p className='transactions_details_page_paid_content_email_text'>{cellInformation.customerEmail}</p>
             </div>
           </div>
-          <div className='transactions_details_page_paid_footer'>
-            <div className='transactions_details_page_paid_footer_issuer'>
-              <label className='transactions_details_page_paid_footer_issuer_label'>ISSUER</label>
-              <label className='transactions_details_page_paid_footer_issuer_text'>insurance@tlcify.com</label>
-            </div>
-          </div>
         </div>
         <div className='transactions_details_page_issuer'>
           <div className='transactions_details_page_issuer_item'>
