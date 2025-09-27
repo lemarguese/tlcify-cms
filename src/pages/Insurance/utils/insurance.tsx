@@ -51,12 +51,22 @@ export const newInsuranceFormInitialState: IInsuranceCreate = {
 
 export const getInsuranceFunctions = () => {
   const { success, error } = useNotify();
+
+  const [loading, setLoading] = useState(false)
+
   const [insurances, setInsurances] = useState<IInsurance[]>([]);
   const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false);
 
   const fetchInsurances = useCallback(async () => {
-    const insurances = await instance.get('/insurance');
-    setInsurances(insurances.data);
+    try {
+      setLoading(true)
+      const insurances = await instance.get('/insurance');
+      setInsurances(insurances.data);
+    } catch (e) {
+      error(`Error while fetching insurances: ${e}`);
+    } finally {
+      setLoading(false)
+    }
   }, []);
 
   const addNewInsuranceButton = <div>
@@ -65,12 +75,14 @@ export const getInsuranceFunctions = () => {
 
   const submitForm = useCallback(async (newInsuranceForm: IInsuranceCreate) => {
     try {
+      setLoading(true);
       await instance.post('/insurance', newInsuranceForm);
       success('Insurance was successfully created!');
       await fetchInsurances();
     } catch (e) {
       error('Oops... Seems we have problem with insurance creation. Try again.');
     } finally {
+      setLoading(false);
       await cancelInsuranceModal();
     }
   }, []);
@@ -96,6 +108,8 @@ export const getInsuranceFunctions = () => {
     isInsuranceModalOpen,
     cancelInsuranceModal,
     changeInsuranceFormData,
-    submitForm
+    submitForm,
+
+    insuranceLoading: loading
   }
 }

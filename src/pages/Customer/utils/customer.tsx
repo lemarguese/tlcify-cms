@@ -72,6 +72,8 @@ export const getCustomerFunctions = () => {
   const navigate = useNavigate();
   const { success, error } = useNotify();
 
+  const [loading, setLoading] = useState(false);
+
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -140,8 +142,15 @@ export const getCustomerFunctions = () => {
   }, [selectedCustomer]);
 
   const fetchCustomers = async (query?: string) => {
-    const all = await instance.get('/customer', { params: { search: query } });
-    setCustomers(all.data);
+    try {
+      setLoading(true);
+      const all = await instance.get('/customer', { params: { search: query } });
+      setCustomers(all.data);
+    } catch (e) {
+      console.error("Error fetching customers:", e);
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleSearchQuery = useCallback((value: BaseSyntheticEvent) => {
@@ -187,7 +196,9 @@ export const getCustomerFunctions = () => {
 
     openDeleteCustomerModal, cancelDeleteCustomerModal, isDeleteModalOpen, deleteCustomer,
 
-    openCreateCustomerModal, openUpdateCustomerModal
+    openCreateCustomerModal, openUpdateCustomerModal,
+
+    loading
   }
 }
 

@@ -69,6 +69,9 @@ export const newDriverFormInitialState: IDriverCreate = {
 
 export const getDriverFunctions = (customerId?: string) => {
   const { success, error } = useNotify()
+
+  const [loading, setLoading] = useState(false);
+
   const [isDriverCreateModalOpen, setIsDriverCreateModalOpen] = useState(false);
   const [isDriverUpdateModalOpen, setIsDriverUpdateModalOpen] = useState(false);
   const [isDriverDeleteModalOpen, setIsDriverDeleteModalOpen] = useState(false);
@@ -87,23 +90,33 @@ export const getDriverFunctions = (customerId?: string) => {
   const [drivers, setDrivers] = useState<IDriver[]>([]);
 
   const fetchDrivers = useCallback(async () => {
-    const driversByCustomer = await instance.get('/driver/byCustomer', { params: { id: customerId } });
-    setDrivers(driversByCustomer.data);
+    try {
+      setLoading(true)
+      const driversByCustomer = await instance.get('/driver/byCustomer', { params: { id: customerId } });
+      setDrivers(driversByCustomer.data);
+    } catch (e) {
+      error(`Error while fetching drivers: ${e}`)
+    } finally {
+      setLoading(false);
+    }
   }, [customerId]);
 
   const createDriver = useCallback(async (newDriverForm: IDriverCreate) => {
     try {
+      setLoading(true)
       await instance.post('/driver', { ...newDriverForm, customer: customerId });
       success('Driver was successfully created!');
     } catch (e) {
       error('There is a problem with driver creation. Try again.');
     } finally {
+      setLoading(false)
       await cancelDriverModal();
     }
   }, [customerId]);
 
   const updateDriver = useCallback(async (updateDriverForm: IDriverUpdate) => {
     try {
+      setLoading(true)
       const touchedFormFields: { [k: string]: unknown } = {};
 
       Object.entries(updateDriverForm).forEach(([key, value]) => {
@@ -119,6 +132,7 @@ export const getDriverFunctions = (customerId?: string) => {
     } catch (e) {
       error('There is a problem with driver update. Try again.');
     } finally {
+      setLoading(false)
       await cancelUpdateModal();
       await fetchDrivers();
     }
@@ -126,11 +140,14 @@ export const getDriverFunctions = (customerId?: string) => {
 
   const deleteDriver = useCallback(async () => {
     try {
+      setLoading(true)
       await instance.delete(`/driver/${selectedDriver!._id}`);
       success('Driver was successfully deleted!');
       await fetchDrivers();
     } catch (e) {
       error('There is a problem with driver deletion. Try again.');
+    } finally {
+      setLoading(false)
     }
     await cancelDriverDeleteModal();
   }, [selectedDriver]);
@@ -170,7 +187,9 @@ export const getDriverFunctions = (customerId?: string) => {
 
     cancelDriverDeleteModal, openDriverDeleteModal, isDriverDeleteModalOpen, deleteDriver,
 
-    openDriverModal
+    openDriverModal,
+
+    driverLoading: loading,
   }
 }
 

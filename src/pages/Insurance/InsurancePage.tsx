@@ -15,14 +15,16 @@ const InsurancePage = () => {
     submitForm,
     addNewInsuranceButton,
     cancelInsuranceModal,
-    changeInsuranceFormData
+    changeInsuranceFormData,
+
+    insuranceLoading
   } = getInsuranceFunctions();
 
   useEffect(() => {
     fetchInsurances();
   }, []);
 
-  return <Page title='Insurances' showSearch>
+  return <Page loading={insuranceLoading} title='Insurances' showSearch>
     <div className='insurance_page'>
       <Table actions={addNewInsuranceButton} label='Insurance carriers list' columns={insuranceTableHeaders}
              dataSource={insurances}/>

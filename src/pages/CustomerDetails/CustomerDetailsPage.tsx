@@ -52,7 +52,9 @@ const CustomerDetailsPage = () => {
     openUpdateModal, isDriverUpdateModalOpen, cancelUpdateModal,
     driversSelection, selectedDriver, updateDriver,
 
-    deleteDriver, openDriverDeleteModal, cancelDriverDeleteModal, isDriverDeleteModalOpen
+    deleteDriver, openDriverDeleteModal, cancelDriverDeleteModal, isDriverDeleteModalOpen,
+
+    driverLoading
   } = getDriverFunctions(customerId);
 
   const {
@@ -82,6 +84,8 @@ const CustomerDetailsPage = () => {
     // statistics
     totalFeesAmount, totalPaymentAmount, nextDueAmount,
 
+    policyLoading,
+
     // common
     ...commonPolicyFunctions
   } = getPolicyFunctions(customerId);
@@ -92,7 +96,9 @@ const CustomerDetailsPage = () => {
     cancelClientFormSend,
     customerById, contactSections, fetchCustomerById,
 
-    cancelActivityModal, isActivityLogsOpen, openActivityModal
+    cancelActivityModal, isActivityLogsOpen, openActivityModal,
+
+    customerByIdLoading
   } = getCustomerByIdFunction(customerId);
 
   const {
@@ -101,7 +107,8 @@ const CustomerDetailsPage = () => {
     uploadCustomerDocument,
     isDocumentModalOpen,
     cancelDocumentModal,
-    openDocumentModal
+    openDocumentModal,
+    documentLoading
   } = getDocumentFunction(customerId);
 
   useEffect(() => {
@@ -157,7 +164,7 @@ const CustomerDetailsPage = () => {
     </Permission>
   </div>
 
-  return <Page showSearch={false}>
+  return <Page loading={policyLoading && driverLoading && customerByIdLoading && documentLoading} showSearch={false}>
     <div className='customer_details_page'>
       <div className='customer_details_page_container'>
         <div className='customer_details_page_contacts'>

@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import type { IPayment, IPaymentQuery } from "@/types/transactions/main.ts";
 import { instance } from "@/api/axios.ts";
 import Button from "@/components/Button/Button.tsx";
+import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 
 export const transactionsTableHeaders: ColumnsType = [
   // TODO What do i need with private fields
@@ -105,14 +106,25 @@ export const transactionsFilterSelectionOptions = [
 ]
 
 export const getTransactionFunctions = () => {
+  const { error, success } = useNotify();
+
   const [payments, setPayments] = useState<IPayment[]>([]);
   const [query, setQuery] = useState<IPaymentQuery>()
 
+  const [loading, setLoading] = useState(false)
+
   const fetchAllPayments = async () => {
-    const rawPayments = await instance.get('/payment', {
-      params: query
-    });
-    setPayments(rawPayments.data);
+    try {
+      setLoading(true);
+      const rawPayments = await instance.get('/payment', {
+        params: query
+      });
+      setPayments(rawPayments.data);
+    } catch (e) {
+      error(`Error while fetching transactions: ${e}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const changeQuerySelector = useCallback((key: keyof IPaymentQuery) => {
@@ -191,18 +203,24 @@ export const getTransactionFunctions = () => {
   }, [payments]);
 
   const getPaymentsExcel = async () => {
-    const response = await instance.get('/document/payments-excel', {
-      responseType: 'blob',
-      params: query
-    });
+    try {
+      const response = await instance.get('/document/payments-excel', {
+        responseType: 'blob',
+        params: query
+      });
 
-    const blob = new Blob([response.data], { type: response.headers["content-type"] });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "payments.xlsx"); // custom filename
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+      const blob = new Blob([response.data], { type: response.headers["content-type"] });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", "payments.xlsx"); // custom filename
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      success('Successfully exported excel of transactions!');
+    } catch (e) {
+      error(`Error while exporting excel of payments: ${e}`)
+    }
   }
 
   const transactionTableActions = <div>
@@ -218,6 +236,8 @@ export const getTransactionFunctions = () => {
     resetQuery,
     reportsData,
     grandTotal,
-    transactionTableActions
+    transactionTableActions,
+
+    transactionsLoading: loading
   }
 }

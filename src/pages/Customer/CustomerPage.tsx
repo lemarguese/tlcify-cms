@@ -32,6 +32,7 @@ const CustomerPage = () => {
     openCreateCustomerModal, openUpdateCustomerModal,
 
     cancelDeleteCustomerModal, deleteCustomer, isDeleteModalOpen, openDeleteCustomerModal,
+    loading
   } = getCustomerFunctions();
 
   const { fetchMyself, user } = getAuthFunctions();
@@ -59,7 +60,7 @@ const CustomerPage = () => {
     </div>
   );
 
-  return <Page title='Customers' showSearch onSearchChange={handleSearchQuery} onSearchPress={onSearch}
+  return <Page loading={loading} title='Customers' showSearch onSearchChange={handleSearchQuery} onSearchPress={onSearch}
                searchQuery={searchQuery}>
     <div className='customer_page'>
       <Table columns={customerTableHeaders} rowSelection={customersSelection} onRow={(item) => {

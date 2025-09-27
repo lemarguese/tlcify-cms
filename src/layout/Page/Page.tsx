@@ -5,6 +5,7 @@ import Sidebar from "../../layout/Sidebar/Sidebar.tsx";
 import Header from "../Header/Header.tsx";
 import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
 import { useEffect } from "react";
+import Loader from "@/components/Loader/Loader.tsx";
 
 interface PageProps {
   children: ReactNode;
@@ -16,9 +17,10 @@ interface PageProps {
 
   fixedHeader?: boolean;
   title?: string;
+  loading?: boolean;
 }
 
-const Page: FC<PageProps> = ({ children, title, fixedHeader = false, ...searchProps }) => {
+const Page: FC<PageProps> = ({ children, title, fixedHeader = false, loading = false, ...searchProps }) => {
   const { logOut, user, fetchMyself } = getAuthFunctions();
 
   // TODO State manager
@@ -35,6 +37,7 @@ const Page: FC<PageProps> = ({ children, title, fixedHeader = false, ...searchPr
       </div>
       {children}
     </div>
+    <Loader spinning={loading} />
   </Layout>
 }
 

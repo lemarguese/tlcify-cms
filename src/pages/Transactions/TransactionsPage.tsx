@@ -29,7 +29,9 @@ const TransactionsPage = () => {
     changeQuerySelector,
     reportsData,
     grandTotal,
-    transactionTableActions
+    transactionTableActions,
+
+    transactionsLoading
   } = getTransactionFunctions();
   const { insurances, fetchInsurances } = getInsuranceFunctions();
 
@@ -43,7 +45,7 @@ const TransactionsPage = () => {
     value: i._id
   })), [insurances]);
 
-  return <Page showSearch>
+  return <Page loading={transactionsLoading} showSearch>
     <div className='transactions_page'>
       <div className='transactions_page_header'>
         <div className='transactions_page_header_filter'>

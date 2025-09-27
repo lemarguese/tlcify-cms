@@ -154,8 +154,16 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
       } else {
         const everyMonthDueDates = [];
         const effectiveDate = dayjs(policyById.effectiveDate);
-        for (let i = policyById.deposit ? 1 : 0; i < +policyById.installmentCount; i++) {
-          everyMonthDueDates.push(effectiveDate.set('month', effectiveDate.get('month') + i));
+
+        const dueDate = dayjs(policyById.customEffectiveDate ? policyById.customEffectiveDate : policyById.effectiveDate);
+
+        for (let i = 0; i < +policyById.installmentCount; i++) {
+          if (i === 0 && policyById.deposit) {
+            everyMonthDueDates.push(effectiveDate.add(i, 'month'));
+            continue;
+          }
+
+          everyMonthDueDates.push(dueDate.add(i, 'month'));
         }
 
         if (everyMonthDueDates.find(dueDate => dueDate.isSame(date))) {

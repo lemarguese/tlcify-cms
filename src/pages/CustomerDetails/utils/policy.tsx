@@ -173,6 +173,8 @@ export const getPolicyFunctions = (customerId?: string) => {
   const [policies, setPolicies] = useState<IPolicyByCustomer[]>([]);
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
 
+  const [loading, setLoading] = useState(false);
+
   const [selectedPolicy, setSelectedPolicy] = useState<IPolicy>();
 
   const [isPolicyCreateModalOpen, setIsPolicyCreateModalOpen] = useState(false);
@@ -191,8 +193,15 @@ export const getPolicyFunctions = (customerId?: string) => {
   });
 
   const fetchPolicies = useCallback(async () => {
-    const policiesByCustomer = await instance.get('/policy/byCustomer', { params: { id: customerId } });
-    setPolicies(policiesByCustomer.data);
+    try {
+      setLoading(true)
+      const policiesByCustomer = await instance.get('/policy/byCustomer', { params: { id: customerId } });
+      setPolicies(policiesByCustomer.data);
+    } catch (e) {
+      error(`Error while fetching customers: ${e}`)
+    } finally {
+      setLoading(false)
+    }
   }, [customerId]);
 
   const createPolicy = useCallback(async (newPolicyForm: IPolicyCreate) => {
@@ -276,12 +285,14 @@ export const getPolicyFunctions = (customerId?: string) => {
 
   const updatePolicy = useCallback(async (newPolicyForm: Partial<IUpdatePolicy>) => {
     try {
+      setLoading(true)
       await instance.patch(`/policy/${selectedPolicy!._id}`, newPolicyForm);
       success('Policy was successfully updated!');
       await fetchPolicies();
     } catch (e) {
       error('There is a problem with policy update. Try again.');
     } finally {
+      setLoading(false)
       await cancelUpdatePolicyModal();
     }
   }, [selectedPolicy]);
@@ -300,11 +311,14 @@ export const getPolicyFunctions = (customerId?: string) => {
 
   const deletePolicy = useCallback(async () => {
     try {
+      setLoading(true)
       await instance.delete(`/policy/${selectedPolicy!._id}`);
       success('Policy was successfully deleted!');
       await fetchPolicies();
     } catch (e) {
       error('There is a problem with policy delete. Try again.');
+    } finally {
+      setLoading(false)
     }
     await cancelDeletePolicyModal();
   }, [selectedPolicy]);
@@ -321,6 +335,7 @@ export const getPolicyFunctions = (customerId?: string) => {
 
   const createPayment = useCallback(async (paymentForm: IPaymentCreate) => {
     try {
+      setLoading(true)
       await instance.post('/payment/application', {
         ...paymentForm,
         policyId: selectedPolicy!._id,
@@ -331,6 +346,7 @@ export const getPolicyFunctions = (customerId?: string) => {
     } catch (e) {
       error('Oops... Problem with payment creation. Try again.');
     } finally {
+      setLoading(false)
       cancelPaymentCreateModal();
     }
   }, [selectedPolicy]);
@@ -419,12 +435,18 @@ export const getPolicyFunctions = (customerId?: string) => {
 
     totalFeesAmount,
     totalPaymentAmount,
-    nextDueAmount
+    nextDueAmount,
+
+    // loading
+    policyLoading: loading
   }
 }
 
 export const getCustomerByIdFunction = (customerId?: string) => {
   const { error, success } = useNotify();
+
+  const [loading, setLoading] = useState(false);
+
   const [isClientEmailModalOpen, setIsClientEmailModalOpen] = useState(false);
   const [isAutoPayEnabled, setIsAutoPayEnabled] = useState(false);
   const [isActivityLogsOpen, setIsActivityLogsOpen] = useState(false);
@@ -451,8 +473,15 @@ export const getCustomerByIdFunction = (customerId?: string) => {
   ];
 
   const fetchCustomerById = useCallback(async () => {
-    const customer = await instance.get(`/customer/${customerId}`);
-    setCustomerById(customer.data);
+    try {
+      setLoading(true)
+      const customer = await instance.get(`/customer/${customerId}`);
+      setCustomerById(customer.data);
+    } catch (e) {
+      error(`Error while fetching customer with id. ${e}`)
+    } finally {
+      setLoading(false)
+    }
   }, [customerId]);
 
   const sendFormToClientEmail = useCallback(async (clientEmail: string) => {
@@ -494,7 +523,9 @@ export const getCustomerByIdFunction = (customerId?: string) => {
 
     contactSections,
 
-    openActivityModal, cancelActivityModal, isActivityLogsOpen
+    openActivityModal, cancelActivityModal, isActivityLogsOpen,
+
+    customerByIdLoading: loading
   }
 }
 
@@ -531,15 +562,25 @@ export const getDocumentFunction = (customerId?: string) => {
   const { success, error } = useNotify();
   const [documents, setDocuments] = useState<IDocument[]>([]);
 
+  const [loading, setLoading] = useState(false);
+
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
 
   const fetchDocumentsByCustomerId = async () => {
-    const response = await instance.get(`/document/customer/${customerId}`);
-    setDocuments(response.data);
+    try {
+      setLoading(true);
+      const response = await instance.get(`/document/customer/${customerId}`);
+      setDocuments(response.data);
+    } catch (e) {
+      error(`Error while fetching documents: ${e}`)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const uploadCustomerDocument = useCallback(async (form: IDocumentCreate) => {
     try {
+      setLoading(true)
       const formData = new FormData();
       formData.set('customer', customerId!);
 
@@ -557,6 +598,7 @@ export const getDocumentFunction = (customerId?: string) => {
     } catch (e) {
       error('Document upload request have problem. Try again.');
     } finally {
+      setLoading(false)
       cancelDocumentModal();
     }
   }, [customerId]);
@@ -573,7 +615,9 @@ export const getDocumentFunction = (customerId?: string) => {
     fetchDocumentsByCustomerId, documents,
     uploadCustomerDocument,
 
-    cancelDocumentModal, isDocumentModalOpen, openDocumentModal
+    cancelDocumentModal, isDocumentModalOpen, openDocumentModal,
+
+    documentLoading: loading
   }
 }
 
