@@ -110,6 +110,11 @@
       }
 
       &_payments {
+        &_actions {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
 
         &_row {
           &_void {

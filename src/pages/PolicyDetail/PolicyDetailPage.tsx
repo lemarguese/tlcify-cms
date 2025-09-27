@@ -57,6 +57,7 @@ const PolicyDetailPage = () => {
     paymentSelection,
 
     paymentsByPolicy, fetchPaymentsByPolicy,
+    sendReceiptForPayment
   } = getPolicyPaymentsFunctions(policyId);
 
   useEffect(() => {
@@ -65,10 +66,12 @@ const PolicyDetailPage = () => {
     fetchMyself();
   }, []);
 
-  const paymentTableActions = <div>
+  const paymentTableActions = <div className='policy_detail_page_body_right_payments_actions'>
     {selectedPayment && <Permission permission='delete_payments' user_permission={user.permissions}>
         <Button variant='solid' onClick={openPaymentVoidModal} type='primary' color={'danger'}>Void payment</Button>
     </Permission>}
+    {selectedPayment &&
+        <Button variant='solid' type='primary' color='blue' onClick={sendReceiptForPayment}>Send Receipt</Button>}
   </div>
 
   const tabs: TabsProps['items'] = [

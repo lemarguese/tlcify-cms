@@ -238,6 +238,18 @@ export const getPolicyPaymentsFunctions = (policyId?: string) => {
     }
   }, [selectedPayment]);
 
+  const sendReceiptForPayment = useCallback(async () => {
+    try {
+      await instance.post(`/email/payment-receipt`, {
+        paymentId: selectedPayment!._id
+      });
+      success('Receipt successfully sent!');
+    } catch (e) {
+      console.log(e)
+      error('Error while sending receipt. Try again...');
+    }
+  }, [selectedPayment]);
+
   const cancelPaymentVoidModal = () => {
     setIsPaymentVoidModalOpen(false);
   }
@@ -251,7 +263,8 @@ export const getPolicyPaymentsFunctions = (policyId?: string) => {
 
     selectedPayment, voidPayment, paymentSelection,
 
-    fetchPaymentsByPolicy, paymentsByPolicy
+    fetchPaymentsByPolicy, paymentsByPolicy,
+    sendReceiptForPayment
   }
 }
 

@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { useCallback, useMemo, useState } from "react";
 import type { IPayment, IPaymentQuery } from "@/types/transactions/main.ts";
 import { instance } from "@/api/axios.ts";
+import Button from "@/components/Button/Button.tsx";
 
 export const transactionsTableHeaders: ColumnsType = [
   // TODO What do i need with private fields
@@ -187,7 +188,26 @@ export const getTransactionFunctions = () => {
           return acc;
         }, {} as any)) as any[]
     }
-  }, [payments])
+  }, [payments]);
+
+  const getPaymentsExcel = async () => {
+    const response = await instance.get('/document/payments-excel', {
+      responseType: 'blob',
+      params: query
+    });
+
+    const blob = new Blob([response.data], { type: response.headers["content-type"] });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "payments.xlsx"); // custom filename
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  const transactionTableActions = <div>
+    <Button variant='solid' type='primary' color='green' onClick={getPaymentsExcel}>Get Excel Report</Button>
+  </div>
 
   return {
     payments,
@@ -197,6 +217,7 @@ export const getTransactionFunctions = () => {
     query,
     resetQuery,
     reportsData,
-    grandTotal
+    grandTotal,
+    transactionTableActions
   }
 }
