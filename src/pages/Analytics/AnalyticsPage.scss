@@ -14,15 +14,15 @@
       flex: 1;
 
       &_item {
+        &_difference {
+          display: flex;
+          align-items: end;
+          gap: 12px;
 
-        &_up {
-
+          &_text {
+            font-size: 12px;
+          }
         }
-
-        &_down {
-
-        }
-
       }
     }
 

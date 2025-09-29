@@ -3,7 +3,6 @@ import './AnalyticsPage.scss';
 import Page from "@/layout/Page/Page.tsx";
 import Statistic from "@/components/Statistic/Statistic.tsx";
 import Card from "@/components/Card/Card.tsx";
-import { ArrowUpOutlined } from '@ant-design/icons';
 import { ResponsiveLine } from '@nivo/line';
 import {
   frequencyRadioOptions, fullyCoveredDueAmountCustomersTableHeaders,
@@ -18,7 +17,7 @@ import Date from "@/components/Date/Date.tsx";
 
 const AnalyticsPage = () => {
   const {
-    kpis,
+    kpisCardOptions,
     fetchKpis,
     fetchRevenueByFrequency,
     revenueByFrequency,
@@ -47,40 +46,19 @@ const AnalyticsPage = () => {
     <div className='analytics_page'>
       <div className='analytics_page_kpis'>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' precision={2} value={kpis.totalRevenue} prefix={<div>
-            <ArrowUpOutlined/>
-            $
-          </div>} valueStyle={{ color: '#3f8600' }} title='Total Revenue'/>
+          <Statistic className='analytics_page_kpis_card_item' precision={2} {...kpisCardOptions['totalRevenue']} title='Total Revenue'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' precision={2} valueStyle={{ color: '#3f8600' }}
-                     value={kpis.totalCommissionFee}
-                     prefix={<div>
-                       <ArrowUpOutlined/>
-                       $
-                     </div>}
-                     title='Total commission fee'/>
+          <Statistic className='analytics_page_kpis_card_item' precision={2} {...kpisCardOptions['totalCommissionFee']} title='Total commission fee'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' precision={0} valueStyle={{ color: '#3f8600' }}
-                     value={kpis.activePoliciesCount}
-                     prefix={<ArrowUpOutlined/>}
-                     title='Active policies'/>
+          <Statistic className='analytics_page_kpis_card_item' precision={0} {...kpisCardOptions['activePoliciesCount']} title='Active policies'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' precision={2} valueStyle={{ color: '#3f8600' }}
-                     value={kpis.expiringPoliciesCount}
-                     prefix={<ArrowUpOutlined/>}
-                     title='Expiring policies'/>
+          <Statistic className='analytics_page_kpis_card_item' precision={2} {...kpisCardOptions['expiringPoliciesCount']} title='Expiring policies'/>
         </Card>
         <Card variant="borderless" className='analytics_page_kpis_card'>
-          <Statistic className='analytics_page_kpis_card_item' precision={2} valueStyle={{ color: '#3f8600' }}
-                     value={kpis.totalFees}
-                     prefix={<div>
-                       <ArrowUpOutlined/>
-                       $
-                     </div>}
-                     title='Total fees'/>
+          <Statistic className='analytics_page_kpis_card_item' precision={2} {...kpisCardOptions['totalFees']} title='Total fees'/>
         </Card>
       </div>
       <div className='analytics_page_kpis_charts'>

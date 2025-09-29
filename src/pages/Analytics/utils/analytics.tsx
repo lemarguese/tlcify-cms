@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { CSSProperties, ReactNode, useCallback, useMemo, useState } from "react";
 import type { IAnalyticsFrequency, IAnalyticsKpi, IAnalyticsRevenueByFrequency } from "@/types/analytics/main.ts";
 import { instance } from "@/api/axios.ts";
 import dayjs, { Dayjs } from "dayjs";
@@ -6,6 +6,7 @@ import type { IPolicy } from "@/types/policy/main.ts";
 import type { RadioChangeEvent } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
+import { RiseOutlined, FallOutlined } from "@ant-design/icons";
 
 export const soonestExpiringPoliciesTableHeaders = [
   {
@@ -115,11 +116,26 @@ export const unpaidPoliciesTableHeaders: ColumnsType = [
 ]
 
 const analyticsKpisInitialState: IAnalyticsKpi = {
-  totalFees: 0,
-  activePoliciesCount: 0,
-  expiringPoliciesCount: 0,
-  totalRevenue: 0,
-  totalCommissionFee: 0
+  totalFees: {
+    currentMonth: 0,
+    lastMonth: 0
+  },
+  activePoliciesCount: {
+    currentMonth: 0,
+    lastMonth: 0
+  },
+  expiringPoliciesCount: {
+    currentMonth: 0,
+    lastMonth: 0
+  },
+  totalRevenue: {
+    currentMonth: 0,
+    lastMonth: 0
+  },
+  totalCommissionFee: {
+    currentMonth: 0,
+    lastMonth: 0
+  }
 }
 
 export const getAnalyticsFunctions = () => {
@@ -175,10 +191,28 @@ export const getAnalyticsFunctions = () => {
 
   const changeFrequency = useCallback((e: RadioChangeEvent) => {
     setFrequency(e.target.value)
-  }, [])
+  }, []);
+
+  const kpisCardOptions = useMemo(() => {
+    return Object.entries(kpis).reduce((acc, item) => {
+      const [key, value] = item;
+
+      acc[key] = {
+        value: value.currentMonth,
+        valueStyle: { color: value.lastMonth > value.currentMonth ? '#e14b67' : '#3f8600' },
+        suffix: <div className='analytics_page_kpis_card_item_difference'>
+          {value.lastMonth > value.currentMonth ? <FallOutlined/> : <RiseOutlined/>}
+          <p className='analytics_page_kpis_card_item_difference_text'>{ value.lastMonth ? (value.currentMonth - value.lastMonth) / value.lastMonth * 100 : 0 }%</p>
+        </div>,
+        prefix: !['activePoliciesCount', 'expiringPoliciesCount'].includes(key) ? '$' : ''
+      }
+
+      return acc;
+    }, {} as { [k: keyof IAnalyticsKpi]: { value: number, valueStyle: CSSProperties, prefix: ReactNode } });
+  }, [kpis]);
 
   return {
-    kpis, fetchKpis,
+    fetchKpis,
     revenueByFrequency, fetchRevenueByFrequency,
     frequency, changeFrequency,
     expiringPolicies, fetchExpiringPolicies,
@@ -186,7 +220,7 @@ export const getAnalyticsFunctions = () => {
 
     unpaidPolicies, fetchUnpaidPolicies,
 
-    customersSelection
+    customersSelection, kpisCardOptions
   }
 }
 
