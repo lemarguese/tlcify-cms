@@ -58,7 +58,7 @@ const AuthorizationPage = () => {
       <Divider/>
       <div className='authorization_page_body'>
         <div className='authorization_page_inputs'>
-          <Input label='Email' placeholder='leslie@pixsellz.io' onChange={onChange('email')}/>
+          <Input label='Email' placeholder='example@tlcify.com' onChange={onChange('email')}/>
           <PasswordInput label='Password' onKeyDown={async (e) => {
             if (e.keyCode === 13) await onSubmit()
           }} onChange={onChange('password')}/>
