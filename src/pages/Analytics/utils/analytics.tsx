@@ -1,4 +1,6 @@
-import { CSSProperties, ReactNode, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import type { CSSProperties, ReactNode } from 'react';
+
 import type { IAnalyticsFrequency, IAnalyticsKpi, IAnalyticsRevenueByFrequency } from "@/types/analytics/main.ts";
 import { instance } from "@/api/axios.ts";
 import dayjs, { Dayjs } from "dayjs";
@@ -197,18 +199,27 @@ export const getAnalyticsFunctions = () => {
     return Object.entries(kpis).reduce((acc, item) => {
       const [key, value] = item;
 
-      acc[key] = {
+      acc[key as keyof IAnalyticsKpi] = {
         value: value.currentMonth,
         valueStyle: { color: value.lastMonth > value.currentMonth ? '#e14b67' : '#3f8600' },
         suffix: <div className='analytics_page_kpis_card_item_difference'>
           {value.lastMonth > value.currentMonth ? <FallOutlined/> : <RiseOutlined/>}
-          <p className='analytics_page_kpis_card_item_difference_text'>{ value.lastMonth ? (value.currentMonth - value.lastMonth) / value.lastMonth * 100 : 0 }%</p>
+          <p className='analytics_page_kpis_card_item_difference_text'>
+            {value.lastMonth ? (value.currentMonth - value.lastMonth) / value.lastMonth * 100 : 0}%
+          </p>
         </div>,
         prefix: !['activePoliciesCount', 'expiringPoliciesCount'].includes(key) ? '$' : ''
       }
 
       return acc;
-    }, {} as { [k: keyof IAnalyticsKpi]: { value: number, valueStyle: CSSProperties, prefix: ReactNode } });
+    }, {} as {
+      [k in keyof IAnalyticsKpi]: {
+        value: number,
+        valueStyle: CSSProperties,
+        suffix: ReactNode,
+        prefix: string
+      }
+    });
   }, [kpis]);
 
   return {
