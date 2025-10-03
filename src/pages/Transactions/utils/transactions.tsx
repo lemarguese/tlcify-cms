@@ -45,6 +45,7 @@ export const transactionsTableHeaders: ColumnsType = [
     title: "Base Amount",
     dataIndex: "baseAmount",
     key: "baseAmount",
+    render: (value) => value.toFixed(2)
   },
   {
     title: "Discount Amount",

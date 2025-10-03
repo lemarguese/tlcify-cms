@@ -211,7 +211,7 @@ const PolicyUpdateModal = ({
 
       installmentArray[index] = {
         label: date.add(index, 'month').format('Do MMMM, YYYY'),
-        children: `$ ${installmentAmount} ${feesWarningText}`
+        children: `$ ${installmentAmount.toFixed(2)} ${feesWarningText}`
       }
 
       if (matchingFees.length) {

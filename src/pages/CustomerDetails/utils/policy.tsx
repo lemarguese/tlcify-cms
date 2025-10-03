@@ -117,7 +117,7 @@ export const policyTableHeaders: ColumnsType = [
     dataIndex: "amountDue",
     key: "amountDue",
     render: (value) => {
-      if (!value) return 'Totally paid';
+      if (!value) return 'Paid in full';
 
       return value.toFixed(2);
     },
@@ -128,7 +128,7 @@ export const policyTableHeaders: ColumnsType = [
     dataIndex: "dueDate",
     key: "dueDate",
     render: (value) => {
-      if (!value) return 'Totally paid';
+      if (!value) return 'Paid in full';
 
       const [date] = value.split('T');
       return dayjs(date).format('MM/DD/YYYY');

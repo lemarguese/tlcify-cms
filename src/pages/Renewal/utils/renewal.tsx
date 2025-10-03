@@ -30,7 +30,7 @@ export const renewalTableHeaders: ColumnsType = [
     dataIndex: "dmvExpiration",
     key: "dmvExpiration",
     render: (_, record) => {
-      return record.dmvExpiration ? dayjs(record.dmvExpiration).format('MM/DD/YYYY') : 'Not a customer'
+      return record.dmvExpiration ? dayjs(record.dmvExpiration).format('MM/DD/YYYY') : 'Driver'
     }
   },
   {
