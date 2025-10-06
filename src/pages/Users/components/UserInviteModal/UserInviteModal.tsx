@@ -1,7 +1,9 @@
 import './UserInviteModal.scss';
 
 import Modal from "@/components/Modal/Modal.tsx";
-import { BaseSyntheticEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { BaseSyntheticEvent } from 'react';
+
 import type { IUser } from "@/types/user/main.ts";
 import Input from "@/components/Input/Input.tsx";
 import Selector from "@/components/Selector/Selector.tsx";
@@ -16,7 +18,7 @@ interface UserInviteModalProps {
 }
 
 const UserInviteModal = ({ open, cancel, submit }: UserInviteModalProps) => {
-  const { error, success } = useNotify();
+  const { error } = useNotify();
   const { settings, fetchSettings } = getSettingsFunctions();
 
   useEffect(() => {

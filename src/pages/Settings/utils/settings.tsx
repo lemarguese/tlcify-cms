@@ -400,7 +400,9 @@ export const userInitialState: IUser = {
   email: '',
   privilege: 'manager',
   avatarUrl: '',
-  permissions: []
+  permissions: [],
+  lastName: '',
+  firstName: ''
 }
 
 export const newRoleInitialState: IRole = {

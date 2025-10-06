@@ -51,6 +51,7 @@ const PolicyDetailPage = () => {
     // payments
 
     cancelPaymentCreateModal, createPayment, openPaymentCreateModal, isPaymentCreateModalOpen,
+    paymentLoading
   } = getPolicyDetailFunctions(policyId);
 
   const {
@@ -187,7 +188,7 @@ const PolicyDetailPage = () => {
     }
   ]
 
-  return <Page showSearch={false} fixedHeader>
+  return <Page showSearch={false} fixedHeader loading={paymentLoading}>
     <div className='policy_detail_page'>
       <div className='policy_detail_page_top'>
         <h4>Detail information of Policy No. {policyById.policyNumber}</h4>

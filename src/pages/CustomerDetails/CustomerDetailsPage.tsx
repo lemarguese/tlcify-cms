@@ -74,9 +74,6 @@ const CustomerDetailsPage = () => {
     // delete
     cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen, openDeletePolicyModal,
 
-    // payment
-    isPaymentCreateModalOpen, cancelPaymentCreateModal, createPayment, openPaymentCreateModal,
-
     // invoice
     cancelInvoiceCreateModal, isInvoiceConfirmModalOpen, createInvoice, openInvoiceCreateModal,
 

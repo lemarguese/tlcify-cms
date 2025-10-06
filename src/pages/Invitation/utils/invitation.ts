@@ -1,4 +1,6 @@
-import { BaseSyntheticEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+import type { BaseSyntheticEvent } from 'react';
+
 import type { IUser } from "@/types/user/main.ts";
 import { instance } from "@/api/axios.ts";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";

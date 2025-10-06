@@ -243,7 +243,9 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
 
     // payments
 
-    isPaymentCreateModalOpen, cancelPaymentCreateModal, openPaymentCreateModal, createPayment
+    isPaymentCreateModalOpen, cancelPaymentCreateModal, openPaymentCreateModal, createPayment,
+
+    paymentLoading
   }
 }
 
