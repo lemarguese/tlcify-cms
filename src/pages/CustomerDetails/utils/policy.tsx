@@ -180,7 +180,6 @@ export const getPolicyFunctions = (customerId?: string) => {
   const [isPolicyCreateModalOpen, setIsPolicyCreateModalOpen] = useState(false);
   const [isPolicyUpdateModalOpen, setIsPolicyUpdateModalOpen] = useState(false);
   const [isPolicyDeleteModalOpen, setIsPolicyDeleteModalOpen] = useState(false);
-  const [isPaymentCreateModalOpen, setIsPaymentCreateModalOpen] = useState(false);
   const [isInvoiceConfirmModalOpen, setIsInvoiceConfirmModalOpen] = useState(false);
 
   const [policiesSelection] = useState<TableRowSelection>({
@@ -323,34 +322,6 @@ export const getPolicyFunctions = (customerId?: string) => {
     await cancelDeletePolicyModal();
   }, [selectedPolicy]);
 
-  // payment
-
-  const cancelPaymentCreateModal = () => {
-    setIsPaymentCreateModalOpen(false);
-  }
-
-  const openPaymentCreateModal = () => {
-    setIsPaymentCreateModalOpen(true)
-  }
-
-  const createPayment = useCallback(async (paymentForm: IPaymentCreate) => {
-    try {
-      setLoading(true)
-      await instance.post('/payment/application', {
-        ...paymentForm,
-        policyId: selectedPolicy!._id,
-        provider: paymentForm.method.toUpperCase(),
-      });
-      success('Payment successfully created!');
-      await fetchPolicies();
-    } catch (e) {
-      error('Oops... Problem with payment creation. Try again.');
-    } finally {
-      setLoading(false)
-      cancelPaymentCreateModal();
-    }
-  }, [selectedPolicy]);
-
   // invoice
 
   const createInvoice = useCallback(async (navigate: NavigateFunction) => {
@@ -422,10 +393,6 @@ export const getPolicyFunctions = (customerId?: string) => {
     // delete
     cancelDeletePolicyModal, deletePolicy, isPolicyDeleteModalOpen,
     openDeletePolicyModal,
-
-    // payment
-    cancelPaymentCreateModal, isPaymentCreateModalOpen, createPayment,
-    openPaymentCreateModal,
 
     // invoice
     createInvoice, isInvoiceConfirmModalOpen, cancelInvoiceCreateModal,

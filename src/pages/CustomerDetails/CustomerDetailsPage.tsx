@@ -25,7 +25,6 @@ import Switch from "@/components/Switch/Switch.tsx";
 import Button from "@/components/Button/Button.tsx";
 import ClientEmailModal from "@/pages/CustomerDetails/components/ClientEmailModal/ClientEmailModal.tsx";
 import DocumentCreateModal from "@/pages/CustomerDetails/components/DocumentCreateModal/DocumentCreateModal.tsx";
-import PaymentCreateModal from "@/pages/CustomerDetails/components/PaymentCreateModal/PaymentCreateModal.tsx";
 import InvoiceCreateModal from "@/pages/CustomerDetails/components/InvoiceCreateModal/InvoiceCreateModal.tsx";
 import { SendOutlined } from "@ant-design/icons";
 import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
@@ -151,10 +150,6 @@ const CustomerDetailsPage = () => {
     <Permission permission='update_policy' user_permission={user.permissions}>
       {selectedPolicy && <Button onClick={openUpdatePolicyModal}>Update the policy</Button>}
     </Permission>
-    <Permission permission='create_payments' user_permission={user.permissions}>
-      {selectedPolicy && <Button color={'magenta'} variant='solid' onClick={openPaymentCreateModal}>Create
-          payment</Button>}
-    </Permission>
     <Permission permission='create_policy' user_permission={user.permissions}>
       <Button variant='outlined' color='geekblue' onClick={openCreatePolicyModal}>Add policy</Button>
     </Permission>
@@ -226,7 +221,6 @@ const CustomerDetailsPage = () => {
     <PolicyDeleteModal open={isPolicyDeleteModalOpen} submit={deletePolicy} cancel={cancelDeletePolicyModal}/>
     <ClientEmailModal open={isClientEmailModalOpen} submit={sendFormToClientEmail} cancel={cancelClientFormSend}/>
     <DocumentCreateModal open={isDocumentModalOpen} cancel={cancelDocumentModal} submit={uploadCustomerDocument}/>
-    <PaymentCreateModal open={isPaymentCreateModalOpen} submit={createPayment} cancel={cancelPaymentCreateModal}/>
     <InvoiceCreateModal open={isInvoiceConfirmModalOpen} cancel={cancelInvoiceCreateModal}
                         submit={() => createInvoice(navigate)}
     />

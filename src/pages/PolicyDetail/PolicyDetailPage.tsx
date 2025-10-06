@@ -26,6 +26,7 @@ import PolicyActivityModal from "@/pages/PolicyDetail/components/PolicyActivityM
 import PaymentVoidModal from "@/pages/PolicyDetail/components/PaymentVoidModal/PaymentVoidModal.tsx";
 import { getAuthFunctions } from "@/pages/Authorization/utils/auth.ts";
 import Permission from "@/layout/Permission/Permission.tsx";
+import PaymentCreateModal from "@/pages/PolicyDetail/components/PaymentCreateModal/PaymentCreateModal.tsx";
 
 const PolicyDetailPage = () => {
   const { policyId } = useParams();
@@ -45,7 +46,11 @@ const PolicyDetailPage = () => {
 
     installmentsTableItems,
 
-    isPolicyActivityOpen, cancelPolicyActivity, openPolicyActivity
+    isPolicyActivityOpen, cancelPolicyActivity, openPolicyActivity,
+
+    // payments
+
+    cancelPaymentCreateModal, createPayment, openPaymentCreateModal, isPaymentCreateModalOpen,
   } = getPolicyDetailFunctions(policyId);
 
   const {
@@ -189,6 +194,10 @@ const PolicyDetailPage = () => {
         <div className='policy_detail_page_top_actions'>
           <Button variant='solid' color='orange' icon={<ClockCircleOutlined/>} onClick={openPolicyActivity}>Show
             activity</Button>
+          <Permission permission='create_payments' user_permission={user.permissions}>
+            <Button color={'geekblue'} variant='solid' onClick={openPaymentCreateModal}>Create
+              payment</Button>
+          </Permission>
           {/*<Button variant='solid' color='primary'>Show policy ledger</Button>*/}
           {/*<Button>Delete policy</Button>*/}
           {/*<Button>Edit policy</Button>*/}
@@ -207,6 +216,7 @@ const PolicyDetailPage = () => {
     <PolicyActivityModal open={isPolicyActivityOpen} cancel={cancelPolicyActivity} policyId={policyId}
                          policy={policyById}/>
     <PaymentVoidModal open={isPaymentVoidModalOpen} submit={voidPayment} cancel={cancelPaymentVoidModal}/>
+    <PaymentCreateModal open={isPaymentCreateModalOpen} submit={createPayment} cancel={cancelPaymentCreateModal}/>
   </Page>
 }
 

@@ -11,6 +11,7 @@ import Button from "@/components/Button/Button.tsx";
 import type { IPayment } from "@/types/transactions/main.ts";
 import type { IAuditLog } from "@/types/audit_log/main.ts";
 import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
+import type { IPaymentCreate } from "@/types/transactions/main.ts";
 
 export const policyFeesTableHeaders: ColumnsType = [
   {
@@ -81,10 +82,14 @@ const policyTitles: { [k in keyof Omit<IPolicy, '_id' | 'cycles' | 'customer' | 
 }
 
 export const getPolicyDetailFunctions = (policyId?: string) => {
+  const { error, success } = useNotify();
   const [policyById, setPolicyById] = useState<IPolicy>(policyInitialState);
 
   const [isPolicyFeeDeleteModalOpen, setIsPolicyFeeDeleteModalOpen] = useState(false);
   const [isPolicyActivityOpen, setIsPolicyActivityOpen] = useState(false);
+
+  const [isPaymentCreateModalOpen, setIsPaymentCreateModalOpen] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   const [selectedPolicyFee, setSelectedPolicyFee] = useState<IPolicyFee>();
 
@@ -194,6 +199,34 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     setIsPolicyActivityOpen(true)
   }, []);
 
+  // payments
+
+  const createPayment = useCallback(async (paymentForm: IPaymentCreate) => {
+    try {
+      setPaymentLoading(true)
+      await instance.post('/payment/application', {
+        ...paymentForm,
+        policyId: policyId,
+        provider: paymentForm.method.toUpperCase(),
+      });
+      success('Payment successfully created!');
+      await fetchPolicyById();
+    } catch (e) {
+      error('Oops... Problem with payment creation. Try again.');
+    } finally {
+      setPaymentLoading(false)
+      cancelPaymentCreateModal();
+    }
+  }, []);
+
+  const cancelPaymentCreateModal = () => {
+    setIsPaymentCreateModalOpen(false);
+  }
+
+  const openPaymentCreateModal = () => {
+    setIsPaymentCreateModalOpen(true)
+  }
+
   return {
     fetchPolicyById, policyById,
     policyDescriptionItems,
@@ -206,7 +239,11 @@ export const getPolicyDetailFunctions = (policyId?: string) => {
     installmentsTableItems,
 
     // activity
-    openPolicyActivity, cancelPolicyActivity, isPolicyActivityOpen
+    openPolicyActivity, cancelPolicyActivity, isPolicyActivityOpen,
+
+    // payments
+
+    isPaymentCreateModalOpen, cancelPaymentCreateModal, openPaymentCreateModal, createPayment
   }
 }
 
