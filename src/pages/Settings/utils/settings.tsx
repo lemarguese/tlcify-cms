@@ -377,7 +377,7 @@ export const permissionsTypeTexts: { [k: string]: string } = {
   "read_invoices": "View Invoices",
 
   "read_users": "View Users",
-  "update_users": "Manage Users",
+  "invite_users": "Invite Users",
 
   "create_document": "Upload Document",
 

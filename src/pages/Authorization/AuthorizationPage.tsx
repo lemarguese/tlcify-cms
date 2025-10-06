@@ -26,7 +26,7 @@ const AuthorizationPage = () => {
 
   const onSubmit = async () => {
     try {
-      const res = await instance.post('/auth/login', loginData);
+      const res = await instance.post('/user/login', loginData);
       if (res.status === 200) {
         notify.success('Successfully authorized!');
         navigate('/customers');

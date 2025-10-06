@@ -5,7 +5,9 @@ import {
   MoneyCollectOutlined,
   SettingOutlined,
   BarChartOutlined,
-  ContainerOutlined
+  ContainerOutlined,
+  TeamOutlined,
+  SafetyCertificateOutlined
 } from '@ant-design/icons';
 import { useLocation, useNavigate } from "react-router";
 
@@ -21,7 +23,8 @@ const sidebarOptions: { [k: string]: string } = {
   'sidebar-insurance': '/insurances',
   'sidebar-analytics': '/analytics',
   'sidebar-renewal': '/renewals',
-  'sidebar-settings': '/settings'
+  'sidebar-users': '/users',
+  'sidebar-settings': '/settings',
 }
 
 const getNavigationOptions = (location: string) => {
@@ -32,7 +35,8 @@ const getNavigationOptions = (location: string) => {
     '/analytics': 'sidebar-analytics',
     '/renewals': 'sidebar-renewal',
     '/settings': 'sidebar-settings',
-    '/policy': 'sidebar-customer'
+    '/policy': 'sidebar-customer',
+    '/users': 'sidebar-users',
   };
 
   const [key] = Object.entries(options).filter(([k, _]) => {
@@ -57,7 +61,7 @@ const sidebars = [
   },
   {
     key: 'sidebar-insurance',
-    icon: <MoneyCollectOutlined/>,
+    icon: <SafetyCertificateOutlined/>,
     label: 'Insurance',
     permissions: ['create_insurances']
   },
@@ -72,6 +76,12 @@ const sidebars = [
     icon: <ContainerOutlined/>,
     label: 'Renewal',
     permissions: ['read_renewals']
+  },
+  {
+    key: 'sidebar-users',
+    icon: <TeamOutlined/>,
+    label: 'Users',
+    permissions: ['read_users']
   },
   {
     key: 'sidebar-settings',

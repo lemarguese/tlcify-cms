@@ -9,7 +9,7 @@ export const getAuthFunctions = () => {
   const [user, setUser] = useState<IUser>(userInitialState)
 
   const fetchMyself = async () => {
-    const response = await instance.get('/auth/user');
+    const response = await instance.get('/user/me');
     setUser(response.data);
   }
 

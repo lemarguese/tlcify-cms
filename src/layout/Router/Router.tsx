@@ -15,6 +15,8 @@ import SettingsPage from "@/pages/Settings/SettingsPage.tsx";
 import ForbiddenPage from "@/pages/Forbidden/ForbiddenPage.tsx";
 import TransactionsDetailsPage from '@/pages/TransactionsDetails/TransactionsDetailsPage.tsx'
 import { permissions } from "@/pages/Settings/utils/settings.tsx";
+import UsersPage from "@/pages/Users/UsersPage.tsx";
+import InvitationPage from "@/pages/Invitation/InvitationPage.tsx";
 
 const Router = () => {
   return (
@@ -25,6 +27,10 @@ const Router = () => {
         <Route path="/login" element={<AuthorizationPage/>}/>
 
         {/* Protected routes */}
+        <Route element={<ProtectedRoute requiredPermissions={["read_users", 'invite_users']}/>}>
+          <Route path='/users' element={<UsersPage/>}/>
+        </Route>
+
         <Route
           element={<ProtectedRoute requiredPermissions={["read_customers", 'read_customer_details']}/>}>
           <Route path="/customers">
@@ -68,6 +74,8 @@ const Router = () => {
         <Route element={<ProtectedRoute requiredPermissions={["read_invoices"]}/>}>
           <Route path="/invoice/:invoiceId" element={<InvoiceDetailsPage/>}/>
         </Route>
+
+        <Route path='/invite/:invitationToken' element={<InvitationPage/>}/>
 
         <Route element={<ProtectedRoute requiredPermissions={["update_settings"]}/>}>
           <Route path="/settings" element={<SettingsPage/>}/>
