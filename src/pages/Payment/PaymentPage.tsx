@@ -4,15 +4,21 @@ import Input from "@/components/Input/Input.tsx";
 import Button from "@/components/Button/Button.tsx";
 import PaymentTypeModal from "@/pages/Payment/components/PaymentTypeModal/PaymentTypeModal.tsx";
 import { getPaymentFunctions } from "@/pages/Payment/utils/payment.tsx";
+import { useParams } from "react-router";
 
 const PaymentPage = () => {
+  const { invoiceId } = useParams();
+
   const {
     isPaymentTypeModalOpen,
     cancelPaymentTypeModal,
     paymentType,
     setPaymentType,
+    executeCharging,
+    changeAddress,
+    paymentForm,
     paymentFormElement
-  } = getPaymentFunctions()
+  } = getPaymentFunctions(invoiceId);
 
   return <>
     <div className='auto_pay_page'>
@@ -35,17 +41,21 @@ const PaymentPage = () => {
             <label className='auto_pay_page_right_personal_title'>Personal details</label>
             <div className='auto_pay_page_right_personal_row'>
               <div className='auto_pay_page_right_personal_line'>
-                <Input label='Address line' placeholder='P.o.Box 1223' required/>
-                <Input label='City' placeholder='Arusha' required/>
+                <Input label='Address line' placeholder='P.o.Box 1223'
+                       value={paymentForm.customerBillingAddress.streetAddress} onChange={changeAddress('streetAddress')} required/>
+                <Input label='City' placeholder='Arusha' value={paymentForm.customerBillingAddress.city} required onChange={changeAddress('city')}/>
               </div>
               <div className='auto_pay_page_right_personal_line'>
-                <Input label='State' placeholder='Arusha, Tanzania' required/>
-                <Input label='Postal Code' placeholder='9090' required/>
+                <Input label='State' placeholder='Arusha, Tanzania' value={paymentForm.customerBillingAddress.state}
+                       required onChange={changeAddress('state')}/>
+                <Input label='Postal Code' placeholder='9090' value={paymentForm.customerBillingAddress.postalCode}
+                       required onChange={changeAddress('postalCode')}/>
               </div>
             </div>
           </div>
           {paymentFormElement}
-          <Button variant='solid' size={'large'} className='auto_pay_page_right_submit'>Submit</Button>
+          <Button variant='solid' size={'large'} className='auto_pay_page_right_submit'
+                  onClick={executeCharging}>Submit</Button>
         </div>
         <div className='auto_pay_page_right_footer'>
           <p className='auto_pay_page_right_footer_text'>Instructions</p>

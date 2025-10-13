@@ -7,6 +7,11 @@ import type { ColumnsType } from "antd/es/table";
 import Button from "@/components/Button/Button.tsx";
 
 export const usersTableHeaders: ColumnsType = [
+  {
+    dataIndex: 'fullName', key: 'fullName', title: 'Full Name', render: (_, record) => {
+      return `${record.firstName} ${record.lastName}`
+    }
+  },
   { dataIndex: 'email', key: 'email', title: 'Email' },
   { dataIndex: 'privilege', key: 'privilege', title: 'Privilege' },
   { dataIndex: 'createdAt', key: 'createdAt', title: 'User Created Date' },

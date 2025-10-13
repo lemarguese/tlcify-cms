@@ -60,7 +60,7 @@ const Router = () => {
         </Route>
 
         <Route element={<ProtectedRoute/>}>
-          <Route path="/billing/:customerId" element={<PaymentPage/>}/>
+          <Route path="/billing/:invoiceId" element={<PaymentPage/>}/>
         </Route>
 
         <Route element={<ProtectedRoute requiredPermissions={["read_renewals"]}/>}>
