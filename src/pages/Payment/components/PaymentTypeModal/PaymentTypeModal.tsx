@@ -6,8 +6,8 @@ import Selector from "@/components/Selector/Selector.tsx";
 
 interface PaymentTypeModalProps {
   open: boolean;
-  paymentType: 'check' | 'card' | 'unselected';
-  onChange: Dispatch<SetStateAction<'check' | 'card' | 'unselected'>>,
+  paymentType: 'ach' | 'card' | 'unselected';
+  onChange: Dispatch<SetStateAction<'ach' | 'card' | 'unselected'>>,
   cancel: () => void;
 }
 
@@ -16,7 +16,7 @@ const PaymentTypeModal = ({ open, cancel, onChange, paymentType }: PaymentTypeMo
     <div className='payment_type_modal'>
       <Selector label='Select payment type:' options={[
         { label: 'Unselected', value: 'unselected' },
-        { label: 'Check', value: 'check' },
+        { label: 'Check', value: 'ach' },
         { label: 'Card', value: 'card' }
       ]} onChange={onChange} value={paymentType}/>
     </div>

@@ -6,6 +6,7 @@ import { useNotify } from "@/hooks/useNotify/useNotify.tsx";
 import dayjs from "dayjs";
 import { formatCurrency } from "@/utils/payment.ts";
 import type { AxiosError } from "axios";
+import { formatCustomerName } from "@/utils/customer.ts";
 
 const transactionInitialState: IPayment = {
   _id: '',
@@ -50,7 +51,7 @@ export const getTransactionDetailsFunctions = (transactionId?: string) => {
       policyEffectiveDate: dayjs(transactionById.policy.effectiveDate).format('MM/DD/YYYY'),
       policyExpirationDate: dayjs(transactionById.policy.expirationDate).format('MM/DD/YYYY'),
 
-      customerFullName: transactionById.policy.customer.firstName && transactionById.policy.customer.lastName ? `${transactionById.policy.customer.firstName} ${transactionById.policy.customer.lastName}` : transactionById.policy.customer.corporationName,
+      customerFullName: formatCustomerName(transactionById.policy.customer),
       customerAddress: transactionById.policy.customer.address,
       customerEmail: transactionById.policy.customer.email,
 

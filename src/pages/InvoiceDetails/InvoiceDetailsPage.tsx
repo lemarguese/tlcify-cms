@@ -16,6 +16,7 @@ import {
 import { useEffect } from "react";
 import dayjs from "dayjs";
 import advancedFormat from 'dayjs/plugin/advancedFormat';
+import { formatCustomerName } from "@/utils/customer.ts";
 
 dayjs.extend(advancedFormat);
 
@@ -59,7 +60,7 @@ const InvoiceDetailsPage = () => {
                   {/*<h6>Sisyphus</h6>*/}
                 </div>
                 <div className='invoice_details_page_body_top_content_body'>
-                  <p>{invoiceById.customer.firstName} {invoiceById.customer.lastName}</p>
+                  <p>{formatCustomerName(invoiceById.customer)}</p>
                   <p>{invoiceById.customer.address}</p>
                   <p>{invoiceById.customer.phoneNumber} | {invoiceById.customer.email}</p>
                   {/*<p>SIRET: 362 521 879 00034</p>*/}

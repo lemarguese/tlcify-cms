@@ -5,6 +5,7 @@ import Button from "@/components/Button/Button.tsx";
 import PaymentTypeModal from "@/pages/Payment/components/PaymentTypeModal/PaymentTypeModal.tsx";
 import { getPaymentFunctions } from "@/pages/Payment/utils/payment.tsx";
 import { useParams } from "react-router";
+import Loader from "@/components/Loader/Loader.tsx";
 
 const PaymentPage = () => {
   const { invoiceId } = useParams();
@@ -17,7 +18,8 @@ const PaymentPage = () => {
     executeCharging,
     changeAddress,
     paymentForm,
-    paymentFormElement
+    paymentFormElement,
+    loading
   } = getPaymentFunctions(invoiceId);
 
   return <>
@@ -42,8 +44,10 @@ const PaymentPage = () => {
             <div className='auto_pay_page_right_personal_row'>
               <div className='auto_pay_page_right_personal_line'>
                 <Input label='Address line' placeholder='P.o.Box 1223'
-                       value={paymentForm.customerBillingAddress.streetAddress} onChange={changeAddress('streetAddress')} required/>
-                <Input label='City' placeholder='Arusha' value={paymentForm.customerBillingAddress.city} required onChange={changeAddress('city')}/>
+                       value={paymentForm.customerBillingAddress.streetAddress}
+                       onChange={changeAddress('streetAddress')} required/>
+                <Input label='City' placeholder='Arusha' value={paymentForm.customerBillingAddress.city} required
+                       onChange={changeAddress('city')}/>
               </div>
               <div className='auto_pay_page_right_personal_line'>
                 <Input label='State' placeholder='Arusha, Tanzania' value={paymentForm.customerBillingAddress.state}
@@ -65,6 +69,7 @@ const PaymentPage = () => {
         </div>
       </div>
     </div>
+    <Loader spinning={loading}/>
     <PaymentTypeModal open={isPaymentTypeModalOpen} paymentType={paymentType} onChange={setPaymentType}
                       cancel={cancelPaymentTypeModal}/>
   </>

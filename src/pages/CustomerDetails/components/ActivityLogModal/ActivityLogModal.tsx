@@ -4,6 +4,7 @@ import { getAuditLogsFunction } from "@/pages/CustomerDetails/utils/audit_log.ts
 import { useEffect } from "react";
 import type { ICustomerCreate } from "@/types/customer/main.ts";
 import dayjs from "dayjs";
+import { formatCustomerName } from "@/utils/customer.ts";
 
 interface ActivityLogModalProps {
   open: boolean;
@@ -22,7 +23,7 @@ const ActivityLogModal = ({ open, cancel, customer, customerId }: ActivityLogMod
   return <Modal open={open} onCancel={cancel} onOk={cancel}>
     <div className='activity_log_modal'>
       <label className='activity_log_modal_label'>Activities
-        on {customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : customer.corporationName}</label>
+        on {formatCustomerName(customer)}</label>
       {activities.map(act => <div>
         {dayjs(act.createdAt).format('MM/DD/YYYY HH:mm:ss')}: {act.message} by {act.user.email}
       </div>)}

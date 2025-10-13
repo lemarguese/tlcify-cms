@@ -288,7 +288,7 @@ export const getPolicyPaymentsFunctions = (policyId?: string) => {
   const sendReceiptForPayment = useCallback(async () => {
     try {
       await instance.post(`/email/payment-receipt`, {
-        paymentId: selectedPayment!._id
+        paymentIds: [selectedPayment!._id]
       });
       success('Receipt successfully sent!');
     } catch (e) {

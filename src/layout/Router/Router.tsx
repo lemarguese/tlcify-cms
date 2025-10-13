@@ -17,6 +17,7 @@ import TransactionsDetailsPage from '@/pages/TransactionsDetails/TransactionsDet
 import { permissions } from "@/pages/Settings/utils/settings.tsx";
 import UsersPage from "@/pages/Users/UsersPage.tsx";
 import InvitationPage from "@/pages/Invitation/InvitationPage.tsx";
+import PaymentSuccessfulPage from "@/pages/PaymentSuccessfulPage/PaymentSuccessfulPage.tsx";
 
 const Router = () => {
   return (
@@ -61,6 +62,10 @@ const Router = () => {
 
         <Route element={<ProtectedRoute/>}>
           <Route path="/billing/:invoiceId" element={<PaymentPage/>}/>
+        </Route>
+
+        <Route element={<ProtectedRoute/>}>
+          <Route path="/billing/:invoiceId/success" element={<PaymentSuccessfulPage/>}/>
         </Route>
 
         <Route element={<ProtectedRoute requiredPermissions={["read_renewals"]}/>}>

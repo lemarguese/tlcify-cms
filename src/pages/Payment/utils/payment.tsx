@@ -1,4 +1,5 @@
-import { BaseSyntheticEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+import type { BaseSyntheticEvent } from 'react'
 
 import VisaIcon from "@/assets/icons/payment/visa_icon.svg";
 import MastercardIcon from "@/assets/icons/payment/mastercard_icon.svg";
@@ -37,6 +38,8 @@ const paymentFormInitialState: IAchDetails & ICreditCardDetails = {
 export const getPaymentFunctions = (invoiceId?: string) => {
   const { error, success } = useNotify();
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
 
   const [paymentForm, setPaymentForm] = useState<IAchDetails & ICreditCardDetails>(paymentFormInitialState);
 
@@ -105,13 +108,12 @@ export const getPaymentFunctions = (invoiceId?: string) => {
     <div className='auto_pay_page_right_card_public'>
       <Input label='Checkholder’s name' placeholder='Ex. John Doe' value={paymentForm.checkHolderName} required
              onChange={changeInput('checkHolderName')}/>
-      <Input label='Routing number' placeholder='1234 1234 1234 1234' value={paymentForm.routingNumber} required
-             onChange={changeInput('routingNumber')}/>
     </div>
     <div className='auto_pay_page_right_card_private'>
+      <Input label='Routing number' placeholder='1234 1234 1234 1234' value={paymentForm.routingNumber} required
+             onChange={changeInput('routingNumber')}/>
       <Input label='Account number' placeholder='20/23' value={paymentForm.accountNumber} required
              onChange={changeInput('accountNumber')}/>
-      <Input label='Confirm account number' placeholder='777' required/>
     </div>
     <div className='auto_pay_page_right_card_private'>
       <Selector label='Account Type' options={checkAccountTypeOptions} value={paymentForm.accountType} required
@@ -124,15 +126,18 @@ export const getPaymentFunctions = (invoiceId?: string) => {
 
   const executeCharging = async () => {
     try {
+      setLoading(true)
       await instance.post('/billing', {
         type: paymentType,
         invoiceId,
         ...paymentForm,
       });
       success('Payment successfully processed!');
-      setTimeout(() => navigate('/customers'), 1000)
+      setTimeout(() => navigate('success'), 1000)
     } catch (e: unknown) {
       error((e as AxiosError).message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -141,6 +146,7 @@ export const getPaymentFunctions = (invoiceId?: string) => {
     isPaymentTypeModalOpen,
     paymentType, setPaymentType,
 
+    loading,
     executeCharging,
     changeAddress,
     paymentForm,
