@@ -1,13 +1,13 @@
 # Node dependencies
 /node_modules
 
-# Yarn internal files (but keep lockfile)
+# Ignore Yarn internals except what's needed
 .yarn/*
-!.yarn/patches
-!.yarn/plugins
 !.yarn/releases
+!.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+!.yarn/cache
 
 # Build output
 /dist
