@@ -60,13 +60,8 @@ const Router = () => {
           <Route path="/policy/:policyId" element={<PolicyDetailPage/>}/>
         </Route>
 
-        <Route element={<ProtectedRoute/>}>
-          <Route path="/billing/:invoiceId" element={<PaymentPage/>}/>
-        </Route>
-
-        <Route element={<ProtectedRoute/>}>
-          <Route path="/billing/:invoiceId/success" element={<PaymentSuccessfulPage/>}/>
-        </Route>
+        <Route path="/billing/:invoiceId" element={<PaymentPage/>}/>
+        <Route path="/billing/:invoiceId/success" element={<PaymentSuccessfulPage/>}/>
 
         <Route element={<ProtectedRoute requiredPermissions={["read_renewals"]}/>}>
           <Route path="/renewals" element={<RenewalPage/>}/>
