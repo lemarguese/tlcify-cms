@@ -8,7 +8,6 @@ import TransactionsPage from "@/pages/Transactions/TransactionsPage.tsx";
 import InvoiceDetailsPage from "@/pages/InvoiceDetails/InvoiceDetailsPage.tsx";
 import InsurancePage from "@/pages/Insurance/InsurancePage.tsx";
 import PolicyDetailPage from "@/pages/PolicyDetail/PolicyDetailPage.tsx";
-import PaymentPage from "@/pages/Payment/PaymentPage.tsx";
 import RenewalPage from "@/pages/Renewal/RenewalPage.tsx";
 import AnalyticsPage from "@/pages/Analytics/AnalyticsPage.tsx";
 import SettingsPage from "@/pages/Settings/SettingsPage.tsx";
@@ -17,7 +16,6 @@ import TransactionsDetailsPage from '@/pages/TransactionsDetails/TransactionsDet
 import { permissions } from "@/pages/Settings/utils/settings.tsx";
 import UsersPage from "@/pages/Users/UsersPage.tsx";
 import InvitationPage from "@/pages/Invitation/InvitationPage.tsx";
-import PaymentSuccessfulPage from "@/pages/PaymentSuccessfulPage/PaymentSuccessfulPage.tsx";
 
 const Router = () => {
   return (
@@ -59,9 +57,6 @@ const Router = () => {
         <Route element={<ProtectedRoute requiredPermissions={["read_policy"]}/>}>
           <Route path="/policy/:policyId" element={<PolicyDetailPage/>}/>
         </Route>
-
-        <Route path="/billing/:invoiceId" element={<PaymentPage/>}/>
-        <Route path="/billing/:invoiceId/success" element={<PaymentSuccessfulPage/>}/>
 
         <Route element={<ProtectedRoute requiredPermissions={["read_renewals"]}/>}>
           <Route path="/renewals" element={<RenewalPage/>}/>
