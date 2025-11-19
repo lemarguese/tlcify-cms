@@ -217,13 +217,13 @@ export const getPolicyFunctions = (customerId?: string) => {
   }, [customerId])
 
   const changePolicyFormData = useCallback((key: keyof Omit<IPolicyCreate, 'effectiveDate' | 'expirationDate'>, callback: Dispatch<SetStateAction<IPolicyCreate>>) => {
-    return (val: BaseSyntheticEvent | RadioChangeEvent | string | number) => {
+    return (val: BaseSyntheticEvent | RadioChangeEvent | string | number | null) => {
       const out =
         typeof val === 'string'
           ? (val || '')
           : typeof val === 'number'
             ? (val || 0)
-            : val.target?.value;
+            : val ? val.target?.value : '';
 
       callback(prev => ({
         ...prev,

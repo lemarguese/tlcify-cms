@@ -1,0 +1,14 @@
+.input_number {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &_label {
+    font-size: 12px;
+
+    //font-family: 'Roboto', sans-serif;
+    color: rgba(0, 0, 0, .7);
+  }
+}
