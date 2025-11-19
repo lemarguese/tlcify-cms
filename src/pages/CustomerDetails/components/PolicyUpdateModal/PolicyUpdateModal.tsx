@@ -33,7 +33,7 @@ interface PolicyCreateModalProps {
   cancel: () => void;
   submit: (value: Partial<IUpdatePolicy>) => void;
   changePolicyFormTime: (val: keyof Pick<IUpdatePolicy, 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: Dayjs) => void;
-  changePolicyFormData: (val: keyof Omit<IUpdatePolicy, 'expirationDate' | 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string) => void;
+  changePolicyFormData: (val: keyof Omit<IUpdatePolicy, 'expirationDate' | 'effectiveDate' | 'customEffectiveDate'>, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => (val: BaseSyntheticEvent | RadioChangeEvent | string | number) => void;
   addPolicyFee: (value: IPolicyFeeCreate, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
   removePolicyFee: (value: number, callback: Dispatch<SetStateAction<IUpdatePolicy>>) => void;
 
@@ -202,12 +202,12 @@ const PolicyUpdateModal = ({
 
       installmentAmount = premiumPriceNet / installmentCountNet;
 
-      if (+monthlyPayment) {
-        if (index === +installmentCount - 1) installmentAmount = premiumPriceNet - (installmentCountNet - 1) * +monthlyPayment;
+      if (monthlyPayment) {
+        if (index === installmentCount - 1) installmentAmount = premiumPriceNet - (installmentCountNet - 1) * monthlyPayment;
         else installmentAmount = monthlyPayment;
       }
 
-      if (Boolean(deposit) && index === 0) installmentAmount = +deposit;
+      if (!!deposit && index === 0) installmentAmount = deposit;
 
       installmentArray[index] = {
         label: date.add(index, 'month').format('Do MMMM, YYYY'),
@@ -279,13 +279,13 @@ const PolicyUpdateModal = ({
                     value={newPolicyForm.customEffectiveDate ? dayjs(newPolicyForm.customEffectiveDate) : null}/>
             </div>
             <div className='policy_update_modal_information_horizontal'>
-              <Input label='Premium' addonBefore='$' required value={newPolicyForm.premiumPrice}
+              <Input type='number' label='Premium' addonBefore='$' required value={newPolicyForm.premiumPrice}
                      onChange={changePolicyFormData('premiumPrice', setNewPolicyForm)}/>
             </div>
             <div className='policy_update_modal_information_horizontal'>
-              <Input label='Deposit' addonBefore='$' value={newPolicyForm.deposit}
+              <Input type='number' label='Deposit' addonBefore='$' value={newPolicyForm.deposit}
                      onChange={changePolicyFormData('deposit', setNewPolicyForm)}/>
-              <Input label='Monthly payment' addonBefore='$' disabled={+newPolicyForm.installmentCount <= 1}
+              <Input type='number' label='Monthly payment' addonBefore='$' disabled={+newPolicyForm.installmentCount <= 1}
                      value={newPolicyForm.monthlyPayment}
                      onChange={changePolicyFormData('monthlyPayment', setNewPolicyForm)}/>
             </div>
